@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31105.61
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "MapEditor", "MapEditor\MapEditor.pyproj", "{95E1B5ED-E89C-4909-920B-194A2E4DAFA1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{95E1B5ED-E89C-4909-920B-194A2E4DAFA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95E1B5ED-E89C-4909-920B-194A2E4DAFA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AA72000D-DA75-4576-AC05-074261BF2CA8}
+	EndGlobalSection
+EndGlobal
