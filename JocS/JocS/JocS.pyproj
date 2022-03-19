@@ -24,7 +24,7 @@
     <Compile Include="EventH.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Player.py">
+    <Compile Include="Pleyer.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="JocS.py" />
