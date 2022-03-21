@@ -2,72 +2,77 @@ import pygame
 import os
 
 from EventH import exit , controller_verify
-from Pleyer import pleyer
+from Player import player
 
 def lobby (WIN,WIDTH,HEIGHT,FPS) :
     pygame.init()
     pygame.joystick.init()
     joysticks = [pygame.joystick.Joystick(i) for i in range(pygame.joystick.get_count())]
-    Pleyeri = []
+    Playeri = []
     for i in range (4) :
-        P = pleyer(pygame.image.load(os.path.join('Assets', 'Bottom-Blue.png')),pygame.image.load(os.path.join('Assets', 'Bottom-Blue.png')))
-        Pleyeri.append(P)
+        P = player(pygame.image.load(os.path.join('Assets', 'Bottom-Blue.png')),pygame.image.load(os.path.join('Assets', 'Bottom-Blue.png')))
+        Playeri.append(P)
+    Input = {"Keyboard" : None , 0:None , 1:None , 2:None , 3:None , 4:None}
 
-    #INTRODUCEREA UNUI PLEYER
+    #INTRODUCEREA UNUI Player
     def set_control(control) :
-        spatiu_liber = -1
-        repetare = 0
-        for i in range(4) :
-            if spatiu_liber == -1 and Pleyeri[i].Control == "Unknown" :
-                spatiu_liber = i 
-            elif Pleyeri[i].Control == control :
-                repetare = 1
-                break
-        if repetare == 0 and spatiu_liber > -1 :
-            Pleyeri[spatiu_liber].Control = control
-            print(control)
+        if Input[control] == None :
+            for i in range(4) :
+                if Playeri[i].Selected == False :
+                    Playeri[i].Selected = True
+                    Playeri[i].Source = control
+                    Playeri[i].reset_control()
+                    Input [control] = i 
+                    break
 
-    #SCOATEREA UNUI PLEYER 
+    #SCOATEREA UNUI Player 
     def eject_control(control) :
-        for i in range(4) :
-            if Pleyeri[i].Control == control :
-                Pleyeri[i].Control = "Unknown"
-                break
+        if Input[control] != None :
+            Playeri[Input[control]].Selected = False
+            Playeri[Input[control]].Source = "Unknown"
+            Input[control] = None
 
     #Desenarea ferestrei
     def draw_window() :
+        WIN.fill((255,255,255))
         for i in range(4) :
             x = 30 + i * ((WIDTH - 150) / 4 + 30)
             y = HEIGHT/3
             width = (WIDTH - 150)/4
-            if Pleyeri[i].Control == "Unknown" :
+            if Playeri[i].Selected == False :
                 color = [200,200,200]
             else :
                 color = [0,204,0]
             pygame.draw.rect(WIN, color, pygame.Rect(x, y, width, y))
         pygame.display.update()
 
-    WIN.fill((255,255,255))
-
+    #The loop of the Lobby
     clock = pygame.time.Clock()
     run=True
     while run :
         clock.tick(FPS)
+        #The event loop
         for event in pygame.event.get() :
             exit(event)
             controller_verify(event,joysticks)
-            if event.type == pygame.KEYDOWN :
-                if event.key == pygame.K_SPACE :
-                    set_control("Keyboard")
-                elif event.key == pygame.K_ESCAPE :
-                    eject_control("Keyboard")
-            elif event.type == pygame.JOYBUTTONDOWN :
-                print(3," ",event.joy)
-                if event.button == 0 :
-                    set_control(event.joy)
-                elif event.button == 2 :
-                    eject_control(event.joy)
+            try :
+                if event.joy != None :
+                    if event.type == pygame.JOYBUTTONDOWN :
+                        set_control(event.joy)
+                    if Input[event.joy] != None :
+                        Playeri[Input[event.joy]].update_input(event)
+            except :
+                if Input["Keyboard"] != None :
+                    Playeri[Input["Keyboard"]].update_input(event)
+                if event.type == pygame.KEYDOWN :
+                    if event.key == pygame.K_SPACE :
+                        set_control("Keyboard")
+                    elif event.key == pygame.K_ESCAPE :
+                        eject_control("Keyboard")
         pygame.event.pump()
-
-
+        #Verifica daca un controler isi deselecteaza pozitia
+        for i in range (5) :
+            if Input[i] != None :
+                if Playeri[Input[i]].exit_update() :
+                    eject_control(i)
         draw_window()

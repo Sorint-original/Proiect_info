@@ -1,4 +1,5 @@
 import pygame
+
 from Lobby import lobby
 
 pygame.init()
