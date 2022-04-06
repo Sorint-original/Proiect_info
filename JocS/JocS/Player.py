@@ -32,10 +32,7 @@ class control :
 
 class player:
     #Initializarea obiectului
-    def __init__(self,BIMG,UIMG):
-        #The images for the character
-        self.Bottom_image = BIMG
-        self.Upper_image = UIMG
+    def __init__(self,BIMG,UIMG,Gx,Gy,size):
         # The Variables used for the lobby
         self.Selected = False
         self.Source = "Unknown"
@@ -44,6 +41,15 @@ class player:
         self.configuring = False
         #Controalele pentru pleyer (toate butoanele apasate,configurarea pentru controlar)
         self.Control = control(self.Source)
+        #Variabile pentru afisare 
+        self.size = size
+        self.Bottom_image = pygame.transform.scale(BIMG,(9*self.size/8, 7*self.size/8))
+        self.Upper_image = pygame.transform.scale(UIMG,(self.size,self.size))
+        self.Upper_angle = 90
+        self.Bottom_angle = 90
+        self.GX = Gx
+        self.GY = Gy
+
     #Functie de resetat controalele pleyerului
     def reset_control (self) :
         self.Control = control (self.Source)
@@ -105,3 +111,13 @@ class player:
         elif self.Exit_cooldown > 0 :
             self.Exit_cooldown = 0
         return 0
+    #Afisarea playerului pe ecran la coordonatele lui 
+    def afisare (self,WIN) :
+        BIMAGE = pygame.transform.rotate(self.Bottom_image,self.Bottom_angle)
+        x = self.GX - BIMAGE.get_width()/2
+        y = self.GY - BIMAGE.get_height()/2
+        WIN.blit(BIMAGE,(x,y))
+        UIMAGE = pygame.transform.rotate(self.Upper_image,self.Upper_angle)
+        x = self.GX - UIMAGE.get_width()/2
+        y = self.GY - UIMAGE.get_height()/2
+        WIN.blit(UIMAGE,(x,y))
