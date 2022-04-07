@@ -10,11 +10,10 @@ def lobby (WIN,WIDTH,HEIGHT,FPS) :
     joysticks = [pygame.joystick.Joystick(i) for i in range(pygame.joystick.get_count())]
     Playeri = []
     #initializarea playerilor
-
+    size = 250
     for i in range (4) :
         Gx = 30 + i * ((WIDTH - 150) / 4 + 30) + (WIDTH - 150) / 8
         Gy = HEIGHT/2
-        size = 250
         P = player(pygame.image.load(os.path.join('Assets', 'Bottom-Blue.png')), pygame.image.load(os.path.join('Assets', 'Upper-Blue.png')), Gx, Gy, size)
         Playeri.append(P)
     Input = {"Keyboard" : None , 0:None , 1:None , 2:None , 3:None , 4:None}
@@ -82,4 +81,7 @@ def lobby (WIN,WIDTH,HEIGHT,FPS) :
             if Input[i] != None :
                 if Playeri[Input[i]].exit_update() :
                     eject_control(i)
+        for i in range (4) :
+            if Playeri[i].Selected :
+                Playeri[i].gameplay_update()
         draw_window()

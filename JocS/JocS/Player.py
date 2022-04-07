@@ -1,4 +1,5 @@
 import pygame
+from Geometrie import get_angle
 
 
 class control :
@@ -27,7 +28,7 @@ class control :
             #Coordonatele mousului
             self.Mouse = [0,0]
             #BUTOANELE DE PE MOUSE 0 LeftClick 1 Middlemouse button 2 Right click
-            self.MouseButtons = [False , False , False]
+            self.MouseButtons = [False , False , False ]
 
 
 class player:
@@ -55,7 +56,7 @@ class player:
         self.Control = control (self.Source)
     #Se verifica ce schimbari cauzeaza pentru player eventul
     def update_input (self , event) :
-        if self.Source !="Keyboard":
+        if self.Source !="Keyboard" and self.Source != "Unknown":
             #Pentru Controller
             if event.type == pygame.JOYBUTTONDOWN :
                 if event.button == self.Control.NR_LB :
@@ -79,27 +80,25 @@ class player:
                     else :
                         self.Control.RT = True
                 elif event.axis == self.Control.NR_AX_LJ[0] :
-                    self.Control.LJ[0] = event.value
+                    self.Control.LJ[0] = round(event.value,2)
                 elif event.axis == self.Control.NR_AX_LJ[1] :
-                    self.Control.LJ[1] = event.value 
+                    self.Control.LJ[1] = round(event.value,2)
                 elif event.axis == self.Control.NR_AX_RJ[0] :
-                    self.Control.RJ[0] = event.value 
+                    self.Control.RJ[0] = round(event.value,2)
                 elif event.axis == self.Control.NR_AX_RJ[1] :
-                    self.Control.RJ[1] = event.value 
-        else :
-            #Petreu Tastatura si mouse
-            try :
-                if event.type == pygame.KEYDOWN :
-                    self.Control.taste[event.key] = True
-                elif event.type == pygame.KEYUP :
-                    self.Control.tatse[event.key] = False 
-            except :
-                if event.type == pygame.MOUSEMOTION :
-                    self.Control.Mouse = event.pos
-                elif event.type == pygame.MOUSEBUTTONDOWN :
-                    self.Control.MouseButtons[event.button] = True
-                elif event.type == pygame.MOUSEBUTTONUP :
-                    self.Control.MouseButtons[event.button] = False
+                    self.Control.RJ[1] = round(event.value,2)
+        elif self.Source != "Unknown" :
+            #Pentru Tastatura si mouse
+            if event.type == pygame.KEYDOWN :
+                self.Control.taste[event.key] = True
+            elif event.type == pygame.KEYUP :
+                self.Control.taste[event.key] = False 
+            elif event.type == pygame.MOUSEMOTION :
+                self.Control.Mouse = event.pos
+            elif event.type == pygame.MOUSEBUTTONDOWN :
+                self.Control.MouseButtons[event.button-1] = True
+            elif event.type == pygame.MOUSEBUTTONUP :
+                self.Control.MouseButtons[event.button-1] = False
     #Functie folosita doar in lobby
     def exit_update (self) :
         if self.Exit_cooldown == 0 and self.Control.LB == True and self.configuring == False :
@@ -111,13 +110,23 @@ class player:
         elif self.Exit_cooldown > 0 :
             self.Exit_cooldown = 0
         return 0
+    #Functie pentru actualizarea playerului in timpul gameplayului
+    def gameplay_update (self) :
+        if self.Source != "Unknown" and self.Source != "Keyboard" :
+            if  abs(self.Control.LJ[0]) > 0.1 or abs(self.Control.LJ[1]) > 0.1 :
+                self.Bottom_angle = get_angle(self.Control.LJ)
+            if abs(self.Control.RJ[0]) > 0.1 or abs(self.Control.RJ[1]) > 0.1 :
+                self.Upper_angle = get_angle(self.Control.RJ)
+
     #Afisarea playerului pe ecran la coordonatele lui 
     def afisare (self,WIN) :
         BIMAGE = pygame.transform.rotate(self.Bottom_image,self.Bottom_angle)
         x = self.GX - BIMAGE.get_width()/2
         y = self.GY - BIMAGE.get_height()/2
         WIN.blit(BIMAGE,(x,y))
+        del BIMAGE
         UIMAGE = pygame.transform.rotate(self.Upper_image,self.Upper_angle)
         x = self.GX - UIMAGE.get_width()/2
         y = self.GY - UIMAGE.get_height()/2
         WIN.blit(UIMAGE,(x,y))
+        del UIMAGE
