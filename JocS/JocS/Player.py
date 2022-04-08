@@ -56,7 +56,7 @@ class player:
         self.Control = control (self.Source)
     #Se verifica ce schimbari cauzeaza pentru player eventul
     def update_input (self , event) :
-        if self.Source !="Keyboard" and self.Source != "Unknown":
+        if self.Source !="Keyboard" :
             #Pentru Controller
             if event.type == pygame.JOYBUTTONDOWN :
                 if event.button == self.Control.NR_LB :
@@ -87,7 +87,7 @@ class player:
                     self.Control.RJ[0] = round(event.value,2)
                 elif event.axis == self.Control.NR_AX_RJ[1] :
                     self.Control.RJ[1] = round(event.value,2)
-        elif self.Source != "Unknown" :
+        else :
             #Pentru Tastatura si mouse
             if event.type == pygame.KEYDOWN :
                 self.Control.taste[event.key] = True
@@ -112,12 +112,11 @@ class player:
         return 0
     #Functie pentru actualizarea playerului in timpul gameplayului
     def gameplay_update (self) :
-        if self.Source != "Unknown" and self.Source != "Keyboard" :
+        if self.Source != "Keyboard" :
             if  abs(self.Control.LJ[0]) > 0.1 or abs(self.Control.LJ[1]) > 0.1 :
                 self.Bottom_angle = get_angle(self.Control.LJ)
             if abs(self.Control.RJ[0]) > 0.1 or abs(self.Control.RJ[1]) > 0.1 :
                 self.Upper_angle = get_angle(self.Control.RJ)
-
     #Afisarea playerului pe ecran la coordonatele lui 
     def afisare (self,WIN) :
         BIMAGE = pygame.transform.rotate(self.Bottom_image,self.Bottom_angle)

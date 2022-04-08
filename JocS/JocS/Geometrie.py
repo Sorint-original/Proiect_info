@@ -15,6 +15,5 @@ def get_angle (v1) :
     #returneaza unghiul in grade
     if v1[1] > 0 :
         angle = -angle
-    print(round(math.degrees(angle)))
     return math.degrees(angle)
     
