@@ -1,41 +1,38 @@
 import pygame
+from Geometrie import get_angle
 
 
 class control :
     def __init__ (self,source) :
+        #controalele pentru cei cu controller
         if source != "Keyboard" and source != "Unknown" :
-            #Valorile pe care le vom folosi pentru butoane
-            self.NR_LB = 4
-            self.NR_RB = 5
-            #Valorile pe care le vom folosi pentru axe [ AXA X , AXA Y ]
-            self.NR_AX_LJ = [0,1]
-            self.NR_AX_RJ = [2,3]
-            self.NR_AXLT = 4
-            self.NR_AXRT = 5
-            #Butoanele apasate de controller
-            self.LB = False
-            self.RB = False
-            #Trigarele sunt axe dar pentru joc le vom trata ca butoane
-            self.LT = False
-            self.RT = False
-            #Valorile de la axele joystickurilor [ AXA X , AXA Y ]
-            self.LJ = [0,0]
-            self.RJ = [0,0]
+            #In orientare primul vector este de la LEFTJOYSTICK pentru miscare , al doilea vector e de la RIGHT JOYSTICK pentru tintire
+            self.orientation = [[0,0],[0,0]]
+            #In vectorul butoane  0 - Left bumper 1 - Right bumper 2 - left triger 3 - right triger 
+            self.action = [False,False,-1,-1]
+            #butoanele pot modifica doar in vectorul de action dar axele pot modifica in ambele ( o - modifica in orientation , a - modifica in action )
+            self.input = { "axes":{ 0:["o",0], 1:["o",1] , 2:["o",2], 3:["o",3] , 4:["a",2], 5:["a",3] } , "buttons":{4:0 , 5:1} }
+            #ce input modifica ce valori din orientation si action, pozitia 4 si 5 din axes modifica 2 si 3 din actions
+            self.set = {"axes":[0, 1, 2, 3, 4, 5] , "buttons":[4, 5] }
+        #controalele pentru cel care joaca cu keyboard si mous
         elif source != "Unknown" :
-            #Tastele folosite de player la tastatura
-            self.taste = {pygame.K_w:False, pygame.K_a:False, pygame.K_s:False, pygame.K_d:False, pygame.K_q:False, pygame.K_e:False}
             #Coordonatele mousului
             self.Mouse = [0,0]
             #BUTOANELE DE PE MOUSE 0 LeftClick 1 Middlemouse button 2 Right click
-            self.MouseButtons = [False , False , False]
+            self.MouseButtons = [False , False , False ]
+            #controalele de la tastatura care pot fi modificate 
+            # 0 - sus , 1 - stanga , 2 - jos , 3 - dreapta , 4 - abilitate activa , 5 - abilitate pasiva
+            self.action =[False, False, False, False, False, False]
+            #ce modifica anumite taste 
+            self.input = {pygame.K_w:0 , pygame.K_a:1 , pygame.K_s:2 , pygame.K_d:3 , pygame.K_q:4 , pygame.K_e:5}
+            #de ce tasta e modificata fiecare valoare din action
+            self.set = [pygame.K_w , pygame.K_a , pygame.K_s , pygame.K_d , pygame.K_q , pygame.K_e]
+
 
 
 class player:
     #Initializarea obiectului
-    def __init__(self,BIMG,UIMG):
-        #The images for the character
-        self.Bottom_image = BIMG
-        self.Upper_image = UIMG
+    def __init__(self,BIMG,UIMG,Gx,Gy,size):
         # The Variables used for the lobby
         self.Selected = False
         self.Source = "Unknown"
@@ -44,64 +41,90 @@ class player:
         self.configuring = False
         #Controalele pentru pleyer (toate butoanele apasate,configurarea pentru controlar)
         self.Control = control(self.Source)
+        #Variabile pentru afisare 
+        self.size = size
+        self.Bottom_image = pygame.transform.scale(BIMG,(9*self.size/8, 7*self.size/8))
+        self.Upper_image = pygame.transform.scale(UIMG,(self.size,self.size))
+        self.Upper_angle = 90
+        self.Bottom_angle = 90
+        self.GX = Gx
+        self.GY = Gy
+
     #Functie de resetat controalele pleyerului
     def reset_control (self) :
         self.Control = control (self.Source)
     #Se verifica ce schimbari cauzeaza pentru player eventul
     def update_input (self , event) :
-        if self.Source !="Keyboard":
+        if self.Source !="Keyboard" :
             #Pentru Controller
             if event.type == pygame.JOYBUTTONDOWN :
-                if event.button == self.Control.NR_LB :
-                    self.Control.LB = True
-                elif event.button == slef.Control.NR_RB :
-                    self.Control.RB = True
+                try:
+                    if self.Control.input["buttons"][event.button] != None :
+                        self.Control.action[self.Control.input["buttons"][event.button]] = True
+                except :
+                    self.Control.input["buttons"][event.button] = None
             elif event.type == pygame.JOYBUTTONUP :
-                if event.button == self.Control.NR_LB :
-                    self.Control.LB = False
-                elif event.button == slef.Control.NR_RB :
-                    self.Control.RB = False
+                try:
+                    if self.Control.input["buttons"][event.button] != None :
+                        self.Control.action[self.Control.input["buttons"][event.button]] = False
+                except :
+                    self.Control.input["buttons"][event.button] = None
             elif event.type == pygame.JOYAXISMOTION :
-                if event.axis == self.Control.NR_AXLT :
-                    if event.value == -1 :
-                        self.Control.LT = False
-                    else :
-                        self.Control.LT = True
-                elif event.axis == self.Control.NR_AXRT :
-                    if event.value == -1 :
-                        self.Control.RT = False
-                    else :
-                        self.Control.RT = True
-                elif event.axis == self.Control.NR_AX_LJ[0] :
-                    self.Control.LJ[0] = event.value
-                elif event.axis == self.Control.NR_AX_LJ[1] :
-                    self.Control.LJ[1] = event.value 
-                elif event.axis == self.Control.NR_AX_RJ[0] :
-                    self.Control.RJ[0] = event.value 
-                elif event.axis == self.Control.NR_AX_RJ[1] :
-                    self.Control.RJ[1] = event.value 
+                try :
+                    if self.Control.input["axes"][event.axis][0] != None :
+                        if self.Control.input["axes"][event.axis][0] == "o" :
+                            self.Control.orientation[int(self.Control.input["axes"][event.axis][1]/2)][self.Control.input["axes"][event.axis][1] % 2] = event.value
+                        else :
+                            self.Control.action[self.Control.input["axes"][event.axis][1]] = event.value
+                except :
+                    self.Control.input["axes"][event.axis] = [None , None]
         else :
-            #Petreu Tastatura si mouse
-            try :
-                if event.type == pygame.KEYDOWN :
-                    self.Control.taste[event.key] = True
-                elif event.type == pygame.KEYUP :
-                    self.Control.tatse[event.key] = False 
-            except :
-                if event.type == pygame.MOUSEMOTION :
-                    self.Control.Mouse = event.pos
-                elif event.type == pygame.MOUSEBUTTONDOWN :
-                    self.Control.MouseButtons[event.button] = True
-                elif event.type == pygame.MOUSEBUTTONUP :
-                    self.Control.MouseButtons[event.button] = False
+            #Pentru Tastatura si mouse
+            if event.type == pygame.KEYDOWN :
+                try :
+                    if self.Control.input[event.key] != None :
+                        self.Control.action[self.Control.input[event.key]] = True
+                except :
+                    self.Control.input[event.key] = None
+            elif event.type == pygame.KEYUP :
+                try :
+                    if self.Control.input[event.key] != None :
+                        self.Control.action[self.Control.input[event.key]] = False
+                except :
+                    self.Control.input[event.key] = None
+            elif event.type == pygame.MOUSEMOTION :
+                self.Control.Mouse = event.pos
+            elif event.type == pygame.MOUSEBUTTONDOWN :
+                self.Control.MouseButtons[event.button-1] = True
+            elif event.type == pygame.MOUSEBUTTONUP :
+                self.Control.MouseButtons[event.button-1] = False
     #Functie folosita doar in lobby
     def exit_update (self) :
-        if self.Exit_cooldown == 0 and self.Control.LB == True and self.configuring == False :
+        if self.Exit_cooldown == 0 and self.Control.action[0] == True and self.configuring == False :
             self.Exit_cooldown = 120 
-        if self.Exit_cooldown > 0 and self.Control.LB == True :
+        if self.Exit_cooldown > 0 and self.Control.action[0] == True :
             self.Exit_cooldown -= 1
             if self.Exit_cooldown == 0 and self.configuring == False:
                 return 1
         elif self.Exit_cooldown > 0 :
             self.Exit_cooldown = 0
         return 0
+    #Functie pentru actualizarea playerului in timpul gameplayului
+    def gameplay_update (self) :
+        if self.Source != "Keyboard" :
+            if  abs(self.Control.orientation[0][0]) > 0.1 or abs(self.Control.orientation[0][1]) > 0.1 :
+                self.Bottom_angle = get_angle(self.Control.orientation[0])
+            if abs(self.Control.orientation[1][0]) > 0.1 or abs(self.Control.orientation[1][1]) > 0.1 :
+                self.Upper_angle = get_angle(self.Control.orientation[1])
+    #Afisarea playerului pe ecran la coordonatele lui 
+    def afisare (self,WIN) :
+        BIMAGE = pygame.transform.rotate(self.Bottom_image,self.Bottom_angle)
+        x = self.GX - BIMAGE.get_width()/2
+        y = self.GY - BIMAGE.get_height()/2
+        WIN.blit(BIMAGE,(x,y))
+        del BIMAGE
+        UIMAGE = pygame.transform.rotate(self.Upper_image,self.Upper_angle)
+        x = self.GX - UIMAGE.get_width()/2
+        y = self.GY - UIMAGE.get_height()/2
+        WIN.blit(UIMAGE,(x,y))
+        del UIMAGE

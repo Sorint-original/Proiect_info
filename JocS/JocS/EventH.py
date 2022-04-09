@@ -8,6 +8,7 @@ def exit(event) :
         pygame.quit()
         os._exit(0)
 
+#Nu functioneaza cum ar trebui 
 def controller_verify(event,joysticks) :
     if event.type == pygame.JOYDEVICEADDED :
         joysticks = [pygame.joystick.Joystick(i) for i in range(pygame.joystick.get_count())]

@@ -9,8 +9,14 @@ def lobby (WIN,WIDTH,HEIGHT,FPS) :
     pygame.joystick.init()
     joysticks = [pygame.joystick.Joystick(i) for i in range(pygame.joystick.get_count())]
     Playeri = []
+    #initializarea playerilor
+    Botimg = ['Bottom-Blue.png','Bottom-Green.png','Bottom-Yellow.png','Bottom-Red.png']
+    Upimg = ['Upper-Blue.png','Upper-Green.png','Upper-Yellow.png','Upper-Red.png']
+    size = 250
     for i in range (4) :
-        P = player(pygame.image.load(os.path.join('Assets', 'Bottom-Blue.png')),pygame.image.load(os.path.join('Assets', 'Bottom-Blue.png')))
+        Gx = 30 + i * ((WIDTH - 150) / 4 + 30) + (WIDTH - 150) / 8
+        Gy = HEIGHT/2
+        P = player(pygame.image.load(os.path.join('Assets', Botimg[i])), pygame.image.load(os.path.join('Assets', Upimg[i])), Gx, Gy, size)
         Playeri.append(P)
     Input = {"Keyboard" : None , 0:None , 1:None , 2:None , 3:None , 4:None}
 
@@ -39,11 +45,13 @@ def lobby (WIN,WIDTH,HEIGHT,FPS) :
             x = 30 + i * ((WIDTH - 150) / 4 + 30)
             y = HEIGHT/3
             width = (WIDTH - 150)/4
-            if Playeri[i].Selected == False :
+            if Playeri[i].Ready == False :
                 color = [200,200,200]
             else :
                 color = [0,204,0]
             pygame.draw.rect(WIN, color, pygame.Rect(x, y, width, y))
+            if Playeri[i].Selected == True :
+                Playeri[i].afisare(WIN)
         pygame.display.update()
 
     #The loop of the Lobby
@@ -75,4 +83,7 @@ def lobby (WIN,WIDTH,HEIGHT,FPS) :
             if Input[i] != None :
                 if Playeri[Input[i]].exit_update() :
                     eject_control(i)
+        for i in range (4) :
+            if Playeri[i].Selected :
+                Playeri[i].gameplay_update()
         draw_window()
