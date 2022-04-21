@@ -88,10 +88,12 @@ class Button:
         self.enabled = StrToBool(str(list[1]))
         self.visible = StrToBool(str(list[2]))
         self.textVisible = StrToBool(str(list[3]))
-        self.x = int(list[4])
-        self.y = int(list[5])
-        self.width = int(list[6])
-        self.height = int(list[7])
+        w = JocS.WIDTH
+        h = JocS.HEIGHT
+        self.x = eval(str(list[4]))
+        self.y = eval(str(list[5]))
+        self.width = eval(str(list[6]))
+        self.height = eval(str(list[7]))
         self.color = tuple(map(int, list[8].split(',')))
         self.hovercolor = tuple(map(int, list[9].split(',')))
         self.onPress = dispatcher[str(list[10])]
