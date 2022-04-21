@@ -1,0 +1,1 @@
+MainMenu_Button True True True 10 10 100 100 100,100,100 0,0,0 Button_Load Button_Hover_Enable Button_Hover_Disable Main~Menu 16 255,255,0 255,255,255 False MainMenu

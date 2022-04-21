@@ -1,10 +1,9 @@
 import pygame
+import os
 
 import JocS
 
 pygame.display.set_caption("The perfect non-bugged game")
-
-ButtonVec = [];
 
 default_path = "buttons/"
 
@@ -20,25 +19,22 @@ def StrToBool(string):
 
 #Button Functions
 
-def Button_Press_Quit(self):
+def Button_Press_Quit(button):
     JocS.running = False
 
-def Button_Hover_Enable(self):
-    self.Hovering = True
+def Button_Hover_Enable(button):
+    button.Hovering = True
 
-def Button_Hover_Disable(self):
-    self.Hovering = False
+def Button_Hover_Disable(button):
+    button.Hovering = False
 
-def Button_Load(self):
-    global ButtonVec
-    ButtonVec = [];
-
+def Button_Load(argument, vector):
+    vector.clear()
     string = None
     try:
-        string = self.arg
+        string = argument.arg
     except:
-        string = self
-
+        string = argument
     global currentScene
     currentScene = string
 
@@ -48,9 +44,32 @@ def Button_Load(self):
             wordList = elem.split()
             wordList[13] = wordList[13].replace("~", " ")
             newButton = Button(wordList)
-            ButtonVec.append(newButton)
+            vector.append(newButton)
 
-def Button_No(self):
+def Button_Load_Bidimensional(argument, vector):
+    print(vector[0][0]) #so it doesn't crash :P
+    vector.clear()
+    string = None
+    try:
+        string = argument.arg
+    except:
+        string = argument
+    global currentScene
+    currentScene = string
+
+    for filename in os.listdir(default_path + string):
+        with open(default_path + string + '/' + filename) as f:
+            newVec = []
+            arr = list(f)
+            for elem in arr:
+                wordList = elem.split()
+                wordList[13] = wordList[13].replace("~", " ")
+                newButton = Button(wordList)
+                newVec.append(newButton)
+        vector.append(newVec)
+        print(vector)
+
+def Button_No(button):
     print(None)
 
 dispatcher = {
@@ -58,6 +77,7 @@ dispatcher = {
     'Button_Hover_Enable' : Button_Hover_Enable, 
     'Button_Hover_Disable' : Button_Hover_Disable, 
     'Button_Load' : Button_Load, 
+    'Button_Load_Bidimensional' : Button_Load_Bidimensional,
     'Button_No' : Button_No
     }
 
@@ -107,19 +127,44 @@ class Button:
         if self.textVisible == True:
             JocS.WIN.blit(text, textRect)
 
-def checkButtonClick(x, y):
-    for buttonArg in ButtonVec:
-        if x >= buttonArg.x and x <= buttonArg.x + buttonArg.width and y >= buttonArg.y and y <= buttonArg.y + buttonArg.height and buttonArg.enabled:
-            buttonArg.onPress(buttonArg)
+def checkButtonClick(x, y, arg, bidimensional = [[]]):
+    try:
+        for buttonArg in arg:
+            if x >= buttonArg.x and x <= buttonArg.x + buttonArg.width and y >= buttonArg.y and y <= buttonArg.y + buttonArg.height and buttonArg.enabled:
+                try:
+                    try:
+                        buttonArg.onPress(buttonArg, arg)
+                        break
+                    except:
+                        buttonArg.onPress(buttonArg, bidimensional)
+                        break
+                except:
+                    buttonArg.onPress(buttonArg)
+                    break
+    except:
+        if x >= arg.x and x <= arg.x + arg.width and y >= arg.y and y <= arg.y + arg.height and arg.enabled:
+                arg.onPress(arg)
 
-def checkButtonHover(x, y):
-    for buttonArg in ButtonVec:
-        if x >= buttonArg.x and x <= buttonArg.x + buttonArg.width and y >= buttonArg.y and y <= buttonArg.y + buttonArg.height and buttonArg.enabled:
-            buttonArg.onHover(buttonArg)
+def checkButtonHover(x, y, arg, bidimensional = [[]]):
+    try:
+        for buttonArg in arg:
+            if x >= buttonArg.x and x <= buttonArg.x + buttonArg.width and y >= buttonArg.y and y <= buttonArg.y + buttonArg.height and buttonArg.enabled:
+                buttonArg.onHover(buttonArg)
+                break
+            else: 
+                if buttonArg.Hovering == True:
+                    buttonArg.onHoverExit(buttonArg)
+                    break
+    except:
+        if x >= arg.x and x <= arg.x + arg.width and y >= arg.y and y <= arg.y + arg.height and arg.enabled:
+                arg.onHover(arg)
         else: 
-            if buttonArg.Hovering == True:
-                buttonArg.onHoverExit(buttonArg)
+            if arg.Hovering == True:
+                arg.onHoverExit(arg)
 
-def displayButtons(screen):
-    for buttonArg in ButtonVec:
-        buttonArg.drawButton(screen)
+def displayButtons(screen, arg):
+    try:
+        for buttonArg in arg:
+            buttonArg.drawButton(screen)
+    except:
+        arg.drawButton(screen)
