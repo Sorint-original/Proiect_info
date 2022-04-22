@@ -3,6 +3,7 @@ import os
 
 from EventH import exit , controller_verify
 from Player import player
+import ButtonClass
 
 def lobby (WIN,WIDTH,HEIGHT,FPS) :
     pygame.init()
@@ -19,7 +20,14 @@ def lobby (WIN,WIDTH,HEIGHT,FPS) :
         P = player(pygame.image.load(os.path.join('Assets', Botimg[i])), pygame.image.load(os.path.join('Assets', Upimg[i])), Gx, Gy, size)
         Playeri.append(P)
     Input = {"Keyboard" : None , 0:None , 1:None , 2:None , 3:None , 4:None}
-
+    #Initializarea butoanelor
+    BUTconfig=[]
+    ButtonClass.Button_Load("Lobby\config",BUTconfig)
+    buttontxt = ["Lobby\BP0","Lobby\BP1","Lobby\BP2","Lobby\BP3"]
+    BUTplayers = [[],[],[],[]]
+    for i in range(4) :
+        ButtonClass.Button_Load(buttontxt[i],BUTplayers[i])
+    
     #INTRODUCEREA UNUI Player
     def set_control(control) :
         if Input[control] == None :
@@ -29,6 +37,9 @@ def lobby (WIN,WIDTH,HEIGHT,FPS) :
                     Playeri[i].Source = control
                     Playeri[i].reset_control()
                     Input [control] = i 
+                    BUTconfig[i].enabled = True
+                    BUTconfig[i].visible = True
+                    BUTconfig[i].textVizible = True
                     break
 
     #SCOATEREA UNUI Player 
@@ -36,6 +47,9 @@ def lobby (WIN,WIDTH,HEIGHT,FPS) :
         if Input[control] != None :
             Playeri[Input[control]].Selected = False
             Playeri[Input[control]].Source = "Unknown"
+            BUTconfig[Input[control]].enabled = False
+            BUTconfig[Input[control]].visible = False
+            BUTconfig[Input[control]].textVizible = False
             Input[control] = None
 
     #Desenarea ferestrei

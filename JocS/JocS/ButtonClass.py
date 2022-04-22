@@ -1,13 +1,18 @@
 import pygame
 import os
 
-import JocS
 
 pygame.display.set_caption("The perfect non-bugged game")
 
 default_path = "buttons/"
 
 currentScene = "MainMenu"
+# Acum avem global latimea si inaltimea ecranului
+pygame.init()
+screen = pygame.display.Info()
+w = screen.current_w
+h = screen.current_h
+del screen
 
 def StrToBool(string):
     if string == "True":
@@ -19,8 +24,8 @@ def StrToBool(string):
 
 #Button Functions
 
-def Button_Press_Quit(button):
-    JocS.running = False
+#def Button_Press_Quit(button):
+    #JocS.running = False
 
 def Button_Hover_Enable(button):
     button.Hovering = True
@@ -73,7 +78,7 @@ def Button_No(button):
     print(None)
 
 dispatcher = {
-    'Button_Press_Quit' : Button_Press_Quit, 
+    #'Button_Press_Quit' : Button_Press_Quit, 
     'Button_Hover_Enable' : Button_Hover_Enable, 
     'Button_Hover_Disable' : Button_Hover_Disable, 
     'Button_Load' : Button_Load, 
@@ -88,8 +93,6 @@ class Button:
         self.enabled = StrToBool(str(list[1]))
         self.visible = StrToBool(str(list[2]))
         self.textVisible = StrToBool(str(list[3]))
-        w = JocS.WIDTH
-        h = JocS.HEIGHT
         self.x = eval(str(list[4]))
         self.y = eval(str(list[5]))
         self.width = eval(str(list[6]))
@@ -127,7 +130,7 @@ class Button:
         textRect.center = (self.x + self.width // 2, self.y + self.height // 2)
 
         if self.textVisible == True:
-            JocS.WIN.blit(text, textRect)
+            screen.blit(text, textRect)
 
 def checkButtonClick(x, y, arg, bidimensional = [[]]):
     try:

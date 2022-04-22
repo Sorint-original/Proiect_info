@@ -21,6 +21,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="ButtonClass.py" />
     <Compile Include="EventH.py">
       <SubType>Code</SubType>
     </Compile>

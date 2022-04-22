@@ -1,0 +1,3 @@
+W1P1 False False False 30+1*((w-150)/4+30) (h*2/3)+20 (w-150)/4 h/10 200,200,200 0,204,0 Button_No Button_Hover_Enable Button_Hover_Disable SMG 16 0,0,0 0,0,0 False
+W2P1 False False False 30+1*((w-150)/4+30) (h*2/3)+40+h/10 (w-150)/4 h/10 200,200,200 0,204,0 Button_No Button_Hover_Enable Button_Hover_Disable Roket~Luncher 16 0,0,0 0,0,0 False
+Ready False False False 30+1*((w-150)/4+30) (h*2/3)+60+2*h/10 (w-150)/4 h/10 200,200,200 0,204,0 Button_No Button_Hover_Enable Button_Hover_Disable Ready 16 0,0,0 0,0,0 False
