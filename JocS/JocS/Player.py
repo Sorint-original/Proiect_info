@@ -18,8 +18,8 @@ class control :
         elif source != "Unknown" :
             #Coordonatele mousului
             self.Mouse = [0,0]
-            #BUTOANELE DE PE MOUSE 0 LeftClick 1 Middlemouse button 2 Right click
-            self.MouseButtons = [False , False , False ]
+            #BUTOANELE DE PE MOUSE 0 LeftClick 1 Middlemouse button 2 Right click , restul sunt in caz daca are mai multe butoane pe mous ca sa nu dea crash , nu le folosim
+            self.MouseButtons = [False , False , False , False , False , False , False , False , False , False]
             #controalele de la tastatura care pot fi modificate 
             # 0 - sus , 1 - stanga , 2 - jos , 3 - dreapta , 4 - abilitate activa , 5 - abilitate pasiva
             self.action =[False, False, False, False, False, False]
@@ -39,6 +39,7 @@ class player:
         self.Exit_cooldown = 0
         self.Ready = False
         self.configuring = False
+        self.Button = 0
         #Controalele pentru pleyer (toate butoanele apasate,configurarea pentru controlar)
         self.Control = control(self.Source)
         #Variabile pentru afisare 

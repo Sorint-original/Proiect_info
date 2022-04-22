@@ -5,6 +5,14 @@ from EventH import exit , controller_verify
 from Player import player
 import ButtonClass
 
+#Initializarea butoanelor la inceput astfel for fi gata de fiecare data cand se intra in lobby
+BUTconfig=[]
+ButtonClass.Button_Load("Lobby\config",BUTconfig)
+buttontxt = ["Lobby\BP0","Lobby\BP1","Lobby\BP2","Lobby\BP3"]
+BUTplayers = [[],[],[],[]]
+for i in range(4) :
+    ButtonClass.Button_Load(buttontxt[i],BUTplayers[i])
+
 def lobby (WIN,WIDTH,HEIGHT,FPS) :
     pygame.init()
     pygame.joystick.init()
@@ -13,20 +21,15 @@ def lobby (WIN,WIDTH,HEIGHT,FPS) :
     #initializarea playerilor
     Botimg = ['Bottom-Blue.png','Bottom-Green.png','Bottom-Yellow.png','Bottom-Red.png']
     Upimg = ['Upper-Blue.png','Upper-Green.png','Upper-Yellow.png','Upper-Red.png']
-    size = 250
+    #Size-ul reprezinta marimea playerului pe ecran poate fi modificata oricand 
+    size = min(HEIGHT/3,(WIDTH - 150)/4) -50
     for i in range (4) :
         Gx = 30 + i * ((WIDTH - 150) / 4 + 30) + (WIDTH - 150) / 8
         Gy = HEIGHT/2
         P = player(pygame.image.load(os.path.join('Assets', Botimg[i])), pygame.image.load(os.path.join('Assets', Upimg[i])), Gx, Gy, size)
         Playeri.append(P)
     Input = {"Keyboard" : None , 0:None , 1:None , 2:None , 3:None , 4:None}
-    #Initializarea butoanelor
-    BUTconfig=[]
-    ButtonClass.Button_Load("Lobby\config",BUTconfig)
-    buttontxt = ["Lobby\BP0","Lobby\BP1","Lobby\BP2","Lobby\BP3"]
-    BUTplayers = [[],[],[],[]]
-    for i in range(4) :
-        ButtonClass.Button_Load(buttontxt[i],BUTplayers[i])
+   
     
     #INTRODUCEREA UNUI Player
     def set_control(control) :
@@ -38,8 +41,8 @@ def lobby (WIN,WIDTH,HEIGHT,FPS) :
                     Playeri[i].reset_control()
                     Input [control] = i 
                     BUTconfig[i].enabled = True
-                    BUTconfig[i].visible = True
-                    BUTconfig[i].textVizible = True
+                    Playeri[i].Button = 0
+                    BUTplayers[i][Playeri[i].Button].Hovering = True
                     break
 
     #SCOATEREA UNUI Player 
@@ -48,8 +51,6 @@ def lobby (WIN,WIDTH,HEIGHT,FPS) :
             Playeri[Input[control]].Selected = False
             Playeri[Input[control]].Source = "Unknown"
             BUTconfig[Input[control]].enabled = False
-            BUTconfig[Input[control]].visible = False
-            BUTconfig[Input[control]].textVizible = False
             Input[control] = None
 
     #Desenarea ferestrei
@@ -66,6 +67,10 @@ def lobby (WIN,WIDTH,HEIGHT,FPS) :
             pygame.draw.rect(WIN, color, pygame.Rect(x, y, width, y))
             if Playeri[i].Selected == True :
                 Playeri[i].afisare(WIN)
+                #desenarea butoanelor playerilor selectati
+                ButtonClass.displayButtons(WIN, BUTconfig[i])
+                ButtonClass.displayButtons(WIN, BUTplayers[i])
+
         pygame.display.update()
 
     #The loop of the Lobby
@@ -86,6 +91,23 @@ def lobby (WIN,WIDTH,HEIGHT,FPS) :
             except :
                 if Input["Keyboard"] != None :
                     Playeri[Input["Keyboard"]].update_input(event)
+                    #Schimbarea butoanelor pentru tastatura
+                    if event.type == pygame.KEYDOWN :
+                        if event.key == pygame.K_w :
+                            BUTplayers[Input["Keyboard"]][Playeri[Input["Keyboard"]].Button].Hovering = False
+                            if Playeri[Input["Keyboard"]].Button != 0 :
+                                Playeri[Input["Keyboard"]].Button = Playeri[Input["Keyboard"]].Button -1
+                            else :
+                                Playeri[Input["Keyboard"]].Button = 2
+                            BUTplayers[Input["Keyboard"]][Playeri[Input["Keyboard"]].Button].Hovering = True
+                        if event.key == pygame.K_s :
+                            BUTplayers[Input["Keyboard"]][Playeri[Input["Keyboard"]].Button].Hovering = False
+                            if Playeri[Input["Keyboard"]].Button != 2 :
+                                Playeri[Input["Keyboard"]].Button = Playeri[Input["Keyboard"]].Button +1
+                            else :
+                                Playeri[Input["Keyboard"]].Button = 0
+                            BUTplayers[Input["Keyboard"]][Playeri[Input["Keyboard"]].Button].Hovering = True
+
                 if event.type == pygame.KEYDOWN :
                     if event.key == pygame.K_SPACE :
                         set_control("Keyboard")
