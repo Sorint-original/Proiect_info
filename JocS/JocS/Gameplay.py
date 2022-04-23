@@ -18,6 +18,7 @@ def gameplay (WIN,WIDTH,HEIGHT,FPS,Input,Playeri) :
             Playeri[i].Health = 1000
             Playeri[i].GX = poziti[alcat]
             Playeri[i].GY = poziti[alcat+1]
+            Playeri[i].change_size(150)
             alcat = alcat + 2
     #stabilirea dimensiunilor pentru afisarea gameplayului
     h = HEIGHT - 100

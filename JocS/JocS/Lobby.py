@@ -183,5 +183,6 @@ def lobby (WIN,WIDTH,HEIGHT,FPS) :
                 Playeri[i].Ready = False
                 Playeri[i].Gx = 30 + i * ((WIDTH - 150) / 4 + 30) + (WIDTH - 150) / 8
                 Playeri[i].Gy = HEIGHT/2
+                Playeri[i].change_size(size)
 
         draw_window()
