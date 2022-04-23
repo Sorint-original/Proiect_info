@@ -13,7 +13,7 @@ def Menu(screen, FPS):
 
     ButtonVec = []
 
-    ButtonClass.Button_Load(ButtonClass.currentScene, ButtonVec) #load MainMenu for first time oppening
+    ButtonClass.Button_Load("MainMenu", ButtonVec) #load MainMenu for first time oppening
 
     clock = pygame.time.Clock()
 
@@ -30,7 +30,7 @@ def Menu(screen, FPS):
                 if event.button == 1:
                      ButtonClass.checkButtonClick(event.pos[0], event.pos[1], ButtonVec)
 
-            elif event.type == pygame.QUIT or event.type == ButtonClass.STOP_EVENT:
+            elif event.type == pygame.QUIT:
                 pygame.quit()
                 os._exit(0)
                

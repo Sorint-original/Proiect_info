@@ -7,8 +7,6 @@ w = screen.current_w
 h = screen.current_h
 del screen
 
-STOP_EVENT = pygame.USEREVENT + 1 #Custom event for quitting
-
 #Things for text font
 vw = 0.01 * w
 vh = 0.01 * h
