@@ -1,18 +1,22 @@
 import pygame
 import os
 
-
-pygame.display.set_caption("The perfect non-bugged game")
-
-default_path = "buttons/"
-
-currentScene = "MainMenu"
-# Acum avem global latimea si inaltimea ecranului
 pygame.init()
 screen = pygame.display.Info()
 w = screen.current_w
 h = screen.current_h
 del screen
+
+STOP_EVENT = pygame.USEREVENT + 1 #Custom event for quitting
+
+#Things for text font
+vw = 0.01 * w
+vh = 0.01 * h
+vr = min(vw, vh)
+
+default_path = "buttons/"
+
+currentScene = "MainMenu"
 
 def StrToBool(string):
     if string == "True":
@@ -24,8 +28,9 @@ def StrToBool(string):
 
 #Button Functions
 
-#def Button_Press_Quit(button):
-    #JocS.running = False
+def Button_Press_Quit(button):
+    pygame.quit()
+    os._exit(0)
 
 def Button_Hover_Enable(button):
     button.Hovering = True
@@ -51,45 +56,25 @@ def Button_Load(argument, vector):
             newButton = Button(wordList)
             vector.append(newButton)
 
-def Button_Load_Bidimensional(argument, vector):
-    print(vector[0][0]) #so it doesn't crash :P
-    vector.clear()
-    string = None
-    try:
-        string = argument.arg
-    except:
-        string = argument
-    global currentScene
-    currentScene = string
-
-    for filename in os.listdir(default_path + string):
-        with open(default_path + string + '/' + filename) as f:
-            newVec = []
-            arr = list(f)
-            for elem in arr:
-                wordList = elem.split()
-                wordList[13] = wordList[13].replace("~", " ")
-                newButton = Button(wordList)
-                newVec.append(newButton)
-        vector.append(newVec)
-        print(vector)
+def Button_Change_Scene(button):
+    print(None)
 
 def Button_No(button):
     print(None)
 
 dispatcher = {
-    #'Button_Press_Quit' : Button_Press_Quit, 
+    'Button_Press_Quit' : Button_Press_Quit, 
     'Button_Hover_Enable' : Button_Hover_Enable, 
     'Button_Hover_Disable' : Button_Hover_Disable, 
     'Button_Load' : Button_Load, 
-    'Button_Load_Bidimensional' : Button_Load_Bidimensional,
+    'Button_Change_Scene' : Button_Change_Scene,
     'Button_No' : Button_No
     }
 
 class Button:
 
     def __init__(self, list):
-        self.name = str(list[0])
+        self.text = str(list[0])
         self.enabled = StrToBool(str(list[1]))
         self.visible = StrToBool(str(list[2]))
         self.textVisible = StrToBool(str(list[3]))
@@ -102,21 +87,23 @@ class Button:
         self.onPress = dispatcher[str(list[10])]
         self.onHover = dispatcher[str(list[11])]
         self.onHoverExit = dispatcher[str(list[12])]
-        self.text = str(list[13])
-        self.textFont = int(list[14])
+        self.textAlignment = str(list[13]) #Aligns the text relative to button dimensions: "Center", "Left", "Right"
+        self.textFont = int(list[14]) #Relative to screen dimension, NOT the actual text font
         self.textColor = tuple(map(int, list[15].split(',')))
         self.textColorHover = tuple(map(int, list[16].split(',')))
-        self.useTextSize = StrToBool(str(list[17]))
+        self.useTextSize = StrToBool(str(list[17])) #Use text's rectangle size for the button size if set to True 
         if self.useTextSize == True:
             font = pygame.font.Font("freesansbold.ttf", self.textFont) #font kinda hardcoded ngl
             text = font.render(self.text, True, (0, 0, 0))
             textRect = text.get_rect()
             self.width = textRect.width
             self.height = textRect.height
+        #Additional argument can be specified if needed
         try:
             self.arg = str(list[18])
         except:
             self.arg = None
+        self.textFont = int(self.textFont * vr)
   
     Hovering = False
 
@@ -127,7 +114,15 @@ class Button:
         font = pygame.font.Font("freesansbold.ttf", self.textFont) #font kinda hardcoded ngl
         text = font.render(self.text, True, self.textColorHover * self.Hovering or self.textColor)
         textRect = text.get_rect()
-        textRect.center = (self.x + self.width // 2, self.y + self.height // 2)
+
+        if self.textAlignment == "Center":
+            textRect.center = (self.x + self.width // 2, self.y + self.height // 2)
+        elif self.textAlignment == "Left":
+            textRect.left = self.x
+            textRect.centery = self.y + self.height // 2
+        elif self.textAlignment == "Right":
+            textRect.right = self.x + self.width
+            textRect.centery = self.y + self.height // 2
 
         if self.textVisible == True:
             screen.blit(text, textRect)

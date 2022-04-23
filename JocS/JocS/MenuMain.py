@@ -1,54 +1,40 @@
 import pygame
 import os
 
-import JocS
-
 import ButtonClass
 
 #Testing ground below
 
-#ButtonVec = []
+from Lobby import lobby
 
-Player1 = []
-Player2 = []
+stop = False
 
-BidimVec = [Player1, Player2]
+def Menu(screen, FPS):
 
-ButtonClass.Button_Load(ButtonClass.currentScene, Player1) #load MainMenu for first time oppening
+    ButtonVec = []
 
-clock = pygame.time.Clock()
+    ButtonClass.Button_Load(ButtonClass.currentScene, ButtonVec) #load MainMenu for first time oppening
 
-while JocS.running:
-    clock.tick(60)
-    for event in pygame.event.get():
-        print(str(event))
-        if event.type == pygame.MOUSEMOTION:
-            for v in BidimVec:
-                ButtonClass.checkButtonHover(event.pos[0], event.pos[1], v, BidimVec)
-                if ButtonClass.currentScene != "Lobby": 
-                    BidimVec[0] = v.copy()
-                    BidimVec[1].clear()
-                    break
+    clock = pygame.time.Clock()
 
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == 1:
-                for v in BidimVec:
-                    ButtonClass.checkButtonClick(event.pos[0], event.pos[1], v, BidimVec)
-                    print("EH")
-                    if ButtonClass.currentScene != "Lobby": 
-                        BidimVec[0] = v.copy()
-                        BidimVec[1].clear()
-                        break
+    running = True
 
-        elif event.type == pygame.QUIT:
-            JocS.running = False
-    
-    JocS.WIN.fill((255,255,255))
-    for v in BidimVec:
-        ButtonClass.displayButtons(JocS.WIN, v)
-        if ButtonClass.currentScene != "Lobby": break
-    pygame.display.update()
+    while running:
+        clock.tick(FPS)
+        for event in pygame.event.get():
+            print(str(event))
+            if event.type == pygame.MOUSEMOTION:
+                 ButtonClass.checkButtonHover(event.pos[0], event.pos[1], ButtonVec)
 
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                     ButtonClass.checkButtonClick(event.pos[0], event.pos[1], ButtonVec)
 
-pygame.quit()
-#quit()
+            elif event.type == pygame.QUIT or event.type == ButtonClass.STOP_EVENT:
+                pygame.quit()
+                os._exit(0)
+               
+        screen.fill((255,255,255))
+        ButtonClass.displayButtons(screen, ButtonVec)
+        pygame.display.update()
+
