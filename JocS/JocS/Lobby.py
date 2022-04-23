@@ -84,10 +84,26 @@ def lobby (WIN,WIDTH,HEIGHT,FPS) :
             controller_verify(event,joysticks)
             try :
                 if event.joy != None :
-                    if event.type == pygame.JOYBUTTONDOWN :
+                    if event.type == pygame.JOYBUTTONDOWN or event.type == pygame.JOYHATMOTION :
                         set_control(event.joy)
                     if Input[event.joy] != None :
                         Playeri[Input[event.joy]].update_input(event)
+                        if event.type == pygame.JOYHATMOTION :
+                            if event.value[1] == 1 :
+                                BUTplayers[Input[event.joy]][Playeri[Input[event.joy]].Button].Hovering = False
+                                if Playeri[Input[event.joy]].Button != 0 :
+                                    Playeri[Input[event.joy]].Button = Playeri[Input[event.joy]].Button -1
+                                else :
+                                    Playeri[Input[event.joy]].Button = 2
+                                BUTplayers[Input[event.joy]][Playeri[Input[event.joy]].Button].Hovering = True
+                            elif event.value[1] == -1 :
+                                BUTplayers[Input[event.joy]][Playeri[Input[event.joy]].Button].Hovering = False
+                                if Playeri[Input[event.joy]].Button != 2 :
+                                    Playeri[Input[event.joy]].Button = Playeri[Input[event.joy]].Button +1
+                                else :
+                                    Playeri[Input[event.joy]].Button = 0
+                                BUTplayers[Input[event.joy]][Playeri[Input[event.joy]].Button].Hovering = True
+
             except :
                 if Input["Keyboard"] != None :
                     Playeri[Input["Keyboard"]].update_input(event)
@@ -122,4 +138,6 @@ def lobby (WIN,WIDTH,HEIGHT,FPS) :
         for i in range (4) :
             if Playeri[i].Selected :
                 Playeri[i].gameplay_update()
+        #Verificarea butoanelor controlate de mouse 
+        ButtonClass.checkButtonHover(pygame.mouse.get_pos()[0],pygame.mouse.get_pos()[1], BUTconfig)
         draw_window()
