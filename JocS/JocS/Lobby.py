@@ -181,4 +181,7 @@ def lobby (WIN,WIDTH,HEIGHT,FPS) :
             gameplay(WIN,WIDTH,HEIGHT,FPS,Input,Playeri)
             for i in range(4) :
                 Playeri[i].Ready = False
+                Playeri[i].Gx = 30 + i * ((WIDTH - 150) / 4 + 30) + (WIDTH - 150) / 8
+                Playeri[i].Gy = HEIGHT/2
+
         draw_window()
