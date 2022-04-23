@@ -52,10 +52,10 @@ class player:
         self.GY = Gy
         #Variabile pentru Gameplay 
         self.Health = 1000
-    def change_size (self , newsize) :
+    def change_size (self , newsize , BIMG , UIMG) :
         self.size = newsize 
-        self.Bottom_image = pygame.transform.scale(self.Bottom_image,(9*self.size/8, 7*self.size/8))
-        self.Upper_image = pygame.transform.scale(self.Upper_image,(self.size,self.size))
+        self.Bottom_image = pygame.transform.scale(BIMG,(9*self.size/8, 7*self.size/8))
+        self.Upper_image = pygame.transform.scale(UIMG,(self.size,self.size))
     #Functie de resetat controalele pleyerului
     def reset_control (self) :
         self.Control = control (self.Source)

@@ -118,6 +118,10 @@ def lobby (WIN,WIDTH,HEIGHT,FPS) :
 
 
             except :
+                if event.type == pygame.KEYDOWN :
+                    set_control("Keyboard")
+                    if event.key == pygame.K_ESCAPE :
+                        eject_control("Keyboard")
                 if Input["Keyboard"] != None :
                     Playeri[Input["Keyboard"]].update_input(event)
                     #Schimbarea butoanelor pentru tastatura
@@ -143,11 +147,6 @@ def lobby (WIN,WIDTH,HEIGHT,FPS) :
                                 else :
                                     Playeri[Input["Keyboard"]].Ready = True
 
-                if event.type == pygame.KEYDOWN :
-                    if event.key == pygame.K_RETURN :
-                        set_control("Keyboard")
-                    elif event.key == pygame.K_ESCAPE :
-                        eject_control("Keyboard")
         pygame.event.pump()
 
         #Verifica daca un controler isi deselecteaza pozitia
@@ -181,8 +180,8 @@ def lobby (WIN,WIDTH,HEIGHT,FPS) :
             gameplay(WIN,WIDTH,HEIGHT,FPS,Input,Playeri)
             for i in range(4) :
                 Playeri[i].Ready = False
-                Playeri[i].Gx = 30 + i * ((WIDTH - 150) / 4 + 30) + (WIDTH - 150) / 8
-                Playeri[i].Gy = HEIGHT/2
-                Playeri[i].change_size(size)
+                Playeri[i].GX = 30 + i * ((WIDTH - 150) / 4 + 30) + (WIDTH - 150) / 8
+                Playeri[i].GY = HEIGHT/2
+                Playeri[i].change_size(size,pygame.image.load(os.path.join('Assets', Botimg[i])),pygame.image.load(os.path.join('Assets', Upimg[i])))
 
         draw_window()

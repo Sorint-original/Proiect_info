@@ -1,4 +1,5 @@
 import pygame
+import os
 from EventH import exit , controller_verify
 # dau inport la clasa de butoane deoarece sar putea sa avem un Pause Menu si cred ca nu o sal putem face separat de gameplay
 import ButtonClass
@@ -8,17 +9,17 @@ def gameplay (WIN,WIDTH,HEIGHT,FPS,Input,Playeri) :
     sw = 1920
     sh = 1080
     #pregatirea playerilor pentru  Gameplay
+    Botimg = ['Bottom-Blue.png','Bottom-Green.png','Bottom-Yellow.png','Bottom-Red.png']
+    Upimg = ['Upper-Blue.png','Upper-Green.png','Upper-Yellow.png','Upper-Red.png']
     # cele patru poziti in care se pot spauna playeri
     poziti = (100 , 100 , sw - 100 , sh - 100 , sw - 100 , 100 , 100 , sh - 100 )
     alcat = 0
     for i in range (4) :
         if Playeri[i].Selected :
-            print(alcat)
-            print((poziti[alcat],poziti[alcat+1]))
             Playeri[i].Health = 1000
             Playeri[i].GX = poziti[alcat]
             Playeri[i].GY = poziti[alcat+1]
-            Playeri[i].change_size(150)
+            Playeri[i].change_size(150,pygame.image.load(os.path.join('Assets', Botimg[i])),pygame.image.load(os.path.join('Assets', Upimg[i])))
             alcat = alcat + 2
     #stabilirea dimensiunilor pentru afisarea gameplayului
     h = HEIGHT - 100
