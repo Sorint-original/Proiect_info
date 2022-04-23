@@ -5,7 +5,7 @@ from EventH import exit , controller_verify
 import ButtonClass
 
 #input reprezinta un dictionar care indica care input(keyboard , controller) se duce la fiecare player , de asemenea as vrea un parameter MAP care e luat din MAPSELECT
-def gameplay (WIN,WIDTH,HEIGHT,FPS,Input,Playeri) :
+def gameplay (WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks) :
     sw = 1920
     sh = 1080
     #pregatirea playerilor pentru  Gameplay
@@ -48,6 +48,18 @@ def gameplay (WIN,WIDTH,HEIGHT,FPS,Input,Playeri) :
     run=True
     while run :
         clock.tick(FPS)
-        draw_window()
+        # THE EVENT LOOP
         for event in pygame.event.get() :
             exit(event)
+            controller_verify(event,joysticks)
+            try :
+                if event.joy != None :
+                    Playeri[Input[event.joy]].update_input(event)
+            except :
+                if Input["Keyboard"] != None :
+                    Playeri[Input["Keyboard"]].update_input(event)
+        #updatarea playerului in the game
+        for i in range (4) :
+            if Playeri[i].Selected :
+                Playeri[i].gameplay_update()
+        draw_window()

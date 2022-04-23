@@ -154,9 +154,7 @@ def lobby (WIN,WIDTH,HEIGHT,FPS) :
             if Input[i] != None :
                 if Playeri[Input[i]].exit_update() :
                     eject_control(i)
-        for i in range (4) :
-            if Playeri[i].Selected :
-                Playeri[i].gameplay_update()
+
 
         #Verificarea butoanelor controlate de mouse 
         ButtonClass.checkButtonHover(pygame.mouse.get_pos()[0],pygame.mouse.get_pos()[1], BUTconfig)
@@ -177,7 +175,7 @@ def lobby (WIN,WIDTH,HEIGHT,FPS) :
 
         if start_cooldown == 0 :
             #aici pun momentan ca se va duce direct la gemplay dar in mod normal sar duce la map select
-            gameplay(WIN,WIDTH,HEIGHT,FPS,Input,Playeri)
+            gameplay(WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks)
             for i in range(4) :
                 Playeri[i].Ready = False
                 Playeri[i].GX = 30 + i * ((WIDTH - 150) / 4 + 30) + (WIDTH - 150) / 8
