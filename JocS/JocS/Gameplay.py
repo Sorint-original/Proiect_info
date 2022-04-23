@@ -5,5 +5,6 @@ import ButtonClass
 
 #input reprezinta un dictionar care indica care input(keyboard , controller) se duce la fiecare player
 def gameplay (WIN,WIDTH,HEIGHT,FPS,Input,Playeri) :
-    x=2
     print("yeet")
+    def draw_window () :
+        WIN.fill((0,0,0))

@@ -50,6 +50,8 @@ class player:
         self.Bottom_angle = 90
         self.GX = Gx
         self.GY = Gy
+        #Variabile pentru Gameplay 
+        self.Health = 1000
 
     #Functie de resetat controalele pleyerului
     def reset_control (self) :
