@@ -28,6 +28,7 @@
     <Compile Include="Geometrie.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="MenuMain.py" />
     <Compile Include="Player.py">
       <SubType>Code</SubType>
     </Compile>
