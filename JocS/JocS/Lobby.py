@@ -4,6 +4,7 @@ import os
 from EventH import exit , controller_verify
 from Player import player
 import ButtonClass
+from Gameplay import gameplay
 
 #Initializarea butoanelor la inceput astfel for fi gata de fiecare data cand se intra in lobby
 BUTconfig=[]
@@ -29,7 +30,8 @@ def lobby (WIN,WIDTH,HEIGHT,FPS) :
         P = player(pygame.image.load(os.path.join('Assets', Botimg[i])), pygame.image.load(os.path.join('Assets', Upimg[i])), Gx, Gy, size)
         Playeri.append(P)
     Input = {"Keyboard" : None , 0:None , 1:None , 2:None , 3:None , 4:None}
-   
+    #cooldownul de la momentu in care toti playeri selectati sunt ready si pana cand incepe meciul
+    start_cooldown =181
     
     #INTRODUCEREA UNUI Player
     def set_control(control) :
@@ -49,8 +51,10 @@ def lobby (WIN,WIDTH,HEIGHT,FPS) :
     def eject_control(control) :
         if Input[control] != None :
             Playeri[Input[control]].Selected = False
+            Playeri[Input[control]].Ready = False
             Playeri[Input[control]].Source = "Unknown"
             BUTconfig[Input[control]].enabled = False
+            BUTplayers[Input[control]][Playeri[i].Button].Hovering = False
             Input[control] = None
 
     #Desenarea ferestrei
@@ -70,7 +74,8 @@ def lobby (WIN,WIDTH,HEIGHT,FPS) :
                 #desenarea butoanelor playerilor selectati
                 ButtonClass.displayButtons(WIN, BUTconfig[i])
                 ButtonClass.displayButtons(WIN, BUTplayers[i])
-
+        if start_cooldown < 181 :
+            pygame.draw.rect(WIN, (230, 0, 0), pygame.Rect(0, HEIGHT - HEIGHT/25 , start_cooldown*WIDTH/180,HEIGHT/25 ))
         pygame.display.update()
 
     #The loop of the Lobby
@@ -103,6 +108,14 @@ def lobby (WIN,WIDTH,HEIGHT,FPS) :
                                 else :
                                     Playeri[Input[event.joy]].Button = 0
                                 BUTplayers[Input[event.joy]][Playeri[Input[event.joy]].Button].Hovering = True
+                        elif event.type == pygame.JOYBUTTONDOWN :
+                            if event.button == Playeri[Input[event.joy]].Control.set["buttons"][1] :
+                                if Playeri[Input[event.joy]].Button == 2 :
+                                    if Playeri[Input[event.joy]].Ready == True :
+                                        Playeri[Input[event.joy]].Ready = False
+                                    else :
+                                        Playeri[Input[event.joy]].Ready = True
+
 
             except :
                 if Input["Keyboard"] != None :
@@ -123,13 +136,20 @@ def lobby (WIN,WIDTH,HEIGHT,FPS) :
                             else :
                                 Playeri[Input["Keyboard"]].Button = 0
                             BUTplayers[Input["Keyboard"]][Playeri[Input["Keyboard"]].Button].Hovering = True
+                        if event.key == pygame.K_SPACE :
+                            if Playeri[Input["Keyboard"]].Button == 2 :
+                                if Playeri[Input["Keyboard"]].Ready == True :
+                                    Playeri[Input["Keyboard"]].Ready = False
+                                else :
+                                    Playeri[Input["Keyboard"]].Ready = True
 
                 if event.type == pygame.KEYDOWN :
-                    if event.key == pygame.K_SPACE :
+                    if event.key == pygame.K_RETURN :
                         set_control("Keyboard")
                     elif event.key == pygame.K_ESCAPE :
                         eject_control("Keyboard")
         pygame.event.pump()
+
         #Verifica daca un controler isi deselecteaza pozitia
         for i in range (5) :
             if Input[i] != None :
@@ -138,6 +158,27 @@ def lobby (WIN,WIDTH,HEIGHT,FPS) :
         for i in range (4) :
             if Playeri[i].Selected :
                 Playeri[i].gameplay_update()
+
         #Verificarea butoanelor controlate de mouse 
         ButtonClass.checkButtonHover(pygame.mouse.get_pos()[0],pygame.mouse.get_pos()[1], BUTconfig)
+
+        #Functia care se uita la playeri care sunt ready si determina daca se continua
+        ok = True 
+        cati = 0
+        for i in range(4) :
+           if Playeri[i].Selected and Playeri[i].Ready :
+               cati = cati + 1
+           elif Playeri[i].Selected :
+               ok = False
+               break
+        if ok and cati > 1 :
+            start_cooldown = start_cooldown - 1 
+        else :
+            start_cooldown = 181
+
+        if start_cooldown == 0 :
+            #aici pun momentan ca se va duce direct la gemplay dar in mod normal sar duce la map select
+            gameplay(WIN,WIDTH,HEIGHT,FPS,Input,Playeri)
+            for i in range(4) :
+                Playeri[i].Ready = False
         draw_window()

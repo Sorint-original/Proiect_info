@@ -50,7 +50,7 @@ def Button_Load(argument, vector):
         arr = list(f)
         for elem in arr:
             wordList = elem.split()
-            wordList[13] = wordList[13].replace("~", " ")
+            wordList[0] = wordList[0].replace("~", " ")
             newButton = Button(wordList)
             vector.append(newButton)
 
