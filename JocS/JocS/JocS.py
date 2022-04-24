@@ -10,5 +10,6 @@ WIDTH = screen.current_w
 HEIGHT = screen.current_h
 WIN = pygame.display.set_mode((WIDTH , HEIGHT))
 FPS = 60
-Menu(WIN, WIDTH, HEIGHT, FPS)
-#lobby(WIN, WIDTH, HEIGHT, FPS)
+#Menu(WIN, FPS)
+lobby(WIN, WIDTH, HEIGHT, FPS)
+
