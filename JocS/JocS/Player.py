@@ -1,7 +1,6 @@
 import pygame
 from Geometrie import get_angle
 
-
 class control :
     def __init__ (self,source) :
         #controalele pentru cei cu controller
