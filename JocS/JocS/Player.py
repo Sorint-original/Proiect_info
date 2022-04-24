@@ -1,6 +1,60 @@
 import pygame
-from Geometrie import get_angle
+import os
 
+from Geometrie import get_angle , get_pos
+
+#Toate proiectilele care se vor afla pe harta
+Harmful_Stuff = []
+
+class proiectil :
+    def __init__ (self,x,y,image,angle,speed,nh) :
+        self.GX = x
+        self.GY = y
+        self.Angle = angle
+        self.IMG = pygame.transform.rotate(image , angle)
+        self.Speed = speed
+        self.noharm = nh
+
+    def move (self) :
+        newcords = get_pos(self.Angle , self.Speed)
+        self.GX = self.GX + newcords[0]
+        self.GY = self.GY + newcords[1]
+
+    def afisare (self,screen) :
+        x = self.GX - self.IMG.get_width()/2
+        y = self.GY - self.IMG.get_height()/2
+        screen.blit(self.IMG,(x,y))
+
+
+class weapon :
+    def __init__ (self,count,speed,spread,coold,shots_per_fire,ammo ) :
+        #if count is -1 it means that it is unlimited
+        self.Ammo_count = count
+        self.Ammo_speed = speed
+        # 0 means  perfect acuracy 
+        self.Spread = spread
+        #dupa cate frame-uri poate sa traga din nou
+        self.fire_cooldown = coold
+        self.cooldown = 0
+        # cate gloante sunt trase pe fire 
+        self.spfire = shots_per_fire
+        #Imaginea pe care o are proiectilul tras
+        self.Ammo = ammo
+        #the player who will not be harmed by this bullet it is none or 0 to 3
+        self.noharm = None
+
+    #functia care verifica daca poata sa traga , action e true sau fals si determina daca playeru da comanda
+    # x si y vor fi GX SI GY de la player
+    def check_fire (self , angle , action ,x , y) :
+        if self.cooldown > 0 :
+            self.cooldown = self.cooldown -1
+        elif action :
+            self.cooldown = self.fire_cooldown
+            new_shot = proiectil(x,y,self.Ammo,angle,self.Ammo_speed,self.noharm)
+            Harmful_Stuff.append(new_shot)
+
+Rifle = weapon(-1,10,0,30,1,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Bullet.png' )),(25,5)))
+Main_Weapons = [Rifle]
 
 class control :
     def __init__ (self,source) :
@@ -32,8 +86,9 @@ class control :
 
 class player:
     #Initializarea obiectului
-    def __init__(self,BIMG,UIMG,Gx,Gy,size):
+    def __init__(self,BIMG,UIMG,Gx,Gy,size,nr):
         # The Variables used for the lobby
+        self.number = nr
         self.Selected = False
         self.Source = "Unknown"
         self.Exit_cooldown = 0
@@ -43,6 +98,7 @@ class player:
         #Controalele pentru pleyer (toate butoanele apasate,configurarea pentru controlar)
         self.Control = control(self.Source)
         #Variabile pentru afisare 
+        # size va fi si diametrul cercului de coliziune
         self.size = size
         self.Bottom_image = pygame.transform.scale(BIMG,(9*self.size/8, 7*self.size/8))
         self.Upper_image = pygame.transform.scale(UIMG,(self.size,self.size))
@@ -50,7 +106,16 @@ class player:
         self.Bottom_angle = 90
         self.GX = Gx
         self.GY = Gy
+        #Variabile pentru Gameplay 
+        self.Health = 1000
+        self.maxspeed = 5
+        self.MainWeapon = Main_Weapons[0]
 
+    #schimbarea marimi are nevoie de o re introducere a imagini ne modificate ca sa arate cat mai bine
+    def change_size (self , newsize , BIMG , UIMG) :
+        self.size = newsize 
+        self.Bottom_image = pygame.transform.scale(BIMG,(9*self.size/8, 7*self.size/8))
+        self.Upper_image = pygame.transform.scale(UIMG,(self.size,self.size))
     #Functie de resetat controalele pleyerului
     def reset_control (self) :
         self.Control = control (self.Source)
@@ -112,11 +177,24 @@ class player:
         return 0
     #Functie pentru actualizarea playerului in timpul gameplayului
     def gameplay_update (self) :
+        #Gameplay update pentru atunci cand este controlat de un controller
         if self.Source != "Keyboard" :
+            #Obtinerea unghiurilor pentru imagini
+            #bottom image
             if  abs(self.Control.orientation[0][0]) > 0.1 or abs(self.Control.orientation[0][1]) > 0.1 :
                 self.Bottom_angle = get_angle(self.Control.orientation[0])
+                #movement
+                if self.Control.action[0] == False and self.Control.action[1] == False :
+                    self.GX = self.GX + self.Control.orientation[0][0]*self.maxspeed
+                    self.GY = self.GY + self.Control.orientation[0][1]*self.maxspeed
+                else :
+                    self.GX = self.GX + self.Control.orientation[0][0]*self.maxspeed/2
+                    self.GY = self.GY + self.Control.orientation[0][1]*self.maxspeed/2
+            #upper image
             if abs(self.Control.orientation[1][0]) > 0.1 or abs(self.Control.orientation[1][1]) > 0.1 :
                 self.Upper_angle = get_angle(self.Control.orientation[1])
+            #verificarea attackurilor
+            self.MainWeapon.check_fire(self.Upper_angle,self.Control.action[0],self.GX,self.GY)      
     #Afisarea playerului pe ecran la coordonatele lui 
     def afisare (self,WIN) :
         BIMAGE = pygame.transform.rotate(self.Bottom_image,self.Bottom_angle)
