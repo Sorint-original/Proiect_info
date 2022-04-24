@@ -54,8 +54,20 @@ def Button_Load(argument, vector):
             newButton = Button(wordList)
             vector.append(newButton)
 
-def Button_Change_Scene(button):
-    print(None)
+def Button_Change_Scene(button, arg):
+    if type(arg) == tuple:
+        func_dispatcher = {
+            'Lobby' : arg[0][0]
+        }
+        func_dispatcher[button.arg](arg[1], arg[2], arg[3], arg[4])
+    else: 
+        raise Exception("Argument is not tuple")
+
+def Button_Back(button, arg):
+    if arg == None:
+        raise Exception("Argument is None, so it's not ok")
+    else:
+        return False;
 
 def Button_No(button):
     print(None)
@@ -66,6 +78,7 @@ dispatcher = {
     'Button_Hover_Disable' : Button_Hover_Disable, 
     'Button_Load' : Button_Load, 
     'Button_Change_Scene' : Button_Change_Scene,
+    'Button_Back' : Button_Back,
     'Button_No' : Button_No
     }
 
@@ -87,6 +100,7 @@ class Button:
         self.onHoverExit = dispatcher[str(list[12])]
         self.textAlignment = str(list[13]) #Aligns the text relative to button dimensions: "Center", "Left", "Right"
         self.textFont = int(list[14]) #Relative to screen dimension, NOT the actual text font
+        self.textFont = int(self.textFont * vr)
         self.textColor = tuple(map(int, list[15].split(',')))
         self.textColorHover = tuple(map(int, list[16].split(',')))
         self.useTextSize = StrToBool(str(list[17])) #Use text's rectangle size for the button size if set to True 
@@ -101,7 +115,6 @@ class Button:
             self.arg = str(list[18])
         except:
             self.arg = None
-        self.textFont = int(self.textFont * vr)
   
     Hovering = False
 
@@ -125,27 +138,27 @@ class Button:
         if self.textVisible == True:
             screen.blit(text, textRect)
 
-def checkButtonClick(x, y, arg, bidimensional = [[]]):
+def checkButtonClick(x, y, VecORButton, arg = None):
     try:
-        for buttonArg in arg:
+        for buttonArg in VecORButton:
             if x >= buttonArg.x and x <= buttonArg.x + buttonArg.width and y >= buttonArg.y and y <= buttonArg.y + buttonArg.height and buttonArg.enabled:
                 try:
                     try:
-                        buttonArg.onPress(buttonArg, arg)
-                        break
+                        buttonArg.onPress(buttonArg, VecORButton)
                     except:
-                        buttonArg.onPress(buttonArg, bidimensional)
-                        break
+                        return buttonArg.onPress(buttonArg, arg)
                 except:
                     buttonArg.onPress(buttonArg)
-                    break
     except:
-        if x >= arg.x and x <= arg.x + arg.width and y >= arg.y and y <= arg.y + arg.height and arg.enabled:
-                arg.onPress(arg)
+        if x >= VecORButton.x and x <= VecORButton.x + VecORButton.width and y >= VecORButton.y and y <= VecORButton.y + VecORButton.height and VecORButton.enabled:
+            try:
+                VecORButton.onPress(VecORButton, arg)
+            except:
+                VecORButton.onPress(VecORButton)
 
-def checkButtonHover(x, y, arg, bidimensional = [[]]):
+def checkButtonHover(x, y, VecORButton):
     try:
-        for buttonArg in arg:
+        for buttonArg in VecORButton:
             if x >= buttonArg.x and x <= buttonArg.x + buttonArg.width and y >= buttonArg.y and y <= buttonArg.y + buttonArg.height and buttonArg.enabled:
                 buttonArg.onHover(buttonArg)
                 break
@@ -154,11 +167,11 @@ def checkButtonHover(x, y, arg, bidimensional = [[]]):
                     buttonArg.onHoverExit(buttonArg)
                     break
     except:
-        if x >= arg.x and x <= arg.x + arg.width and y >= arg.y and y <= arg.y + arg.height and arg.enabled:
-                arg.onHover(arg)
+        if x >= VecORButton.x and x <= VecORButton.x + VecORButton.width and y >= VecORButton.y and y <= VecORButton.y + VecORButton.height and VecORButton.enabled:
+                VecORButton.onHover(VecORButton)
         else: 
-            if arg.Hovering == True:
-                arg.onHoverExit(arg)
+            if VecORButton.Hovering == True:
+                VecORButton.onHoverExit(VecORButton)
 
 def displayButtons(screen, arg):
     try:
