@@ -16,4 +16,4 @@ def get_angle (v1) :
     if v1[1] > 0 :
         angle = -angle
     return math.degrees(angle)
-    
+

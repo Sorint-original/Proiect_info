@@ -1,5 +1,5 @@
 import pygame
-from Geometrie import get_angle
+from Geometrie import get_angle 
 
 
 class control :
@@ -52,6 +52,9 @@ class player:
         self.GY = Gy
         #Variabile pentru Gameplay 
         self.Health = 1000
+        self.maxspeed = 5
+
+    #schimbarea marimi are nevoie de o re introducere a imagini ne modificate ca sa arate cat mai bine
     def change_size (self , newsize , BIMG , UIMG) :
         self.size = newsize 
         self.Bottom_image = pygame.transform.scale(BIMG,(9*self.size/8, 7*self.size/8))
@@ -117,11 +120,26 @@ class player:
         return 0
     #Functie pentru actualizarea playerului in timpul gameplayului
     def gameplay_update (self) :
+        #Gameplay update pentru atunci cand este controlat de un controller
         if self.Source != "Keyboard" :
+            #Obtinerea unghiurilor pentru imagini
+            #bottom image
             if  abs(self.Control.orientation[0][0]) > 0.1 or abs(self.Control.orientation[0][1]) > 0.1 :
                 self.Bottom_angle = get_angle(self.Control.orientation[0])
+                #movement
+                if self.Control.action[0] == False and self.Control.action[1] == False :
+                    self.GX = self.GX + self.Control.orientation[0][0]*self.maxspeed
+                    self.GY = self.GY + self.Control.orientation[0][1]*self.maxspeed
+                else :
+                    self.GX = self.GX + self.Control.orientation[0][0]*self.maxspeed/2
+                    self.GY = self.GY + self.Control.orientation[0][1]*self.maxspeed/2
+            #upper image
             if abs(self.Control.orientation[1][0]) > 0.1 or abs(self.Control.orientation[1][1]) > 0.1 :
                 self.Upper_angle = get_angle(self.Control.orientation[1])
+
+                
+                
+            
     #Afisarea playerului pe ecran la coordonatele lui 
     def afisare (self,WIN) :
         BIMAGE = pygame.transform.rotate(self.Bottom_image,self.Bottom_angle)
