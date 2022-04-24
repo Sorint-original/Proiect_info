@@ -3,6 +3,7 @@ import os
 from EventH import exit , controller_verify
 # dau inport la clasa de butoane deoarece sar putea sa avem un Pause Menu si cred ca nu o sal putem face separat de gameplay
 import ButtonClass
+from Player import Harmful_Stuff
 
 #input reprezinta un dictionar care indica care input(keyboard , controller) se duce la fiecare player , de asemenea as vrea un parameter MAP care e luat din MAPSELECT
 def gameplay (WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks) :
@@ -19,7 +20,7 @@ def gameplay (WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks) :
             Playeri[i].Health = 1000
             Playeri[i].GX = poziti[alcat]
             Playeri[i].GY = poziti[alcat+1]
-            Playeri[i].change_size(150,pygame.image.load(os.path.join('Assets', Botimg[i])),pygame.image.load(os.path.join('Assets', Upimg[i])))
+            Playeri[i].change_size(150,pygame.image.load(os.path.join('Assets\Robots', Botimg[i])),pygame.image.load(os.path.join('Assets\Robots', Upimg[i])))
             alcat = alcat + 2
     #stabilirea dimensiunilor pentru afisarea gameplayului
     h = HEIGHT - 100
@@ -36,6 +37,8 @@ def gameplay (WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks) :
         for i in range (4) :
             if Playeri[i].Selected :
                 Playeri[i].afisare(DisplayG)
+        for attack in Harmful_Stuff :
+            attack.afisare(DisplayG)
 
     def draw_window () :
         WIN.fill((0,0,0))
@@ -62,4 +65,6 @@ def gameplay (WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks) :
         for i in range (4) :
             if Playeri[i].Selected :
                 Playeri[i].gameplay_update()
+        for attack in Harmful_Stuff :
+            attack.move()
         draw_window()

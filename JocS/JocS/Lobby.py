@@ -27,7 +27,7 @@ def lobby (WIN,WIDTH,HEIGHT,FPS) :
     for i in range (4) :
         Gx = 30 + i * ((WIDTH - 150) / 4 + 30) + (WIDTH - 150) / 8
         Gy = HEIGHT/2
-        P = player(pygame.image.load(os.path.join('Assets', Botimg[i])), pygame.image.load(os.path.join('Assets', Upimg[i])), Gx, Gy, size)
+        P = player(pygame.image.load(os.path.join('Assets\Robots', Botimg[i])), pygame.image.load(os.path.join('Assets\Robots', Upimg[i])), Gx, Gy, size,i)
         Playeri.append(P)
     Input = {"Keyboard" : None , 0:None , 1:None , 2:None , 3:None , 4:None}
     #cooldownul de la momentu in care toti playeri selectati sunt ready si pana cand incepe meciul
