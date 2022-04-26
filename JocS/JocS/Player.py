@@ -7,8 +7,16 @@ from Geometrie import get_angle , get_pos
 #Toate proiectilele care se vor afla pe harta
 Harmful_Stuff = []
 
+#EX_sequences = [pygame.image.load(os.path.join('Assets','EX0.png' )),pygame.image.load(os.path.join('Assets','EX1.png' )),pygame.image.load(os.path.join('Assets','EX2.png' )),pygame.image.load(os.path.join('Assets','EX3.png' )),pygame.image.load(os.path.join('Assets','EX4.png' )),pygame.image.load(os.path.join('Assets','EX5.png' )),pygame.image.load(os.path.join('Assets','EX6.png' )),pygame.image.load(os.path.join('Assets','EX7.png' ))]
+
+class explosion :
+    def __init__ (self,x,y) :
+        self.GX = x
+        self.GY = y
+        self.existance = 60 
+
 class proiectil :
-    def __init__ (self,x,y,image,angle,speed,Dmg,nh) :
+    def __init__ (self,x,y,image,angle,speed,Dmg,A,mins,ext,EXPLOD,nh) :
         self.GX = x
         self.GY = y
         self.Angle = angle
@@ -16,11 +24,25 @@ class proiectil :
         self.Speed = speed
         self.noharm = nh
         self.dmg = Dmg
-
-    def move (self) :
+        self.acceleration = A
+        self.minspeed = mins
+        self.existence = ext
+        self.Will_Explode = EXPLOD
+    def update (self) :
+        #Verifica daca mai exista atacu
+        if self.existence > 0 :
+            self.existence = self.existence -1
+        if self.existence == 0 :
+            Harmful_Stuff.remove(self)
+        #misca atackul
         newcords = get_pos(self.Angle , self.Speed)
         self.GX = self.GX + newcords[0]
         self.GY = self.GY + newcords[1]
+        #ii modifica viteza
+        if self.Speed > self.minspeed :
+            self.Speed = self.Speed + self.acceleration
+            if self.Speed <=  self.minspeed:
+                self.Speed = self.minspeed
 
     def afisare (self,screen) :
         x = self.GX - self.IMG.get_width()/2
@@ -29,7 +51,7 @@ class proiectil :
 
 
 class weapon :
-    def __init__ (self,count,speed,spread,coold,shots_per_fire,H,damage,ammo ) :
+    def __init__ (self,count,speed,spread,coold,shots_per_fire,H,damage,A,mins,bext,EXP,ammo ) :
         #if count is -1 it means that it is unlimited
         self.Ammo_count = count
         self.Ammo_speed = speed
@@ -51,6 +73,12 @@ class weapon :
         self.OVERHEATED = False
         #damage per shot
         self.dmg = damage
+        #deaccelerarea
+        self.acceleration = A
+        self.minspeed = mins
+        #timer pentru existebta glontului
+        self.existence = bext
+        self.explosive = EXP
 
     #functia care verifica daca poata sa traga , action e true sau fals si determina daca playeru da comanda
     # x si y vor fi GX SI GY de la player
@@ -81,18 +109,25 @@ class weapon :
                     A.remove(deviasion)
                 elif self.Spread > 0 :
                     newangle = newangle + random.randint(-self.Spread,self.Spread)
-                new_shot = proiectil(x,y,self.Ammo,newangle,self.Ammo_speed,self.noharm,self.dmg)
+                new_shot = proiectil(x,y,self.Ammo,newangle,self.Ammo_speed,self.dmg,self.acceleration,self.minspeed,self.existence,self.explosive,self.noharm)
                 Harmful_Stuff.append(new_shot)
             if self.Spread > 0 and self.spfire > 1 :
                 del A
             if self.Ammo_count != -1 :
                 self.Ammo_count = self.Ammo_count - 1
 
-Rifle = weapon(-1,25,0,10,1,10,25,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Bullet.png' )),(25,5)))
-Shotgun = weapon(-1,25,3,30,5,40,75,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Bullet.png' )),(25,5)))
-SMG = weapon(-1,25,5,0,1,1.5,5,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Bullet.png' )),(25,5)))
+# Main Weopans care se folosesc in joc 
+Rifle = weapon(-1,25,0,10,1,10,25,0,25,-1,False,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Bullet.png' )),(25,5)))
+Shotgun = weapon(-1,25,3,30,5,40,75,0,25,-1,False,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Bullet.png' )),(25,5)))
+SMG = weapon(-1,25,5,0,1,1.5,5,0,25,-1,False,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Bullet.png' )),(25,5)))
 Main_Weapons = [Rifle,Shotgun,SMG]
-Wcount = 3
+MWcount = 3
+
+#Secondary weapons care se folosesc in joc
+Grenade_Launcher = weapon(-1,25,0,60,1,0,0,-0.2,0,-1,True,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Grenade.png' )),(15,18)))
+Flame_Thrower = weapon(-1,25,15,0,1,0,5,-0.7,6,100,False,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Flame.png' )),(39,30)))
+Secondary_Weapons = [Grenade_Launcher,Flame_Thrower]
+SWcount = 2
 
 
 class control :
@@ -150,6 +185,8 @@ class player:
         self.maxspeed = 5
         self.MainWeapon = Main_Weapons[0]
         self.MW = 0
+        self.SecondaryWeapon = Secondary_Weapons[0]
+        self.SW = 0
 
     #schimbarea marimi are nevoie de o re introducere a imagini ne modificate ca sa arate cat mai bine
     def change_size (self , newsize , BIMG , UIMG) :
@@ -159,9 +196,15 @@ class player:
 
     def Next_MWeapon (self) :
         self.MW = self.MW + 1
-        if self.MW == Wcount :
+        if self.MW == MWcount :
             self.MW = 0 
         self.MainWeapon = Main_Weapons[self.MW]
+
+    def Next_SWeapon (self) :
+        self.SW = self.SW + 1
+        if self.SW == SWcount :
+            self.SW = 0 
+        self.SecondaryWeapon = Secondary_Weapons[self.SW]
 
     #Functie de resetat controalele pleyerului
     def reset_control (self) :
@@ -241,7 +284,9 @@ class player:
             if abs(self.Control.orientation[1][0]) > 0.1 or abs(self.Control.orientation[1][1]) > 0.1 :
                 self.Upper_angle = get_angle(self.Control.orientation[1])
             #verificarea attackurilor
-            self.MainWeapon.check_fire(self.Upper_angle,self.Control.action[0],self.GX,self.GY)      
+            self.MainWeapon.check_fire(self.Upper_angle,self.Control.action[0],self.GX,self.GY)
+            if self.Control.action[0] == False :
+                self.SecondaryWeapon.check_fire(self.Upper_angle,self.Control.action[1],self.GX,self.GY)
     #Afisarea playerului pe ecran la coordonatele lui 
     def afisare (self,WIN) :
         BIMAGE = pygame.transform.rotate(self.Bottom_image,self.Bottom_angle)
