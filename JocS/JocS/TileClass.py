@@ -7,22 +7,30 @@ w = screen.current_w
 h = screen.current_h
 del screen
 
+#recommended image size: 128x128 pixels
+
 outline_width = 2
 size = w // 30
 
 default_path = 'Assets/Tiles/'
 
-keyVec = ['mozaic', 'wall']
+keyVec = ['mozaic', 'wall', 'holes']
 
 texture_dict = {
     keyVec[0] : pygame.image.load(default_path + 'mozaic' + '.jpg'),
     keyVec[1] : pygame.image.load(default_path + 'wall' + '.jpg'),
+    keyVec[2] : pygame.image.load(default_path + 'holes' + '.jpg'),
     'empty' : pygame.image.load(default_path + 'empty' + '.jpg')
     }
 
 for i in range(len(keyVec)):
     texture_dict[keyVec[i]] = pygame.transform.scale(texture_dict[keyVec[i]], (size, size))
 texture_dict['empty'] = pygame.transform.scale(texture_dict['empty'], (size, size))
+
+#Tile ideas:
+#-Collidable with everything but the player
+#-Collidable with only the player
+#-Slowness if touched by player
 
 class Tile:
     def __init__(self):

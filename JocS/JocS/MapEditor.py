@@ -10,7 +10,7 @@ tileMap = []
 
 maxIndex = len(TileClass.keyVec)
 
-currentTexture = 1
+currentTexture = 0
 collidable = False
 
 xoffset = (TileClass.w - tiles_per_row * TileClass.size) // 2
@@ -43,12 +43,12 @@ def Editor(WIN, WIDTH, HEIGHT, FPS):
             newVec.append(newTile)
         tileMap.append(newVec)
 
-    def print_tiles():
+    def outline_draw():
         for i in range(tiles_per_row):
             for j in range(rows):
                 tileMap[i][j].editor_view(xoffset, yoffset, i, j, WIN)
 
-    def render_tiles():
+    def texture_draw():
         for i in range(tiles_per_row):
             for j in range(rows):
                 tileMap[i][j].draw_texture(xoffset, yoffset, i, j, WIN)
@@ -93,6 +93,6 @@ def Editor(WIN, WIDTH, HEIGHT, FPS):
                 change_texture(tileMap, event.pos[0], event.pos[1], currentTexture)
 
         WIN.fill((0,0,0))
-        render_tiles()
-        print_tiles()
+        texture_draw()
+        outline_draw()
         pygame.display.update()
