@@ -4,13 +4,13 @@ import os
 import ButtonClass
 
 #Testing ground below
-
 from Lobby import lobby
+from MapEditor import Editor
 
 def Menu(WIN, WIDTH, HEIGHT, FPS):
     status = None #Value to decide for running in function...
 
-    func_arg = ([lobby], WIN, WIDTH, HEIGHT, FPS)
+    func_arg = ([Editor, lobby], WIN, WIDTH, HEIGHT, FPS)
 
     ButtonVec = []
 

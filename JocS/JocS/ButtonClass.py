@@ -25,7 +25,6 @@ def StrToBool(string):
         return None
 
 #Button Functions
-
 def Button_Press_Quit(button):
     pygame.quit()
     os._exit(0)
@@ -57,7 +56,8 @@ def Button_Load(argument, vector):
 def Button_Change_Scene(button, arg):
     if type(arg) == tuple:
         func_dispatcher = {
-            'Lobby' : arg[0][0]
+            'Editor' : arg[0][0],
+            'lobby' : arg[0][1]
         }
         func_dispatcher[button.arg](arg[1], arg[2], arg[3], arg[4])
     else: 
@@ -67,7 +67,7 @@ def Button_Back(button, arg):
     if arg == None:
         raise Exception("Argument is None, so it's not ok")
     else:
-        return False;
+        return False
 
 def Button_No(button):
     print(None)
@@ -103,7 +103,7 @@ class Button:
         self.textFont = int(self.textFont * vr)
         self.textColor = tuple(map(int, list[15].split(',')))
         self.textColorHover = tuple(map(int, list[16].split(',')))
-        self.useTextSize = StrToBool(str(list[17])) #Use text's rectangle size for the button size if set to True 
+        self.useTextSize = StrToBool(str(list[17])) #Use text's rectangle size for the button size if set to True
         if self.useTextSize == True:
             font = pygame.font.Font("freesansbold.ttf", self.textFont) #font kinda hardcoded ngl
             text = font.render(self.text, True, (0, 0, 0))
@@ -138,7 +138,7 @@ class Button:
         if self.textVisible == True:
             screen.blit(text, textRect)
 
-def checkButtonClick(x, y, VecORButton, arg = None):
+def checkButtonClick(x, y, VecORButton, arg=None):
     try:
         for buttonArg in VecORButton:
             if x >= buttonArg.x and x <= buttonArg.x + buttonArg.width and y >= buttonArg.y and y <= buttonArg.y + buttonArg.height and buttonArg.enabled:
