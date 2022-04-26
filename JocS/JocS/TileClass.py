@@ -14,12 +14,14 @@ size = w // 30
 
 default_path = 'Assets/Tiles/'
 
-keyVec = ['mozaic', 'wall', 'holes']
+keyVec = ['mozaic', 'wall', 'holes', 'sorinTile', 'sorinWall']
 
 texture_dict = {
     keyVec[0] : pygame.image.load(default_path + 'mozaic' + '.jpg'),
     keyVec[1] : pygame.image.load(default_path + 'wall' + '.jpg'),
     keyVec[2] : pygame.image.load(default_path + 'holes' + '.jpg'),
+    keyVec[3] : pygame.image.load(default_path + 'sorinTile' + '.jpg'),
+    keyVec[4] : pygame.image.load(default_path + 'sorinWall' + '.jpg'),
     'empty' : pygame.image.load(default_path + 'empty' + '.jpg')
     }
 

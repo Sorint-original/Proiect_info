@@ -16,6 +16,12 @@ collidable = False
 xoffset = (TileClass.w - tiles_per_row * TileClass.size) // 2
 yoffset = (TileClass.h - rows * TileClass.size) // 2
 
+def save_map(tileMap):
+    with open("Maps/test.map", "w") as f:
+        for i in range(tiles_per_row):
+            for j in range(rows):
+                f.write(str(i) + ' ' + str(j) + ' ' + str(tileMap[i][j].canCollide) + ' ' + str(tileMap[i][j].texture) + ' ' +str(tileMap[i][j].rotation_degree) + '\n')
+
 def Editor(WIN, WIDTH, HEIGHT, FPS):
     textureBool = False
     removeBool = False
@@ -75,6 +81,10 @@ def Editor(WIN, WIDTH, HEIGHT, FPS):
                 elif event.unicode == '2':
                     if currentTexture < maxIndex - 1:
                         currentTexture += 1
+                elif event.unicode == 'p':
+                    save_map(tileMap)
+                    pygame.quit()
+                    os._exit(0)
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
