@@ -15,7 +15,7 @@ def get_angle (v1) :
     #returneaza unghiul in grade
     if v1[1] > 0 :
         angle = -angle
-    return math.degrees(angle)
+    return round(math.degrees(angle))
 
 def get_pos (angle,lenght) :
     #unghiul va apartine multimi [-180 , 180] si lenght este marimea vectorului

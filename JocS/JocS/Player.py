@@ -8,13 +8,14 @@ from Geometrie import get_angle , get_pos
 Harmful_Stuff = []
 
 class proiectil :
-    def __init__ (self,x,y,image,angle,speed,nh) :
+    def __init__ (self,x,y,image,angle,speed,Dmg,nh) :
         self.GX = x
         self.GY = y
         self.Angle = angle
         self.IMG = pygame.transform.rotate(image , angle)
         self.Speed = speed
         self.noharm = nh
+        self.dmg = Dmg
 
     def move (self) :
         newcords = get_pos(self.Angle , self.Speed)
@@ -28,7 +29,7 @@ class proiectil :
 
 
 class weapon :
-    def __init__ (self,count,speed,spread,coold,shots_per_fire,H,ammo ) :
+    def __init__ (self,count,speed,spread,coold,shots_per_fire,H,damage,ammo ) :
         #if count is -1 it means that it is unlimited
         self.Ammo_count = count
         self.Ammo_speed = speed
@@ -48,6 +49,8 @@ class weapon :
         self.heatpershot = H
         self.cooling = 0.55
         self.OVERHEATED = False
+        #damage per shot
+        self.dmg = damage
 
     #functia care verifica daca poata sa traga , action e true sau fals si determina daca playeru da comanda
     # x si y vor fi GX SI GY de la player
@@ -57,6 +60,7 @@ class weapon :
         if self.heat > 0 :
             self.heat = self.heat - self.cooling
         if self.OVERHEATED == True and self.heat <= 0 :
+            self.heat = 0
             self.OVERHEATED = False
         if action and abs(self.Ammo_count) > 0 and self.OVERHEATED == False and self.cooldown == 0 :
             #tot ce trebe sa faca pentru a trage
@@ -65,27 +69,30 @@ class weapon :
                 self.heat = 100
                 self.OVERHEATED = True
             self.cooldown = self.fire_cooldown
-            if self.Spread > 0  :
+            if self.Spread > 0 and self.spfire > 1 :
                 A = []
                 for i in range(-self.Spread , self.Spread+1) :
                     A.append(i)
             for i in range (self.spfire) :
                 newangle = angle
-                if self.Spread > 0 :
+                if self.Spread > 0 and self.spfire > 1:
                     deviasion = random.choice(A)
                     newangle = newangle + deviasion
                     A.remove(deviasion)
-                new_shot = proiectil(x,y,self.Ammo,newangle,self.Ammo_speed,self.noharm)
+                elif self.Spread > 0 :
+                    newangle = newangle + random.randint(-self.Spread,self.Spread)
+                new_shot = proiectil(x,y,self.Ammo,newangle,self.Ammo_speed,self.noharm,self.dmg)
                 Harmful_Stuff.append(new_shot)
-            if self.Spread > 0  :
+            if self.Spread > 0 and self.spfire > 1 :
                 del A
             if self.Ammo_count != -1 :
                 self.Ammo_count = self.Ammo_count - 1
 
-Rifle = weapon(-1,25,0,10,1,12,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Bullet.png' )),(25,5)))
-Shotgun = weapon(-1,25,3,30,5,40,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Bullet.png' )),(25,5)))
-Main_Weapons = [Rifle,Shotgun]
-Wcount = 2
+Rifle = weapon(-1,25,0,10,1,10,25,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Bullet.png' )),(25,5)))
+Shotgun = weapon(-1,25,3,30,5,40,75,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Bullet.png' )),(25,5)))
+SMG = weapon(-1,25,5,0,1,1.5,5,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Bullet.png' )),(25,5)))
+Main_Weapons = [Rifle,Shotgun,SMG]
+Wcount = 3
 
 
 class control :
