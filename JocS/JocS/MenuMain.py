@@ -7,11 +7,14 @@ import ButtonClass
 
 from Lobby import lobby
 
-stop = False
+def Menu(WIN, WIDTH, HEIGHT, FPS):
+    status = None #Value to decide for running in function...
 
-def Menu(screen, FPS):
+    func_arg = ([lobby], WIN, WIDTH, HEIGHT, FPS)
 
     ButtonVec = []
+
+    print(type(ButtonVec), type(func_arg))
 
     ButtonClass.Button_Load("MainMenu", ButtonVec) #load MainMenu for first time oppening
 
@@ -28,13 +31,15 @@ def Menu(screen, FPS):
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
-                     ButtonClass.checkButtonClick(event.pos[0], event.pos[1], ButtonVec)
+                     status = ButtonClass.checkButtonClick(event.pos[0], event.pos[1], ButtonVec, func_arg)
 
             elif event.type == pygame.QUIT:
                 pygame.quit()
                 os._exit(0)
-               
-        screen.fill((255,255,255))
-        ButtonClass.displayButtons(screen, ButtonVec)
-        pygame.display.update()
 
+        if status != None:
+            running = status
+
+        WIN.fill((255,255,255))
+        ButtonClass.displayButtons(WIN, ButtonVec)
+        pygame.display.update()
