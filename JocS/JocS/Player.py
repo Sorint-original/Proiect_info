@@ -28,7 +28,7 @@ class proiectil :
 
 
 class weapon :
-    def __init__ (self,count,speed,spread,coold,shots_per_fire,ammo ) :
+    def __init__ (self,count,speed,spread,coold,shots_per_fire,H,ammo ) :
         #if count is -1 it means that it is unlimited
         self.Ammo_count = count
         self.Ammo_speed = speed
@@ -43,13 +43,27 @@ class weapon :
         self.Ammo = ammo
         #the player who will not be harmed by this bullet it is none or 0 to 3
         self.noharm = None
+        #overheating variables
+        self.heat = 0
+        self.heatpershot = H
+        self.cooling = 0.55
+        self.OVERHEATED = False
 
     #functia care verifica daca poata sa traga , action e true sau fals si determina daca playeru da comanda
     # x si y vor fi GX SI GY de la player
     def check_fire (self , angle , action ,x , y) :
         if self.cooldown > 0 :
             self.cooldown = self.cooldown -1
-        elif action and abs(self.Ammo_count) > 0 :
+        if self.heat > 0 :
+            self.heat = self.heat - self.cooling
+        if self.OVERHEATED == True and self.heat <= 0 :
+            self.OVERHEATED = False
+        if action and abs(self.Ammo_count) > 0 and self.OVERHEATED == False and self.cooldown == 0 :
+            #tot ce trebe sa faca pentru a trage
+            self.heat = self.heat + self.heatpershot
+            if self.heat >= 100 :
+                self.heat = 100
+                self.OVERHEATED = True
             self.cooldown = self.fire_cooldown
             if self.Spread > 0  :
                 A = []
@@ -68,8 +82,8 @@ class weapon :
             if self.Ammo_count != -1 :
                 self.Ammo_count = self.Ammo_count - 1
 
-Rifle = weapon(-1,25,0,30,1,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Bullet.png' )),(25,5)))
-Shotgun = weapon(-1,25,5,90,5,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Bullet.png' )),(25,5)))
+Rifle = weapon(-1,25,0,10,1,12,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Bullet.png' )),(25,5)))
+Shotgun = weapon(-1,25,3,30,5,40,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Bullet.png' )),(25,5)))
 Main_Weapons = [Rifle,Shotgun]
 Wcount = 2
 
