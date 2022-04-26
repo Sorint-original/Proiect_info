@@ -76,6 +76,10 @@ def Change_MWeapon (button) :
     weapons = {'Rifle':'Shotgun' , 'Shotgun':'SMG' , 'SMG' :'Rifle'}
     button.text = weapons[button.text]
 
+def Change_SWeapon (button) :
+    weapons = {'Grenade Launcher' : 'Flame Thrower' , 'Flame Thrower' : 'Grenade Launcher'}
+    button.text = weapons[button.text]
+
 dispatcher = {
     'Button_Press_Quit' : Button_Press_Quit, 
     'Button_Hover_Enable' : Button_Hover_Enable, 
@@ -84,7 +88,8 @@ dispatcher = {
     'Button_Change_Scene' : Button_Change_Scene,
     'Button_Back' : Button_Back,
     'Button_No' : Button_No,
-    'Change_MWeapon' : Change_MWeapon
+    'Change_MWeapon' : Change_MWeapon,
+    'Change_SWeapon' : Change_SWeapon
     }
 
 class Button:

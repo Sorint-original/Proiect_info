@@ -66,5 +66,5 @@ def gameplay (WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks) :
             if Playeri[i].Selected :
                 Playeri[i].gameplay_update()
         for attack in Harmful_Stuff :
-            attack.move()
+            attack.update()
         draw_window()

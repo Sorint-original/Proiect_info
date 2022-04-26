@@ -118,7 +118,9 @@ def lobby (WIN,WIDTH,HEIGHT,FPS) :
                                 elif Playeri[Input[event.joy]].Button == 0 :
                                     BUTplayers[Input[event.joy]][0].onPress(BUTplayers[Input[event.joy]][0])
                                     Playeri[Input[event.joy]].Next_MWeapon()
-
+                                elif Playeri[Input[event.joy]].Button == 1 :
+                                    BUTplayers[Input[event.joy]][1].onPress(BUTplayers[Input[event.joy]][1])
+                                    Playeri[Input[event.joy]].Next_SWeapon()
 
             except :
                 if event.type == pygame.KEYDOWN :
@@ -152,6 +154,9 @@ def lobby (WIN,WIDTH,HEIGHT,FPS) :
                             elif Playeri[Input["Keyboard"]].Button == 0 :
                                 BUTplayers[Input["Keyboard"]][0].onPress(BUTplayers[Input["Keyboard"]][0])
                                 Playeri[Input["Keyboard"]].Next_MWeapon()
+                            elif Playeri[Input["Keyboard"]].Button == 1 :
+                                    BUTplayers[Input["Keyboard"]][1].onPress(BUTplayers[Input["Keyboard"]][1])
+                                    Playeri[Input["Keyboard"]].Next_SWeapon()
 
         pygame.event.pump()
 
