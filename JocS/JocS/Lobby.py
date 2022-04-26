@@ -115,6 +115,9 @@ def lobby (WIN,WIDTH,HEIGHT,FPS) :
                                         Playeri[Input[event.joy]].Ready = False
                                     else :
                                         Playeri[Input[event.joy]].Ready = True
+                                elif Playeri[Input[event.joy]].Button == 0 :
+                                    BUTplayers[Input[event.joy]][0].onPress(BUTplayers[Input[event.joy]][0])
+                                    Playeri[Input[event.joy]].Next_MWeapon()
 
 
             except :
@@ -146,6 +149,9 @@ def lobby (WIN,WIDTH,HEIGHT,FPS) :
                                     Playeri[Input["Keyboard"]].Ready = False
                                 else :
                                     Playeri[Input["Keyboard"]].Ready = True
+                            elif Playeri[Input["Keyboard"]].Button == 0 :
+                                BUTplayers[Input["Keyboard"]][0].onPress(BUTplayers[Input["Keyboard"]][0])
+                                Playeri[Input["Keyboard"]].Next_MWeapon()
 
         pygame.event.pump()
 

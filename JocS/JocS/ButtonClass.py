@@ -72,6 +72,10 @@ def Button_Back(button, arg):
 def Button_No(button):
     print(None)
 
+def Change_MWeapon (button) :
+    weapons = {'Rifle':'Shotgun' , 'Shotgun':'Rifle'}
+    button.text = weapons[button.text]
+
 dispatcher = {
     'Button_Press_Quit' : Button_Press_Quit, 
     'Button_Hover_Enable' : Button_Hover_Enable, 
@@ -79,7 +83,8 @@ dispatcher = {
     'Button_Load' : Button_Load, 
     'Button_Change_Scene' : Button_Change_Scene,
     'Button_Back' : Button_Back,
-    'Button_No' : Button_No
+    'Button_No' : Button_No,
+    'Change_MWeapon' : Change_MWeapon
     }
 
 class Button:

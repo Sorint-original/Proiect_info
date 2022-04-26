@@ -1,5 +1,6 @@
 import pygame
 import os
+import random
 
 from Geometrie import get_angle , get_pos
 
@@ -48,13 +49,30 @@ class weapon :
     def check_fire (self , angle , action ,x , y) :
         if self.cooldown > 0 :
             self.cooldown = self.cooldown -1
-        elif action :
+        elif action and abs(self.Ammo_count) > 0 :
             self.cooldown = self.fire_cooldown
-            new_shot = proiectil(x,y,self.Ammo,angle,self.Ammo_speed,self.noharm)
-            Harmful_Stuff.append(new_shot)
+            if self.Spread > 0  :
+                A = []
+                for i in range(-self.Spread , self.Spread+1) :
+                    A.append(i)
+            for i in range (self.spfire) :
+                newangle = angle
+                if self.Spread > 0 :
+                    deviasion = random.choice(A)
+                    newangle = newangle + deviasion
+                    A.remove(deviasion)
+                new_shot = proiectil(x,y,self.Ammo,newangle,self.Ammo_speed,self.noharm)
+                Harmful_Stuff.append(new_shot)
+            if self.Spread > 0  :
+                del A
+            if self.Ammo_count != -1 :
+                self.Ammo_count = self.Ammo_count - 1
 
-Rifle = weapon(-1,10,0,30,1,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Bullet.png' )),(25,5)))
-Main_Weapons = [Rifle]
+Rifle = weapon(-1,25,0,30,1,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Bullet.png' )),(25,5)))
+Shotgun = weapon(-1,25,5,90,5,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Bullet.png' )),(25,5)))
+Main_Weapons = [Rifle,Shotgun]
+Wcount = 2
+
 
 class control :
     def __init__ (self,source) :
@@ -110,12 +128,20 @@ class player:
         self.Health = 1000
         self.maxspeed = 5
         self.MainWeapon = Main_Weapons[0]
+        self.MW = 0
 
     #schimbarea marimi are nevoie de o re introducere a imagini ne modificate ca sa arate cat mai bine
     def change_size (self , newsize , BIMG , UIMG) :
         self.size = newsize 
         self.Bottom_image = pygame.transform.scale(BIMG,(9*self.size/8, 7*self.size/8))
         self.Upper_image = pygame.transform.scale(UIMG,(self.size,self.size))
+
+    def Next_MWeapon (self) :
+        self.MW = self.MW + 1
+        if self.MW == Wcount :
+            self.MW = 0 
+        self.MainWeapon = Main_Weapons[self.MW]
+
     #Functie de resetat controalele pleyerului
     def reset_control (self) :
         self.Control = control (self.Source)
