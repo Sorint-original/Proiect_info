@@ -73,7 +73,7 @@ def Button_No(button):
     print(None)
 
 def Change_MWeapon (button) :
-    weapons = {'Rifle':'Shotgun' , 'Shotgun':'Rifle'}
+    weapons = {'Rifle':'Shotgun' , 'Shotgun':'SMG' , 'SMG' :'Rifle'}
     button.text = weapons[button.text]
 
 dispatcher = {
