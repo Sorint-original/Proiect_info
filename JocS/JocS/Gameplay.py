@@ -60,6 +60,8 @@ def gameplay (WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks) :
                     Playeri[Input[event.joy]].update_input(event)
             except :
                 if Input["Keyboard"] != None :
+                    if event.type == pygame.MOUSEMOTION :
+                        event.pos = [event.pos[0] - (Playeri[Input["Keyboard"]].GX / (1920/100))*(w/100)  ,event.pos[1] - (Playeri[Input["Keyboard"]].GY / (1080/100))*(h/100) ]
                     Playeri[Input["Keyboard"]].update_input(event)
         #updatarea playerului in the game
         for i in range (4) :

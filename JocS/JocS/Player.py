@@ -150,7 +150,7 @@ class control :
             self.MouseButtons = [False , False , False , False , False , False , False , False , False , False]
             #controalele de la tastatura care pot fi modificate 
             # 0 - sus , 1 - stanga , 2 - jos , 3 - dreapta , 4 - abilitate activa , 5 - abilitate pasiva
-            self.action =[False, False, False, False, False, False]
+            self.action =[0, 0, 0, 0, 0, 0]
             #ce modifica anumite taste 
             self.input = {pygame.K_w:0 , pygame.K_a:1 , pygame.K_s:2 , pygame.K_d:3 , pygame.K_q:4 , pygame.K_e:5}
             #de ce tasta e modificata fiecare valoare din action
@@ -239,13 +239,13 @@ class player:
             if event.type == pygame.KEYDOWN :
                 try :
                     if self.Control.input[event.key] != None :
-                        self.Control.action[self.Control.input[event.key]] = True
+                        self.Control.action[self.Control.input[event.key]] = 1
                 except :
                     self.Control.input[event.key] = None
             elif event.type == pygame.KEYUP :
                 try :
                     if self.Control.input[event.key] != None :
-                        self.Control.action[self.Control.input[event.key]] = False
+                        self.Control.action[self.Control.input[event.key]] = 0
                 except :
                     self.Control.input[event.key] = None
             elif event.type == pygame.MOUSEMOTION :
@@ -287,6 +287,23 @@ class player:
             self.MainWeapon.check_fire(self.Upper_angle,self.Control.action[0],self.GX,self.GY)
             if self.Control.action[0] == False :
                 self.SecondaryWeapon.check_fire(self.Upper_angle,self.Control.action[1],self.GX,self.GY)
+        else :
+            #Daca este controlat de tastatura
+            #bottom angle
+            axay = -self.Control.action[0] + self.Control.action[2]
+            axax = -self.Control.action[1] + self.Control.action[3]
+            if axax !=0  or axay != 0 :
+                self.Bottom_angle = get_angle([axax,axay])
+                if self.Control.MouseButtons[0] == False and self.Control.MouseButtons[2] == False :
+                    self.GX = self.GX  + axax * self.maxspeed
+                    self.GY = self.GY + axay * self.maxspeed
+                else :
+                    self.GX = self.GX  + axax * self.maxspeed/2
+                    self.GY = self.GY + axay * self.maxspeed/2
+            #Upper angle 
+            if self.Control.Mouse[0] != 0 or self.Control.Mouse[1] != 0 :
+                self.Upper_angle = get_angle(self.Control.Mouse)
+
     #Afisarea playerului pe ecran la coordonatele lui 
     def afisare (self,WIN) :
         BIMAGE = pygame.transform.rotate(self.Bottom_image,self.Bottom_angle)
