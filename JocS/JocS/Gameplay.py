@@ -59,10 +59,15 @@ def gameplay (WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks,Map,colision_tiles) :
                 if event.joy != None :
                     Playeri[Input[event.joy]].update_input(event)
             except :
-                if Input["Keyboard"] != None :
-                    if event.type == pygame.MOUSEMOTION :
-                        event.pos = [event.pos[0] - (Playeri[Input["Keyboard"]].GX / (1920/100))*(w/100)  ,event.pos[1] - (Playeri[Input["Keyboard"]].GY / (1080/100))*(h/100) ]
+                if Input["Keyboard"] != None and event.type != pygame.MOUSEMOTION :
                     Playeri[Input["Keyboard"]].update_input(event)
+        #Updatarea pozitiei mousului pentru Player
+        if Input["Keyboard"] !=None :
+            cord = pygame.mouse.get_pos()
+            Ponsx = Playeri[Input["Keyboard"]].GX * (w/1920) + x
+            Ponsy = Playeri[Input["Keyboard"]].GY * (h/1080) + y
+            Playeri[Input["Keyboard"]].Control.Mouse[0] =  cord[0]-Ponsx
+            Playeri[Input["Keyboard"]].Control.Mouse[1] =  cord[1]-Ponsy
         #updatarea playerului in the game
         for i in range (4) :
             if Playeri[i].Selected :

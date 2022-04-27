@@ -248,8 +248,6 @@ class player:
                         self.Control.action[self.Control.input[event.key]] = 0
                 except :
                     self.Control.input[event.key] = None
-            elif event.type == pygame.MOUSEMOTION :
-                self.Control.Mouse = event.pos
             elif event.type == pygame.MOUSEBUTTONDOWN :
                 self.Control.MouseButtons[event.button-1] = True
             elif event.type == pygame.MOUSEBUTTONUP :
