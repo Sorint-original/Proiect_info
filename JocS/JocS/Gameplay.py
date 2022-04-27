@@ -6,7 +6,7 @@ import ButtonClass
 from Player import Harmful_Stuff
 
 #input reprezinta un dictionar care indica care input(keyboard , controller) se duce la fiecare player , de asemenea as vrea un parameter MAP care e luat din MAPSELECT
-def gameplay (WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks) :
+def gameplay (WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks,Map,colision_tiles) :
     sw = 1920
     sh = 1080
     #pregatirea playerilor pentru  Gameplay
@@ -33,7 +33,7 @@ def gameplay (WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks) :
     DisplayG = pygame.Surface((sw,sh))
 
     def environment_update () :
-        DisplayG.fill ((255,255,255))
+        DisplayG.blit(Map,(0,0))
         for i in range (4) :
             if Playeri[i].Selected :
                 Playeri[i].afisare(DisplayG)

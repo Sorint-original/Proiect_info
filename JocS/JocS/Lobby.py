@@ -5,6 +5,7 @@ from EventH import exit , controller_verify
 from Player import player
 import ButtonClass
 from Gameplay import gameplay
+from Map_select import map_select
 
 #Initializarea butoanelor la inceput astfel for fi gata de fiecare data cand se intra in lobby
 BUTconfig=[]
@@ -186,7 +187,7 @@ def lobby (WIN,WIDTH,HEIGHT,FPS) :
 
         if start_cooldown == 0 :
             #aici pun momentan ca se va duce direct la gemplay dar in mod normal sar duce la map select
-            gameplay(WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks)
+            map_select(WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks)
             for i in range(4) :
                 Playeri[i].Ready = False
                 Playeri[i].GX = 30 + i * ((WIDTH - 150) / 4 + 30) + (WIDTH - 150) / 8
