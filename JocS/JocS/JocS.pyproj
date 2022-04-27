@@ -33,11 +33,17 @@
     </Compile>
     <Compile Include="MapEditor.py" />
     <Compile Include="MenuMain.py" />
+    <Compile Include="module1.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Player.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="JocS.py" />
     <Compile Include="Lobby.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="QuadTree.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TileClass.py" />

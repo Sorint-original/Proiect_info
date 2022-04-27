@@ -1,8 +1,11 @@
 import pygame
 import os
+import random
 
 import ButtonClass
 import TileClass
+
+import QuadTree
 
 rows = 16
 tiles_per_row = 28
@@ -23,6 +26,8 @@ def save_map(tileMap):
                 f.write(str(i) + ' ' + str(j) + ' ' + str(tileMap[i][j].canCollide) + ' ' + str(tileMap[i][j].texture) + ' ' +str(tileMap[i][j].rotation_degree) + '\n')
 
 def Editor(WIN, WIDTH, HEIGHT, FPS):
+    
+
     textureBool = False
     removeBool = False
     def change_texture(vector, x, y, texture):
@@ -65,7 +70,6 @@ def Editor(WIN, WIDTH, HEIGHT, FPS):
         clock.tick(FPS)
 
         for event in pygame.event.get():
-            print(event)
             if event.type == pygame.QUIT:
                 pygame.quit()
                 os._exit(0)
