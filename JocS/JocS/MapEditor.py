@@ -120,5 +120,5 @@ def Editor(WIN, WIDTH, HEIGHT, FPS):
         WIN.fill((0,0,0))
         texture_draw()
         outline_draw()
-        qTree.show_tree(WIN)
+        #qTree.show_tree(WIN)
         pygame.display.update()
