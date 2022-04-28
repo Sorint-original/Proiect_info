@@ -15,6 +15,7 @@ def get_angle (v1) :
     #returneaza unghiul in grade
     if v1[1] > 0 :
         angle = -angle
+    #UNGHIUL RETURNAT apartine intervalului [-180 , 180 ] practic - 60 = 300 de grade
     return round(math.degrees(angle))
 
 def get_pos (angle,lenght) :

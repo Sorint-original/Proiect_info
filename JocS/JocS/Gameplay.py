@@ -23,12 +23,12 @@ def gameplay (WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks,Map,colision_tiles) :
             Playeri[i].change_size(150,pygame.image.load(os.path.join('Assets\Robots', Botimg[i])),pygame.image.load(os.path.join('Assets\Robots', Upimg[i])))
             alcat = alcat + 2
     #stabilirea dimensiunilor pentru afisarea gameplayului
-    h = HEIGHT - 100
+    h = HEIGHT - 110
     while ( round(h * 1.78)  > WIDTH - 50) :
         h = h -1
-    w =  round(h*1.78) 
+    w =  round(h*1.78)
     x =  (WIDTH - w)/2
-    y = (HEIGHT - h)/2
+    y = max(100,(HEIGHT - h)/2)
     #Suprafata pe care se va intampla totul
     DisplayG = pygame.Surface((sw,sh))
 
@@ -44,6 +44,7 @@ def gameplay (WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks,Map,colision_tiles) :
         WIN.fill((0,0,0))
         environment_update()
         WIN.blit(pygame.transform.scale(DisplayG,(w,h)),(x,y))
+        pygame.draw.line(WIN,(255,255,255),(100,0),(100,100),5)
         pygame.display.update()
 
 
