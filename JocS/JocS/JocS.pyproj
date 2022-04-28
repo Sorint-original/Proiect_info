@@ -43,6 +43,9 @@
     <Compile Include="Lobby.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="QuadTree.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="TileClass.py" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
