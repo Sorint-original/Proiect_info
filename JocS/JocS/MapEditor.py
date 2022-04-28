@@ -19,14 +19,25 @@ collidable = False
 xoffset = (TileClass.w - tiles_per_row * TileClass.size) // 2
 yoffset = (TileClass.h - rows * TileClass.size) // 2
 
+rect = QuadTree.Rectangle(xoffset + tiles_per_row * TileClass.size // 2, yoffset + rows * TileClass.size // 2, tiles_per_row * TileClass.size, rows * TileClass.size)
+qTree = QuadTree.QuadTree(rect)
+
 def save_map(tileMap):
     with open("Maps/test.map", "w") as f:
         for i in range(tiles_per_row):
             for j in range(rows):
                 f.write(str(i) + ' ' + str(j) + ' ' + str(tileMap[i][j].canCollide) + ' ' + str(tileMap[i][j].texture) + ' ' +str(tileMap[i][j].rotation_degree) + '\n')
 
+def generate_points():
+    for i in range(700):
+        x = random.randint(xoffset + 10, tiles_per_row * TileClass.size - xoffset - 10)
+        y = random.randint(yoffset + 10, rows * TileClass.size - yoffset - 10)
+        obj = QuadTree.TreeObject(x,y)
+        qTree.insert(obj)
+
 def Editor(WIN, WIDTH, HEIGHT, FPS):
     
+    generate_points()
 
     textureBool = False
     removeBool = False
@@ -109,4 +120,5 @@ def Editor(WIN, WIDTH, HEIGHT, FPS):
         WIN.fill((0,0,0))
         texture_draw()
         outline_draw()
+        qTree.show_tree(WIN)
         pygame.display.update()
