@@ -5,6 +5,9 @@ from EventH import exit , controller_verify
 from Player import player
 import ButtonClass
 from Gameplay import gameplay
+from Map_select import map_select
+
+DEBUG_ONE_PLAYER_TEST = True
 
 #Initializarea butoanelor la inceput astfel for fi gata de fiecare data cand se intra in lobby
 BUTconfig=[]
@@ -115,7 +118,12 @@ def lobby (WIN,WIDTH,HEIGHT,FPS) :
                                         Playeri[Input[event.joy]].Ready = False
                                     else :
                                         Playeri[Input[event.joy]].Ready = True
-
+                                elif Playeri[Input[event.joy]].Button == 0 :
+                                    BUTplayers[Input[event.joy]][0].onPress(BUTplayers[Input[event.joy]][0])
+                                    Playeri[Input[event.joy]].Next_MWeapon()
+                                elif Playeri[Input[event.joy]].Button == 1 :
+                                    BUTplayers[Input[event.joy]][1].onPress(BUTplayers[Input[event.joy]][1])
+                                    Playeri[Input[event.joy]].Next_SWeapon()
 
             except :
                 if event.type == pygame.KEYDOWN :
@@ -146,6 +154,12 @@ def lobby (WIN,WIDTH,HEIGHT,FPS) :
                                     Playeri[Input["Keyboard"]].Ready = False
                                 else :
                                     Playeri[Input["Keyboard"]].Ready = True
+                            elif Playeri[Input["Keyboard"]].Button == 0 :
+                                BUTplayers[Input["Keyboard"]][0].onPress(BUTplayers[Input["Keyboard"]][0])
+                                Playeri[Input["Keyboard"]].Next_MWeapon()
+                            elif Playeri[Input["Keyboard"]].Button == 1 :
+                                    BUTplayers[Input["Keyboard"]][1].onPress(BUTplayers[Input["Keyboard"]][1])
+                                    Playeri[Input["Keyboard"]].Next_SWeapon()
 
         pygame.event.pump()
 
@@ -170,12 +184,14 @@ def lobby (WIN,WIDTH,HEIGHT,FPS) :
                break
         if ok and cati > 1 :
             start_cooldown = start_cooldown - 1 
+        elif ok and cati > 0 and DEBUG_ONE_PLAYER_TEST:
+            start_cooldown = 0
         else :
             start_cooldown = 181
 
         if start_cooldown == 0 :
             #aici pun momentan ca se va duce direct la gemplay dar in mod normal sar duce la map select
-            gameplay(WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks)
+            map_select(WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks)
             for i in range(4) :
                 Playeri[i].Ready = False
                 Playeri[i].GX = 30 + i * ((WIDTH - 150) / 4 + 30) + (WIDTH - 150) / 8

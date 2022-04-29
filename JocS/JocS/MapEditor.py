@@ -19,60 +19,56 @@ collidable = False
 xoffset = (TileClass.w - tiles_per_row * TileClass.size) // 2
 yoffset = (TileClass.h - rows * TileClass.size) // 2
 
-rect = QuadTree.Rectangle(xoffset + tiles_per_row * TileClass.size // 2, yoffset + rows * TileClass.size // 2, tiles_per_row * TileClass.size, rows * TileClass.size)
+rect = QuadTree.Rectangle(xoffset + tiles_per_row * TileClass.size // 2, yoffset + rows * TileClass.size // 2, tiles_per_row * TileClass.size + TileClass.size + 10, rows * TileClass.size + TileClass.size + 10)
 qTree = QuadTree.QuadTree(rect)
 
 def save_map(tileMap):
     with open("Maps/test.map", "w") as f:
-        for i in range(tiles_per_row):
-            for j in range(rows):
+        for i in range(rows):
+            for j in range(tiles_per_row):
                 f.write(str(i) + ' ' + str(j) + ' ' + str(tileMap[i][j].canCollide) + ' ' + str(tileMap[i][j].texture) + ' ' +str(tileMap[i][j].rotation_degree) + '\n')
 
-def generate_points():
-    for i in range(700):
-        x = random.randint(xoffset + 10, tiles_per_row * TileClass.size - xoffset - 10)
-        y = random.randint(yoffset + 10, rows * TileClass.size - yoffset - 10)
-        obj = QuadTree.TreeObject(x,y)
-        qTree.insert(obj)
-
 def Editor(WIN, WIDTH, HEIGHT, FPS):
-    
-    generate_points()
 
     textureBool = False
     removeBool = False
     def change_texture(vector, x, y, texture):
         #better tile searching algorithm requried
         if textureBool == True:
-            for i in range(tiles_per_row):
-                for j in range(rows):
-                    if x >= i * TileClass.size + xoffset and x <= i * TileClass.size + xoffset + TileClass.size and y >= j * TileClass.size + yoffset and y <= j * TileClass.size + yoffset + TileClass.size:
+            for i in range(rows):
+                for j in range(tiles_per_row):
+                    if x >= j * TileClass.size + xoffset and x <= j * TileClass.size + xoffset + TileClass.size and y >= i * TileClass.size + yoffset and y <= i * TileClass.size + yoffset + TileClass.size:
                         vector[i][j].texture = TileClass.keyVec[currentTexture]
+                        boolean = True
+                        if collidable == vector[i][j].canCollide:
+                            boolean = False
                         vector[i][j].canCollide = collidable
+                        if collidable == True and boolean == True:
+                            qTree.insert(QuadTree.TreeObject(TileClass.size * (j) + xoffset + TileClass.size // 2, TileClass.size * (i) + yoffset + TileClass.size // 2))
                         break
         elif removeBool == True:
-            for i in range(tiles_per_row):
-                for j in range(rows):
-                    if x >= i * TileClass.size + xoffset and x <= i * TileClass.size + xoffset + TileClass.size and y >= j * TileClass.size + yoffset and y <= j * TileClass.size + yoffset + TileClass.size:
+            for i in range(rows):
+                for j in range(tiles_per_row):
+                    if x >= j * TileClass.size + xoffset and x <= j * TileClass.size + xoffset + TileClass.size and y >= i * TileClass.size + yoffset and y <= i * TileClass.size + yoffset + TileClass.size:
                         vector[i][j].texture = None
                         vector[i][j].canCollide = False
                         break
 
-    for i in range(tiles_per_row):
+    for i in range(rows):
         newVec = []
-        for j in range(rows):
+        for j in range(tiles_per_row):
             newTile = TileClass.Tile()
             newVec.append(newTile)
         tileMap.append(newVec)
 
     def outline_draw():
-        for i in range(tiles_per_row):
-            for j in range(rows):
+        for i in range(rows):
+            for j in range(tiles_per_row):
                 tileMap[i][j].editor_view(xoffset, yoffset, i, j, WIN)
 
     def texture_draw():
-        for i in range(tiles_per_row):
-            for j in range(rows):
+        for i in range(rows):
+            for j in range(tiles_per_row):
                 tileMap[i][j].draw_texture(xoffset, yoffset, i, j, WIN)
 
     clock = pygame.time.Clock()
@@ -120,5 +116,4 @@ def Editor(WIN, WIDTH, HEIGHT, FPS):
         WIN.fill((0,0,0))
         texture_draw()
         outline_draw()
-        #qTree.show_tree(WIN)
         pygame.display.update()
