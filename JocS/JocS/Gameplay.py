@@ -46,7 +46,7 @@ def gameplay (WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks,Map,colision_tiles) :
 
     #Suprafata pe care se va intampla totul
     DisplayG = pygame.Surface((sw,sh))
-
+    See_collisions = False
     def environment_update () :
         DisplayG.blit(Map,(0,0))
         for i in range (4) :
@@ -54,6 +54,8 @@ def gameplay (WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks,Map,colision_tiles) :
                 Playeri[i].afisare(DisplayG)
         for attack in Harmful_Stuff :
             attack.afisare(DisplayG)
+            if See_collisions :
+                pygame.draw.circle(DisplayG,(204, 0, 204),(attack.GX,attack.GY),attack.size/2)
 
     hfont = pygame.font.Font("freesansbold.ttf", 11)
     afont = pygame.font.Font("freesansbold.ttf", 20)
@@ -108,6 +110,12 @@ def gameplay (WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks,Map,colision_tiles) :
             except :
                 if Input["Keyboard"] != None and event.type != pygame.MOUSEMOTION :
                     Playeri[Input["Keyboard"]].update_input(event)
+                if event.type == pygame.KEYDOWN :
+                    if event.key == pygame.K_c :
+                        if See_collisions == True :
+                            See_collisions = False
+                        else :
+                            See_collisions = True
         #Updatarea pozitiei mousului pentru Player
         if Input["Keyboard"] !=None :
             cord = pygame.mouse.get_pos()

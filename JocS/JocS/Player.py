@@ -11,11 +11,14 @@ Harmful_Stuff = []
 EX_sequences = [pygame.image.load(os.path.join('Assets\Explosion','EX0.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX1.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX2.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX3.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX4.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX5.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX6.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX7.png' ))]
 
 class explosion :
-    def __init__ (self,x,y,size) :
+    def __init__ (self,x,y,size,dmg) :
         self.GX = x
         self.GY = y
         self.existance = 57
-        self.size =size
+        self.size = size
+        self.damage = dmg
+        #Fiecare player poate sa ia damage doar o data de la o anumita explozie
+        self.noharm = []
 
     def update (self) :
         self.existance = self.existance - 1
@@ -39,11 +42,17 @@ class explosion :
         elif self.existance > 0 :
             screen.blit(pygame.transform.scale(EX_sequences[7],(self.size,self.size/2)),(self.GX -self.size/2,self.GY -self.size/4))
 
+    def impact (self,other) :
+        #momentan nimic
+        print("yeet")
+
 
 class proiectil :
-    def __init__ (self,x,y,image,angle,speed,Dmg,A,mins,ext,EXPLOD,Bounce,nh) :
+    def __init__ (self,x,y,size,image,angle,speed,Dmg,A,mins,ext,EXPLOD,Bounce,nh) :
         self.GX = x
         self.GY = y
+        #self.size reprezinta diametru cercului de coliziunea a glontului
+        self.size = size
         self.Angle = angle
         self.IMG = pygame.transform.rotate(image , angle)
         self.Speed = speed
@@ -60,7 +69,7 @@ class proiectil :
             self.existence = self.existence -1
         if self.existence == 0 :
             if self.Will_Explode :
-                Harmful_Stuff.append(explosion(self.GX,self.GY,150))
+                Harmful_Stuff.append(explosion(self.GX,self.GY,200,self.dmg))
             Harmful_Stuff.remove(self)
 
         #misca atackul
@@ -78,9 +87,17 @@ class proiectil :
         y = self.GY - self.IMG.get_height()/2
         screen.blit(self.IMG,(x,y))
 
+    #aceasta functie va fi chemata cand un anumit glont intra in contact cu alt obiect
+    #other va tine un fel de id explicand ce si unde se afla obiectul lovit
+    def impact (self,other) :
+        #momentan nimic
+        print("yeet")
+
 
 class weapon :
-    def __init__ (self,count,speed,spread,coold,shots_per_fire,H,damage,A,mins,bext,EXP,B,ammo ) :
+    def __init__ (self,size,count,speed,spread,coold,shots_per_fire,H,damage,A,mins,bext,EXP,B,ammo ) :
+        #marimea diametrului unui glont
+        self.size = size
         #if count is -1 it means that it is unlimited
         self.Ammo_count = count
         self.Ammo_speed = speed
@@ -139,7 +156,7 @@ class weapon :
                     A.remove(deviasion)
                 elif self.Spread > 0 :
                     newangle = newangle + random.randint(-self.Spread,self.Spread)
-                new_shot = proiectil(x,y,self.Ammo,newangle,self.Ammo_speed,self.dmg,self.acceleration,self.minspeed,self.existence,self.explosive,self.bounce,self.noharm)
+                new_shot = proiectil(x,y,self.size,self.Ammo,newangle,self.Ammo_speed,self.dmg,self.acceleration,self.minspeed,self.existence,self.explosive,self.bounce,self.noharm)
                 Harmful_Stuff.append(new_shot)
             if self.Spread > 0 and self.spfire > 1 :
                 del A
@@ -147,15 +164,15 @@ class weapon :
                 self.Ammo_count = self.Ammo_count - 1
 
 # Main Weopans care se folosesc in joc 
-Rifle = weapon(-1,25,0,10,1,10,25,0,25,-1,False,False,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Bullet.png' )),(25,5)))
-Shotgun = weapon(-1,25,3,30,5,40,75,0,25,-1,False,False,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Bullet.png' )),(25,5)))
-SMG = weapon(-1,25,5,0,1,1.5,5,0,25,-1,False,False,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Bullet.png' )),(25,5)))
+Rifle = weapon(10,-1,25,0,10,1,10,25,0,25,-1,False,False,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Bullet.png' )),(25,5)))
+Shotgun = weapon(10,-1,25,3,30,5,40,75,0,25,-1,False,False,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Bullet.png' )),(25,5)))
+SMG = weapon(10,-1,25,5,0,1,1.5,5,0,25,-1,False,False,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Bullet.png' )),(25,5)))
 Main_Weapons = [Rifle,Shotgun,SMG]
 MWcount = 3
 
 #Secondary weapons care se folosesc in joc
-Grenade_Launcher = weapon(10,30,0,60,1,0,0,-0.5,0,120,True,True,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Grenade.png' )),(15,18)))
-Flame_Thrower = weapon(180,25,15,0,1,0,5,-0.7,6,100,False,True,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Flame.png' )),(39,30)))
+Grenade_Launcher = weapon(15,10,30,0,60,1,0,0,-0.5,0,120,True,True,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Grenade.png' )),(15,18)))
+Flame_Thrower = weapon(30,180,25,15,0,1,0,5,-0.7,6,100,False,True,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Flame.png' )),(39,30)))
 Secondary_Weapons = [Grenade_Launcher,Flame_Thrower]
 SWcount = 2
 
@@ -303,11 +320,11 @@ class player:
                 self.Bottom_angle = get_angle(self.Control.orientation[0])
                 #movement
                 if self.Control.action[0] == False and self.Control.action[1] == False :
-                    self.GX = self.GX + self.Control.orientation[0][0]*self.maxspeed
-                    self.GY = self.GY + self.Control.orientation[0][1]*self.maxspeed
+                    coord = get_pos(self.Bottom_angle,self.maxspeed)
                 else :
-                    self.GX = self.GX + self.Control.orientation[0][0]*self.maxspeed/2
-                    self.GY = self.GY + self.Control.orientation[0][1]*self.maxspeed/2
+                    coord = get_pos(self.Bottom_angle,self.maxspeed*2/3)
+                self.GX = self.GX + coord[0]
+                self.GY = self.GY + coord[1]
             #upper image
             if abs(self.Control.orientation[1][0]) > 0.1 or abs(self.Control.orientation[1][1]) > 0.1 :
                 self.Upper_angle = get_angle(self.Control.orientation[1])
@@ -325,11 +342,11 @@ class player:
             if axax !=0  or axay != 0 :
                 self.Bottom_angle = get_angle([axax,axay])
                 if self.Control.MouseButtons[0] == False and self.Control.MouseButtons[2] == False :
-                    self.GX = self.GX  + axax * self.maxspeed
-                    self.GY = self.GY + axay * self.maxspeed
+                    coord = get_pos(self.Bottom_angle,self.maxspeed)
                 else :
-                    self.GX = self.GX  + axax * self.maxspeed/2
-                    self.GY = self.GY + axay * self.maxspeed/2
+                    coord = get_pos(self.Bottom_angle,self.maxspeed*2/3)
+                self.GX = self.GX + coord[0]
+                self.GY = self.GY + coord[1]
             #Upper angle 
             if self.Control.Mouse[0] != 0 or self.Control.Mouse[1] != 0 :
                 self.Upper_angle = get_angle(self.Control.Mouse)
