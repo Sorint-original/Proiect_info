@@ -1,6 +1,7 @@
 import pygame
 import os
 import random
+import copy
 
 from Geometrie import get_angle , get_pos
 
@@ -153,8 +154,8 @@ Main_Weapons = [Rifle,Shotgun,SMG]
 MWcount = 3
 
 #Secondary weapons care se folosesc in joc
-Grenade_Launcher = weapon(-1,30,0,60,1,0,0,-0.5,0,120,True,True,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Grenade.png' )),(15,18)))
-Flame_Thrower = weapon(-1,25,15,0,1,0,5,-0.7,6,100,False,True,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Flame.png' )),(39,30)))
+Grenade_Launcher = weapon(10,30,0,60,1,0,0,-0.5,0,120,True,True,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Grenade.png' )),(15,18)))
+Flame_Thrower = weapon(180,25,15,0,1,0,5,-0.7,6,100,False,True,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Flame.png' )),(39,30)))
 Secondary_Weapons = [Grenade_Launcher,Flame_Thrower]
 SWcount = 2
 
@@ -212,9 +213,9 @@ class player:
         #Variabile pentru Gameplay 
         self.Health = 1000
         self.maxspeed = 5
-        self.MainWeapon = Main_Weapons[0]
+        self.MainWeapon = copy.copy(Main_Weapons[0])
         self.MW = 0
-        self.SecondaryWeapon = Secondary_Weapons[0]
+        self.SecondaryWeapon = copy.copy(Secondary_Weapons[0])
         self.SW = 0
 
     #schimbarea marimi are nevoie de o re introducere a imagini ne modificate ca sa arate cat mai bine
@@ -227,13 +228,13 @@ class player:
         self.MW = self.MW + 1
         if self.MW == MWcount :
             self.MW = 0 
-        self.MainWeapon = Main_Weapons[self.MW]
+        self.MainWeapon = copy.copy(Main_Weapons[self.MW])
 
     def Next_SWeapon (self) :
         self.SW = self.SW + 1
         if self.SW == SWcount :
             self.SW = 0 
-        self.SecondaryWeapon = Secondary_Weapons[self.SW]
+        self.SecondaryWeapon = copy.copy(Secondary_Weapons[self.SW])
 
     #Functie de resetat controalele pleyerului
     def reset_control (self) :

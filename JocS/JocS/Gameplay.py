@@ -26,12 +26,14 @@ def gameplay (WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks,Map,colision_tiles) :
             Playeri[i].change_size(150,pygame.image.load(os.path.join('Assets\Robots', Botimg[i])),pygame.image.load(os.path.join('Assets\Robots', Upimg[i])))
             alcat = alcat + 2
     #informatiile pentru hud
-    font = pygame.font.Font("freesansbold.ttf", 20)
-    Hud = ["BLUE",(0, 0, 255),"GREEN",(51, 204, 51),"YELLOW",(255, 204, 0),"RED",(255, 51, 0)]
+    Hud = [(0, 0, 255),(51, 204, 51),(255, 204, 0),(255, 51, 0)]
+    HEAT = pygame.image.load(os.path.join('Assets\HUD', "HEAT.png"))
     for i in range (len(HUD_info)) :
-        text = font.render(Hud[HUD_info[i][0]*2], True,Hud[HUD_info[i][0]*2+1])
-        HUD_info[i].append(text)
-        HUD_info[i].append(Hud[HUD_info[i][0]*2+1])
+        HUD_info[i].append(Hud[HUD_info[i][0]])
+        if Playeri[HUD_info[i][0]].SW == 0 :
+            HUD_info[i].append(pygame.image.load(os.path.join('Assets\HUD', "Grenade_Launcher.png")))
+        elif Playeri[HUD_info[i][0]].SW == 1 :
+            HUD_info[i].append(pygame.image.load(os.path.join('Assets\HUD', "Flame_Thrower.png")))
     #stabilirea dimensiunilor pentru afisarea gameplayului
     h = HEIGHT - 110
     while ( round(h * 1.78)  > WIDTH - 50) :
@@ -53,6 +55,8 @@ def gameplay (WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks,Map,colision_tiles) :
         for attack in Harmful_Stuff :
             attack.afisare(DisplayG)
 
+    hfont = pygame.font.Font("freesansbold.ttf", 11)
+    afont = pygame.font.Font("freesansbold.ttf", 20)
     def draw_window () :
         WIN.fill((0,0,0))
         #Afisarea Gameplay Environment
@@ -69,10 +73,21 @@ def gameplay (WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks,Map,colision_tiles) :
         else :
             pas = ((WIDTH-1000)/5)*3 + 250*3
         for i in range (len(HUD_info)) :
-            WIN.blit(HUD_info[i][1], (ux+10, uy+5))
-            pygame.draw.line(WIN,HUD_info[i][2], (ux-1, uy+24), (ux+249, uy+24))
-            pygame.draw.rect(WIN,(255, 255, 255), pygame.Rect(ux, uy+25,250 , 25))
-            pygame.draw.rect(WIN,(255, 0, 0), pygame.Rect(ux, uy+25,250 * (Playeri[HUD_info[i][0]].Health/1000) , 25))
+            pygame.draw.rect(WIN,HUD_info[i][1], pygame.Rect(ux, uy+1,250 , 90))
+            pygame.draw.rect(WIN,(163, 194, 194), pygame.Rect(ux+3, uy+4,244 , 84))
+            #Health bar
+            pygame.draw.rect(WIN,(102, 153, 153), pygame.Rect(ux +15, uy+10,220 , 25))
+            pygame.draw.rect(WIN,(255, 0, 0), pygame.Rect(ux+17, uy+12,216 * (Playeri[HUD_info[i][0]].Health/1000) , 21))
+            health=hfont.render(str(round(Playeri[HUD_info[i][0]].Health/10)) + "/100",True,(255,255,255))
+            WIN.blit(health,(ux + 17 + round((216-health.get_width())/2),uy +17))
+            #Heat bar
+            pygame.draw.rect(WIN,(102, 153, 153), pygame.Rect(ux +15, uy+40,220 , 14))
+            WIN.blit(HEAT,(ux+17, uy+42))
+            pygame.draw.rect(WIN,(102, 153, 153), pygame.Rect(ux + 17 + (216*(Playeri[HUD_info[i][0]].MainWeapon.heat/100)), uy+40,216-216*(Playeri[HUD_info[i][0]].MainWeapon.heat/100) +1 , 14))
+            #afisare la cata amunitie ai la arma secundara
+            WIN.blit(HUD_info[i][2],(ux + 15,uy +59))
+            ammo_count = afont.render(str(Playeri[HUD_info[i][0]].SecondaryWeapon.Ammo_count) ,True,(255,255,255))
+            WIN.blit(ammo_count,(ux + 20 +HUD_info[i][2].get_width(),uy +59))
             ux = ux + pas
             
 
