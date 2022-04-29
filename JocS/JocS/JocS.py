@@ -3,7 +3,7 @@ import pygame
 from Lobby import lobby
 from MenuMain import Menu
 from MapEditor import Editor
-import Map_select
+
 
 pygame.init()
 
@@ -15,5 +15,5 @@ FPS = 60
 #Menu(WIN, WIDTH, HEIGHT, FPS)
 lobby(WIN, WIDTH, HEIGHT, FPS)
 #Editor(WIN, WIDTH, HEIGHT, FPS)
-#Map_select.map_select()
+
 
