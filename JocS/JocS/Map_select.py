@@ -19,21 +19,20 @@ texture_dict = {
 
 def map_select(WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks) :
     #Aici va fi toata functia de a selecta ce harta vrei dar momentan ia doar ii da load la aia de test
-    laturax = 1920 // 28
-    laturay = 1080 // 16
+    latura = 68
     colision_tiles = []
     rand = []
     for i in range (28) :
         rand.append(0)
     for i in range(16) :
         colision_tiles.append(rand)
-    Map = pygame.Surface((laturax*28,laturay*16))
+    Map = pygame.Surface((latura*28,latura*16))
     Map.fill((255,255,255))
     fstream = open('Maps/test.map','r')
     line = fstream.readline()
     while line :
         wordList = line.split()
-        Map.blit(pygame.transform.scale(texture_dict[wordList[3]],(laturax,laturay)),(int(wordList[0])*laturax,int(wordList[1])*laturay))
+        Map.blit(pygame.transform.scale(texture_dict[wordList[3]],(latura,latura)),(int(wordList[0])*latura,int(wordList[1])*latura))
         if ButtonClass.StrToBool(wordList[2]) :
             colision_tiles[int(wordList[1])][int(wordList[0])] = 1
         line = fstream.readline()
