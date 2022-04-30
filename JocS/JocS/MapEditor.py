@@ -4,7 +4,6 @@ import random
 
 import ButtonClass
 import TileClass
-
 import QuadTree
 
 rows = 16
@@ -75,7 +74,6 @@ def Editor(WIN, WIDTH, HEIGHT, FPS):
     run = True
     while run:
         clock.tick(FPS)
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
