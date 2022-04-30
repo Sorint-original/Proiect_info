@@ -116,4 +116,8 @@ def Editor(WIN, WIDTH, HEIGHT, FPS):
         WIN.fill((0,0,0))
         texture_draw()
         outline_draw()
+<<<<<<< Updated upstream
         pygame.display.update()
+=======
+        pygame.display.update()
+>>>>>>> Stashed changes

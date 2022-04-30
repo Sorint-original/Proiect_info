@@ -1,0 +1,14 @@
+
+*.pyc
+JocS/JocS/__pycache__/TileClass.cpython-37.pyc
+JocS/JocS/__pycache__/QuadTree.cpython-37.pyc
+JocS/JocS/__pycache__/Player.cpython-37.pyc
+JocS/JocS/__pycache__/MenuMain.cpython-37.pyc
+JocS/JocS/__pycache__/MapEditor.cpython-37.pyc
+JocS/JocS/__pycache__/Map_select.cpython-37.pyc
+JocS/JocS/__pycache__/Lobby.cpython-37.pyc
+JocS/JocS/__pycache__/Geometrie.cpython-37.pyc
+JocS/JocS/__pycache__/Gameplay.cpython-37.pyc
+JocS/JocS/__pycache__/EventH.cpython-37.pyc
+JocS/JocS/__pycache__/ButtonClass.cpython-37.pyc
+JocS/.vs/JocS/v16/.suo
