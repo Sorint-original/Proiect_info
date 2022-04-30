@@ -37,5 +37,4 @@ def map_select(WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks) :
         if ButtonClass.StrToBool(wordList[2]) :
             colision_tiles[int(wordList[1])][int(wordList[0])] = 1
         line = fstream.readline()
-    Map=pygame.transform.scale(Map,(1920,1080))
     gameplay(WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks,Map,colision_tiles)

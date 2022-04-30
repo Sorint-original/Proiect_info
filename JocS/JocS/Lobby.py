@@ -146,7 +146,7 @@ def lobby (WIN,WIDTH,HEIGHT,FPS) :
                             else :
                                 Playeri[Input["Keyboard"]].Button = 0
                             BUTplayers[Input["Keyboard"]][Playeri[Input["Keyboard"]].Button].Hovering = True
-                        if event.key == pygame.K_SPACE :
+                        if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN :
                             if Playeri[Input["Keyboard"]].Button == 2 :
                                 if Playeri[Input["Keyboard"]].Ready == True :
                                     Playeri[Input["Keyboard"]].Ready = False
