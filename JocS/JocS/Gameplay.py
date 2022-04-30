@@ -7,8 +7,8 @@ from Player import Harmful_Stuff
 
 #input reprezinta un dictionar care indica care input(keyboard , controller) se duce la fiecare player , de asemenea as vrea un parameter MAP care e luat din MAPSELECT
 def gameplay (WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks,Map,colision_tiles) :
-    sw = 1920
-    sh = 1080
+    sw = Map.get_width()
+    sh = Map.get_height()
     #pregatirea playerilor pentru  Gameplay
     Botimg = ['Bottom-Blue.png','Bottom-Green.png','Bottom-Yellow.png','Bottom-Red.png']
     Upimg = ['Upper-Blue.png','Upper-Green.png','Upper-Yellow.png','Upper-Red.png']
@@ -34,11 +34,12 @@ def gameplay (WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks,Map,colision_tiles) :
             HUD_info[i].append(pygame.image.load(os.path.join('Assets\HUD', "Grenade_Launcher.png")))
         elif Playeri[HUD_info[i][0]].SW == 1 :
             HUD_info[i].append(pygame.image.load(os.path.join('Assets\HUD', "Flame_Thrower.png")))
+
     #stabilirea dimensiunilor pentru afisarea gameplayului
     h = HEIGHT - 110
-    while ( round(h * 1.78)  > WIDTH - 50) :
+    while ( round(h * 1.75)  > WIDTH - 50) :
         h = h -1
-    w =  round(h*1.78)
+    w =  round(h*1.75)
     x =  (WIDTH - w)/2
     y = (HEIGHT - h )/2
     if y < 100 :
@@ -59,21 +60,22 @@ def gameplay (WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks,Map,colision_tiles) :
 
     hfont = pygame.font.Font("freesansbold.ttf", 11)
     afont = pygame.font.Font("freesansbold.ttf", 20)
+    uy =  y + h + (HEIGHT-y - h -90)/2 -1
+    if len(HUD_info) == 4 :
+       pas = (WIDTH-1000)/5 + 250
+    elif len(HUD_info) == 3 :
+       pas = (((WIDTH-1000)/5)*3 + 250*2)/2
+    else :
+       pas = ((WIDTH-1000)/5)*3 + 250*3
+
     def draw_window () :
         WIN.fill((0,0,0))
         #Afisarea Gameplay Environment
         environment_update()
         WIN.blit(pygame.transform.scale(DisplayG,(w,h)),(x,y))
         #Afisare HUD playeri
-        #spatiu alocat pentru fiecare hud va fi de 250 x 100
+        #spatiu alocat pentru fiecare hud va fi de 250 x 90
         ux = (WIDTH-1000)/5
-        uy =  HEIGHT -100
-        if len(HUD_info) == 4 :
-            pas = (WIDTH-1000)/5 + 250
-        elif len(HUD_info) == 3 :
-            pas = (((WIDTH-1000)/5)*3 + 250*2)/2
-        else :
-            pas = ((WIDTH-1000)/5)*3 + 250*3
         for i in range (len(HUD_info)) :
             pygame.draw.rect(WIN,HUD_info[i][1], pygame.Rect(ux, uy+1,250 , 90))
             pygame.draw.rect(WIN,(163, 194, 194), pygame.Rect(ux+3, uy+4,244 , 84))

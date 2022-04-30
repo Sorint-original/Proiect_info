@@ -41,7 +41,8 @@ class explosion :
             screen.blit(pygame.transform.scale(EX_sequences[6],(self.size,self.size)),(self.GX -self.size/2,self.GY -self.size/2))
         elif self.existance > 0 :
             screen.blit(pygame.transform.scale(EX_sequences[7],(self.size,self.size/2)),(self.GX -self.size/2,self.GY -self.size/4))
-
+    #aceasta functie va fi chemata cand un anumit glont intra in contact cu alt obiect
+    #other va tine un fel de id explicand ce si unde se afla obiectul lovit
     def impact (self,other) :
         #momentan nimic
         print("yeet")
@@ -95,7 +96,7 @@ class proiectil :
 
 
 class weapon :
-    def __init__ (self,size,count,speed,spread,coold,shots_per_fire,H,damage,A,mins,bext,EXP,B,ammo ) :
+    def __init__ (self,size,count,speed,spread,coold,shots_per_fire,H,damage,A,mins,bext,EXP,B,ammo) :
         #marimea diametrului unui glont
         self.size = size
         #if count is -1 it means that it is unlimited
@@ -231,8 +232,10 @@ class player:
         self.Health = 1000
         self.maxspeed = 5
         self.MainWeapon = copy.copy(Main_Weapons[0])
+        self.MainWeapon.noharm = self.number
         self.MW = 0
         self.SecondaryWeapon = copy.copy(Secondary_Weapons[0])
+        self.SecondaryWeapon.noharm = self.number
         self.SW = 0
 
     #schimbarea marimi are nevoie de o re introducere a imagini ne modificate ca sa arate cat mai bine
@@ -246,12 +249,14 @@ class player:
         if self.MW == MWcount :
             self.MW = 0 
         self.MainWeapon = copy.copy(Main_Weapons[self.MW])
+        self.MainWeapon.noharm = self.number
 
     def Next_SWeapon (self) :
         self.SW = self.SW + 1
         if self.SW == SWcount :
             self.SW = 0 
         self.SecondaryWeapon = copy.copy(Secondary_Weapons[self.SW])
+        self.SecondaryWeapon.noharm = self.number
 
     #Functie de resetat controalele pleyerului
     def reset_control (self) :
