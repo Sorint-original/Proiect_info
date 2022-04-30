@@ -32,7 +32,7 @@ texture_dict['empty'] = pygame.transform.scale(texture_dict['empty'], (size, siz
 class Tile:
     def __init__(self):
         self.canCollide = False
-        self.texture = None
+        self.texture = 'wall'
         self.rotation_degree = 0
         
     def editor_view(self, xoff, yoff, x, y, screen):

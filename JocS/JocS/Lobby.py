@@ -184,11 +184,7 @@ def lobby (WIN,WIDTH,HEIGHT,FPS) :
                break
         if ok and cati > 1 :
             start_cooldown = start_cooldown - 1 
-<<<<<<< Updated upstream
         elif ok and cati > 0 and DEBUG_ONE_PLAYER_TEST:
-=======
-        elif ok and cati > 0 and DEBUG_ONE_PLAYER_TEST == True:
->>>>>>> Stashed changes
             start_cooldown = 0
         else :
             start_cooldown = 181
