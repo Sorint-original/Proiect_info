@@ -11,6 +11,8 @@ default_path = 'Assets/Tiles/'
 
 latura = 68
 
+#THIS IS UPDATE
+
 texture_dict = {
     keyVec[0] : pygame.image.load(default_path + 'mozaic' + '.jpg'),
     keyVec[1] : pygame.image.load(default_path + 'wall' + '.jpg'),
