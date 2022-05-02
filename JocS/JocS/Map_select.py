@@ -33,7 +33,7 @@ def generate_points():
             if collision_tiles[i][j] == True:
                 x = latura * j - latura // 2
                 y = latura * i - latura // 2
-                obj = QuadTree.TreeObject(x,y)
+                obj = QuadTree.TreeObject(x, y, True)
                 qTree.insert(obj)
 
 def generate_outer_points():
