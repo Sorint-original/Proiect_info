@@ -251,6 +251,12 @@ class player:
         self.Bottom_image = pygame.transform.scale(BIMG,(9*self.size/8, 7*self.size/8))
         self.Upper_image = pygame.transform.scale(UIMG,(self.size,self.size))
 
+    def refresh_weapons (self) :
+        self.MainWeapon = copy.copy(Main_Weapons[self.MW])
+        self.MainWeapon.noharm = self.number
+        self.SecondaryWeapon = copy.copy(Secondary_Weapons[self.SW])
+        self.SecondaryWeapon.noharm = self.number
+
     def Next_MWeapon (self) :
         self.MW = self.MW + 1
         if self.MW == MWcount :

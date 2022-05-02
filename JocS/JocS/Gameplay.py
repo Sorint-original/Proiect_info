@@ -118,6 +118,9 @@ def gameplay (WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks,Map,colision_tiles) :
                             See_collisions = False
                         else :
                             See_collisions = True
+                    elif event.key == pygame.K_h :
+                        print("works")
+                        run = False
         #Updatarea pozitiei mousului pentru Player
         if Input["Keyboard"] !=None :
             cord = pygame.mouse.get_pos()
@@ -132,3 +135,6 @@ def gameplay (WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks,Map,colision_tiles) :
         for attack in Harmful_Stuff :
             attack.update()
         draw_window()
+
+    # Ce se intampla ca sa iasa din gameplay
+    Harmful_Stuff.clear()
