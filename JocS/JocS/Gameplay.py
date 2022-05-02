@@ -4,7 +4,7 @@ from EventH import exit , controller_verify
 # dau inport la clasa de butoane deoarece sar putea sa avem un Pause Menu si cred ca nu o sal putem face separat de gameplay
 import ButtonClass
 from Player import Harmful_Stuff
-
+#yeet
 #input reprezinta un dictionar care indica care input(keyboard , controller) se duce la fiecare player , de asemenea as vrea un parameter MAP care e luat din MAPSELECT
 def gameplay (WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks,Map,colision_tiles) :
     sw = Map.get_width()
@@ -137,4 +137,4 @@ def gameplay (WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks,Map,colision_tiles) :
         draw_window()
 
     # Ce se intampla ca sa iasa din gameplay
-    Harmful_Stuff.clear()
+    Harmful_Stuff.clear(`)
