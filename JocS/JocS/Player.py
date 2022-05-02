@@ -90,9 +90,9 @@ class proiectil :
             if self.Speed <=  self.minspeed:
                 self.Speed = self.minspeed
 
-    def afisare (self,screen) :
-        x = self.GX - self.IMG.get_width()/2
-        y = self.GY - self.IMG.get_height()/2
+    def afisare(self,screen) :
+        x = self.GX - self.IMG.get_width() / 2
+        y = self.GY - self.IMG.get_height() / 2
         screen.blit(self.IMG,(x,y))
 
     #aceasta functie va fi chemata cand un anumit glont intra in contact cu alt obiect
@@ -109,12 +109,12 @@ class weapon :
         #if count is -1 it means that it is unlimited
         self.Ammo_count = count
         self.Ammo_speed = speed
-        # 0 means  perfect acuracy 
+        # 0 means perfect acuracy
         self.Spread = spread
         #dupa cate frame-uri poate sa traga din nou
         self.fire_cooldown = coold
         self.cooldown = 0
-        # cate gloante sunt trase pe fire 
+        # cate gloante sunt trase pe fire
         self.spfire = shots_per_fire
         #Imaginea pe care o are proiectilul tras
         self.Ammo = ammo
@@ -135,9 +135,10 @@ class weapon :
         self.explosive = EXP
         self.bounce = B
 
-    #functia care verifica daca poata sa traga , action e true sau fals si determina daca playeru da comanda
+    #functia care verifica daca poata sa traga , action e true sau fals si
+    #determina daca playeru da comanda
     # x si y vor fi GX SI GY de la player
-    def check_fire (self , angle , action ,x , y) :
+    def check_fire(self , angle , action ,x , y) :
         if self.cooldown > 0 :
             self.cooldown = self.cooldown -1
         if self.heat > 0 :
@@ -186,24 +187,30 @@ SWcount = 2
 
 
 class control :
-    def __init__ (self,source) :
+    def __init__(self,source) :
         #controalele pentru cei cu controller
         if source != "Keyboard" and source != "Unknown" :
-            #In orientare primul vector este de la LEFTJOYSTICK pentru miscare , al doilea vector e de la RIGHT JOYSTICK pentru tintire
+            #In orientare primul vector este de la LEFTJOYSTICK pentru miscare
+            #, al doilea vector e de la RIGHT JOYSTICK pentru tintire
             self.orientation = [[0,0],[0,0]]
-            #In vectorul butoane  0 - Left bumper 1 - Right bumper 2 - left triger 3 - right triger 
+            #In vectorul butoane 0 - Left bumper 1 - Right bumper 2 - left
+            #triger 3 - right triger
             self.action = [False,False,-1,-1]
-            #butoanele pot modifica doar in vectorul de action dar axele pot modifica in ambele ( o - modifica in orientation , a - modifica in action )
+            #butoanele pot modifica doar in vectorul de action dar axele pot
+            #modifica in ambele ( o - modifica in orientation , a - modifica in
+            #action )
             self.input = { "axes":{ 0:["o",0], 1:["o",1] , 2:["o",2], 3:["o",3] , 4:["a",2], 5:["a",3] } , "buttons":{4:0 , 5:1} }
-            #ce input modifica ce valori din orientation si action, pozitia 4 si 5 din axes modifica 2 si 3 din actions
+            #ce input modifica ce valori din orientation si action, pozitia 4
+            #si 5 din axes modifica 2 si 3 din actions
             self.set = {"axes":[0, 1, 2, 3, 4, 5] , "buttons":[4, 5] }
         #controalele pentru cel care joaca cu keyboard si mous
         elif source != "Unknown" :
             #Coordonatele mousului
             self.Mouse = [0,0]
-            #BUTOANELE DE PE MOUSE 0 LeftClick 1 Middlemouse button 2 Right click , restul sunt in caz daca are mai multe butoane pe mous ca sa nu dea crash , nu le folosim
-            self.MouseButtons = [False , False , False , False , False , False , False , False , False , False]
-            #controalele de la tastatura care pot fi modificate 
+            #BUTOANELE DE PE MOUSE 0 LeftClick 1 Middlemouse button 2 Right
+            #click , restul sunt in caz daca are mai multe butoane pe mous ca
+            #sa nu dea crash , nu le folosim
+            self.MouseButtons = [False , False , False , False , False , False , False , False , False , False]   #controalele de la tastatura care pot fi modificate 
             # 0 - sus , 1 - stanga , 2 - jos , 3 - dreapta , 4 - abilitate activa , 5 - abilitate pasiva
             self.action =[0, 0, 0, 0, 0, 0]
             #ce modifica anumite taste 
@@ -224,18 +231,19 @@ class player:
         self.Ready = False
         self.configuring = False
         self.Button = 0
-        #Controalele pentru pleyer (toate butoanele apasate,configurarea pentru controlar)
+        #Controalele pentru pleyer (toate butoanele apasate,configurarea pentru
+        #controlar)
         self.Control = control(self.Source)
-        #Variabile pentru afisare 
+        #Variabile pentru afisare
         # size va fi si diametrul cercului de coliziune
         self.size = size
-        self.Bottom_image = pygame.transform.scale(BIMG,(9*self.size/8, 7*self.size/8))
+        self.Bottom_image = pygame.transform.scale(BIMG,(9 * self.size / 8, 7 * self.size / 8))
         self.Upper_image = pygame.transform.scale(UIMG,(self.size,self.size))
         self.Upper_angle = 90
         self.Bottom_angle = 90
         self.GX = Gx
         self.GY = Gy
-        #Variabile pentru Gameplay 
+        #Variabile pentru Gameplay
         self.Health = 1000
         self.maxspeed = 5
         self.MainWeapon = copy.copy(Main_Weapons[0])
@@ -245,10 +253,11 @@ class player:
         self.SecondaryWeapon.noharm = self.number
         self.SW = 0
 
-    #schimbarea marimi are nevoie de o re introducere a imagini ne modificate ca sa arate cat mai bine
-    def change_size (self , newsize , BIMG , UIMG) :
+    #schimbarea marimi are nevoie de o re introducere a imagini ne modificate
+    #ca sa arate cat mai bine
+    def change_size(self , newsize , BIMG , UIMG) :
         self.size = newsize 
-        self.Bottom_image = pygame.transform.scale(BIMG,(9*self.size/8, 7*self.size/8))
+        self.Bottom_image = pygame.transform.scale(BIMG,(9 * self.size / 8, 7 * self.size / 8))
         self.Upper_image = pygame.transform.scale(UIMG,(self.size,self.size))
 
     def refresh_weapons (self) :
@@ -272,11 +281,11 @@ class player:
         self.SecondaryWeapon.noharm = self.number
 
     #Functie de resetat controalele pleyerului
-    def reset_control (self) :
-        self.Control = control (self.Source)
+    def reset_control(self) :
+        self.Control = control(self.Source)
     #Se verifica ce schimbari cauzeaza pentru player eventul
-    def update_input (self , event) :
-        if self.Source !="Keyboard" :
+    def update_input(self , event) :
+        if self.Source != "Keyboard" :
             #Pentru Controller
             if event.type == pygame.JOYBUTTONDOWN :
                 try:
@@ -294,7 +303,7 @@ class player:
                 try :
                     if self.Control.input["axes"][event.axis][0] != None :
                         if self.Control.input["axes"][event.axis][0] == "o" :
-                            self.Control.orientation[int(self.Control.input["axes"][event.axis][1]/2)][self.Control.input["axes"][event.axis][1] % 2] = event.value
+                            self.Control.orientation[int(self.Control.input["axes"][event.axis][1] / 2)][self.Control.input["axes"][event.axis][1] % 2] = event.value
                         else :
                             self.Control.action[self.Control.input["axes"][event.axis][1]] = event.value
                 except :
@@ -314,11 +323,11 @@ class player:
                 except :
                     self.Control.input[event.key] = None
             elif event.type == pygame.MOUSEBUTTONDOWN :
-                self.Control.MouseButtons[event.button-1] = True
+                self.Control.MouseButtons[event.button - 1] = True
             elif event.type == pygame.MOUSEBUTTONUP :
-                self.Control.MouseButtons[event.button-1] = False
+                self.Control.MouseButtons[event.button - 1] = False
     #Functie folosita doar in lobby
-    def exit_update (self) :
+    def exit_update(self) :
         if self.Exit_cooldown == 0 and self.Control.action[0] == True and self.configuring == False :
             self.Exit_cooldown = 120 
         if self.Exit_cooldown > 0 and self.Control.action[0] == True :
@@ -329,7 +338,7 @@ class player:
             self.Exit_cooldown = 0
         return 0
     #Functie pentru actualizarea playerului in timpul gameplayului
-    def gameplay_update (self) :
+    def gameplay_update(self) :
         #Gameplay update pentru atunci cand este controlat de un controller
         if self.Source != "Keyboard" :
             #Obtinerea unghiurilor pentru imagini
@@ -377,12 +386,12 @@ class player:
     #Afisarea playerului pe ecran la coordonatele lui 
     def afisare (self,WIN) :
         BIMAGE = pygame.transform.rotate(self.Bottom_image,self.Bottom_angle)
-        x = self.GX - BIMAGE.get_width()/2
-        y = self.GY - BIMAGE.get_height()/2
+        x = self.GX - BIMAGE.get_width() / 2
+        y = self.GY - BIMAGE.get_height() / 2
         WIN.blit(BIMAGE,(x,y))
         del BIMAGE
         UIMAGE = pygame.transform.rotate(self.Upper_image,self.Upper_angle)
-        x = self.GX - UIMAGE.get_width()/2
-        y = self.GY - UIMAGE.get_height()/2
+        x = self.GX - UIMAGE.get_width() / 2
+        y = self.GY - UIMAGE.get_height() / 2
         WIN.blit(UIMAGE,(x,y))
         del UIMAGE

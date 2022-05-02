@@ -1,12 +1,15 @@
 import pygame
 import os
+import copy
+
 from EventH import exit , controller_verify
 # dau inport la clasa de butoane deoarece sar putea sa avem un Pause Menu si cred ca nu o sal putem face separat de gameplay
 import ButtonClass
 from Player import Harmful_Stuff
+import QuadTree
 
 #input reprezinta un dictionar care indica care input(keyboard , controller) se duce la fiecare player , de asemenea as vrea un parameter MAP care e luat din MAPSELECT
-def gameplay (WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks,Map,colision_tiles) :
+def gameplay (WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks,Map,qTree) :
     sw = Map.get_width()
     sh = Map.get_height()
     #pregatirea playerilor pentru  Gameplay
@@ -44,17 +47,27 @@ def gameplay (WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks,Map,colision_tiles) :
     y = (HEIGHT - h )/2
     if y < 100 :
         y = 10
+    things_to_delete = [] #Things to delete from quadTree each frame
 
     #Suprafata pe care se va intampla totul
     DisplayG = pygame.Surface((sw,sh))
     See_collisions = False
     def environment_update () :
         DisplayG.blit(Map,(0,0))
-        for i in range (4) :
-            if Playeri[i].Selected :
-                Playeri[i].afisare(DisplayG)
+        for i in Playeri :
+            if i.Selected :
+                i.afisare(DisplayG)
+                x = round(i.GX)
+                y = round(i.GY)
+                print(qTree.boundary.w, qTree.boundary.h,x,y)
+                treeObj = QuadTree.TreeObject(x, y)
+                qTree.insert(treeObj)
+                things_to_delete.append(treeObj)
         for attack in Harmful_Stuff :
             attack.afisare(DisplayG)
+            treeObj = QuadTree.TreeObject(attack.GX, attack.GY)
+            qTree.insert(treeObj)
+            things_to_delete.append(treeObj)
             if See_collisions :
                 pygame.draw.circle(DisplayG,(204, 0, 204),(attack.GX,attack.GY),attack.size/2)
 
@@ -72,6 +85,7 @@ def gameplay (WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks,Map,colision_tiles) :
         WIN.fill((0,0,0))
         #Afisarea Gameplay Environment
         environment_update()
+        qTree.show_tree(DisplayG)
         WIN.blit(pygame.transform.scale(DisplayG,(w,h)),(x,y))
         #Afisare HUD playeri
         #spatiu alocat pentru fiecare hud va fi de 250 x 90
@@ -93,10 +107,8 @@ def gameplay (WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks,Map,colision_tiles) :
             ammo_count = afont.render(str(Playeri[HUD_info[i][0]].SecondaryWeapon.Ammo_count) ,True,(255,255,255))
             WIN.blit(ammo_count,(ux + 20 +HUD_info[i][2].get_width(),uy +59))
             ux = ux + pas
-            
-
+           
         pygame.display.update()
-
 
     clock = pygame.time.Clock()
     run=True
@@ -134,6 +146,7 @@ def gameplay (WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks,Map,colision_tiles) :
                 Playeri[i].gameplay_update()
         for attack in Harmful_Stuff :
             attack.update()
+        draw_window()
         draw_window()
 
     # Ce se intampla ca sa iasa din gameplay

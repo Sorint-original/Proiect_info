@@ -77,6 +77,12 @@ class QuadTree:
         SE = Rectangle(rect.x + rect.w// 4, rect.y + rect.h// 4, rect.w // 2, rect.h // 2)
         self.southeast = QuadTree(SE)
 
+        for obj in self.objects:
+            self.northwest.insert(obj)
+            self.northeast.insert(obj)
+            self.southwest.insert(obj)
+            self.southeast.insert(obj)
+
     def insert(self, treeObj):
         if not self.boundary.contains(treeObj):
             return
@@ -111,13 +117,13 @@ class QuadTree:
             return found
 
     def show_tree(self, screen):
-        pygame.draw.circle(screen, (255,0,255), (800, 500), 100, 3)
+        #pygame.draw.circle(screen, (255,0,255), (800, 500), 100, 3)
         for i in self.objects:
-            pygame.draw.circle(screen, (76,0,153), (i.x, i.y), 5)
-        for i in self.query(Circle(800, 500, 100), []):
-            pygame.draw.circle(screen, (0,255,0), (i.x, i.y), 5)
+            pygame.draw.circle(screen, (255,0,0), (i.x, i.y), 5)
+        #for i in self.query(Circle(800, 500, 100), []):
+        #    pygame.draw.circle(screen, (0,255,0), (i.x, i.y), 5)
 
-        pygame.draw.rect(screen, (0,255,255), pygame.Rect(self.boundary.x - self.boundary.w // 2, self.boundary.y - self.boundary.h // 2, self.boundary.w, self.boundary.h), 3)
+        #pygame.draw.rect(screen, (0,255,255), pygame.Rect(self.boundary.x - self.boundary.w // 2, self.boundary.y - self.boundary.h // 2, self.boundary.w, self.boundary.h), 3)
         if self.divided:
             self.northwest.show_tree(screen)
             self.northeast.show_tree(screen)

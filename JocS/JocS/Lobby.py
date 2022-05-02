@@ -7,6 +7,8 @@ import ButtonClass
 from Gameplay import gameplay
 from Map_select import map_select
 
+DEBUG_ONE_PLAYER_TEST = True
+
 #Initializarea butoanelor la inceput astfel for fi gata de fiecare data cand se intra in lobby
 BUTconfig=[]
 ButtonClass.Button_Load("Lobby\config",BUTconfig)
@@ -24,10 +26,10 @@ def lobby (WIN,WIDTH,HEIGHT,FPS) :
     Botimg = ['Bottom-Blue.png','Bottom-Green.png','Bottom-Yellow.png','Bottom-Red.png']
     Upimg = ['Upper-Blue.png','Upper-Green.png','Upper-Yellow.png','Upper-Red.png']
     #Size-ul reprezinta marimea playerului pe ecran poate fi modificata oricand 
-    size = min(HEIGHT/3,(WIDTH - 150)/4) -50
+    size = min(HEIGHT//3,(WIDTH - 150)//4) -50
     for i in range (4) :
-        Gx = 30 + i * ((WIDTH - 150) / 4 + 30) + (WIDTH - 150) / 8
-        Gy = HEIGHT/2
+        Gx = 30 + i * ((WIDTH - 150) // 4 + 30) + (WIDTH - 150) // 8
+        Gy = HEIGHT//2
         P = player(pygame.image.load(os.path.join('Assets\Robots', Botimg[i])), pygame.image.load(os.path.join('Assets\Robots', Upimg[i])), Gx, Gy, size,i)
         Playeri.append(P)
     Input = {"Keyboard" : None , 0:None , 1:None , 2:None , 3:None , 4:None}
@@ -182,6 +184,8 @@ def lobby (WIN,WIDTH,HEIGHT,FPS) :
                break
         if ok and cati > 1 :
             start_cooldown = start_cooldown - 1 
+        elif ok and cati > 0 and DEBUG_ONE_PLAYER_TEST:
+            start_cooldown = 0
         else :
             start_cooldown = 181
 

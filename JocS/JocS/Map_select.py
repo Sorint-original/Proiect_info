@@ -1,12 +1,15 @@
 import pygame
 import ButtonClass
 import os
+
 from Gameplay import gameplay
+import QuadTree
 
 keyVec = ['mozaic', 'wall', 'holes', 'sorinTile', 'sorinWall']
 
 default_path = 'Assets/Tiles/'
 
+latura = 68
 
 texture_dict = {
     keyVec[0] : pygame.image.load(default_path + 'mozaic' + '.jpg'),
@@ -17,24 +20,44 @@ texture_dict = {
     'empty' : pygame.image.load(default_path + 'empty' + '.jpg')
     }
 
+rect = QuadTree.Rectangle(28 * latura // 2, 16 * latura // 2, 28 * latura + latura + 10, 16 * latura + latura + 10)
+qTree = QuadTree.QuadTree(rect)
+
+collision_tiles = []
+
+def generate_points():
+    for i in range(18):
+        for j in range(30):
+            if collision_tiles[i][j] == True:
+                x = latura * j - latura // 2
+                y = latura * i - latura // 2
+                obj = QuadTree.TreeObject(x,y)
+                qTree.insert(obj)
+
+def generate_outer_points():
+    collision_tiles.clear()
+    for i in range(18):
+        newVec = []
+        for j in range(30):
+            if (j == 0 or j == 28 + 1) or (i == 0 or i == 16 + 1):
+                newVec.append(True)
+            else:
+                newVec.append(False)
+        collision_tiles.append(newVec)
+
 def map_select(WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks) :
     #Aici va fi toata functia de a selecta ce harta vrei dar momentan ia doar ii da load la aia de test
-    latura = 68
-    colision_tiles = []
-    rand = []
-    for i in range (28) :
-        rand.append(0)
-    for i in range(16) :
-        colision_tiles.append(rand)
+    generate_outer_points()
     Map = pygame.Surface((latura*28,latura*16))
     Map.fill((255,255,255))
     fstream = open('Maps/test.map','r')
     line = fstream.readline()
     while line :
         wordList = line.split()
-        Map.blit(pygame.transform.scale(texture_dict[wordList[3]],(latura,latura)),(int(wordList[0])*latura,int(wordList[1])*latura))
-        if ButtonClass.StrToBool(wordList[2]) :
-            colision_tiles[int(wordList[1])][int(wordList[0])] = 1
+        Map.blit(pygame.transform.scale(texture_dict[wordList[3]],(latura,latura)),(int(wordList[1])*latura,int(wordList[0])*latura))
+        boolean = ButtonClass.StrToBool(wordList[2])
+        collision_tiles[int(wordList[0]) + 1][int(wordList[1]) + 1] = boolean
         line = fstream.readline()
+    generate_points()
+    gameplay(WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks,Map,qTree)
 
-    gameplay(WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks,Map,colision_tiles)

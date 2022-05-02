@@ -29,25 +29,20 @@ for i in range(len(keyVec)):
     texture_dict[keyVec[i]] = pygame.transform.scale(texture_dict[keyVec[i]], (size, size))
 texture_dict['empty'] = pygame.transform.scale(texture_dict['empty'], (size, size))
 
-#Tile ideas:
-#-Collidable with everything but the player
-#-Collidable with only the player
-#-Slowness if touched by player
-
 class Tile:
     def __init__(self):
         self.canCollide = False
-        self.texture = None
+        self.texture = 'wall'
         self.rotation_degree = 0
         
     def editor_view(self, xoff, yoff, x, y, screen):
         if self.canCollide == False:
-            pygame.draw.rect(screen, (0,0,0), pygame.Rect(x * size + xoff, y * size + yoff, size, size), outline_width)
+            pygame.draw.rect(screen, (0,0,0), pygame.Rect(y * size + xoff, x * size + yoff, size, size), outline_width)
         else:
-            pygame.draw.rect(screen, (255,255,255), pygame.Rect(x * size + xoff, y * size + yoff, size, size), outline_width)
+            pygame.draw.rect(screen, (255,255,255), pygame.Rect(y * size + xoff, x * size + yoff, size, size), outline_width)
 
     def draw_texture(self, xoff, yoff, x, y, screen):
         if self.texture != None:
-            screen.blit(texture_dict[self.texture], (x * size + xoff, y * size + yoff), (0, 0, size, size))
+            screen.blit(texture_dict[self.texture], (y * size + xoff, x * size + yoff), (0, 0, size, size))
         else:
-            screen.blit(texture_dict['empty'], (x * size + xoff, y * size + yoff), (0, 0, size, size))
+            screen.blit(texture_dict['empty'], (y * size + xoff, x * size + yoff), (0, 0, size, size))

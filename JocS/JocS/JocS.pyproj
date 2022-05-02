@@ -31,6 +31,9 @@
     <Compile Include="Gameplay.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Map_select.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="MapEditor.py" />
     <Compile Include="MenuMain.py" />
     <Compile Include="Map_select.py">
