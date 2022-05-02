@@ -47,7 +47,6 @@ def gameplay (WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks,Map,qTree) :
     y = (HEIGHT - h )/2
     if y < 100 :
         y = 10
-
     things_to_delete = [] #Things to delete from quadTree each frame
 
     #Suprafata pe care se va intampla totul
@@ -108,7 +107,7 @@ def gameplay (WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks,Map,qTree) :
             ammo_count = afont.render(str(Playeri[HUD_info[i][0]].SecondaryWeapon.Ammo_count) ,True,(255,255,255))
             WIN.blit(ammo_count,(ux + 20 +HUD_info[i][2].get_width(),uy +59))
             ux = ux + pas
-            
+           
         pygame.display.update()
 
     clock = pygame.time.Clock()
@@ -131,6 +130,9 @@ def gameplay (WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks,Map,qTree) :
                             See_collisions = False
                         else :
                             See_collisions = True
+                    elif event.key == pygame.K_h :
+                        print("works")
+                        run = False
         #Updatarea pozitiei mousului pentru Player
         if Input["Keyboard"] !=None :
             cord = pygame.mouse.get_pos()
@@ -145,3 +147,7 @@ def gameplay (WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks,Map,qTree) :
         for attack in Harmful_Stuff :
             attack.update()
         draw_window()
+        draw_window()
+
+    # Ce se intampla ca sa iasa din gameplay
+    Harmful_Stuff.clear()

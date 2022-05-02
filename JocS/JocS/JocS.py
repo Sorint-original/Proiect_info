@@ -4,6 +4,7 @@ from Lobby import lobby
 from MenuMain import Menu
 from MapEditor import Editor
 
+
 pygame.init()
 
 screen = pygame.display.Info()

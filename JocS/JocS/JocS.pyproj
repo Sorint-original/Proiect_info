@@ -36,6 +36,9 @@
     </Compile>
     <Compile Include="MapEditor.py" />
     <Compile Include="MenuMain.py" />
+    <Compile Include="Map_select.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Player.py">
       <SubType>Code</SubType>
     </Compile>

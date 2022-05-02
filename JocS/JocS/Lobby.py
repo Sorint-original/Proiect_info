@@ -148,7 +148,7 @@ def lobby (WIN,WIDTH,HEIGHT,FPS) :
                             else :
                                 Playeri[Input["Keyboard"]].Button = 0
                             BUTplayers[Input["Keyboard"]][Playeri[Input["Keyboard"]].Button].Hovering = True
-                        if event.key == pygame.K_SPACE :
+                        if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN :
                             if Playeri[Input["Keyboard"]].Button == 2 :
                                 if Playeri[Input["Keyboard"]].Ready == True :
                                     Playeri[Input["Keyboard"]].Ready = False
@@ -196,6 +196,9 @@ def lobby (WIN,WIDTH,HEIGHT,FPS) :
                 Playeri[i].Ready = False
                 Playeri[i].GX = 30 + i * ((WIDTH - 150) / 4 + 30) + (WIDTH - 150) / 8
                 Playeri[i].GY = HEIGHT/2
-                Playeri[i].change_size(size,pygame.image.load(os.path.join('Assets', Botimg[i])),pygame.image.load(os.path.join('Assets', Upimg[i])))
+                Playeri[i].change_size(size,pygame.image.load(os.path.join('Assets\Robots', Botimg[i])),pygame.image.load(os.path.join('Assets\Robots', Upimg[i])))
+                Playeri[i].Upper_angle = 90 
+                Playeri[i].Bottom_angle = 90
+                Playeri[i].refresh_weapons()
 
         draw_window()

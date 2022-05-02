@@ -15,7 +15,8 @@ def get_angle (v1) :
     #returneaza unghiul in grade
     if v1[1] > 0 :
         angle = -angle
-    return math.degrees(angle)
+    #UNGHIUL RETURNAT apartine intervalului [-180 , 180 ] practic - 60 = 300 de grade
+    return round(math.degrees(angle))
 
 def get_pos (angle,lenght) :
     #unghiul va apartine multimi [-180 , 180] si lenght este marimea vectorului
@@ -32,4 +33,12 @@ def get_pos (angle,lenght) :
             y = -y
     #se returneaza pozitia in cazul in care originea vectorului e 0 0 
     return ((x,y))
+
+def modify_angle (angle,modifier) :
+    angle = angle + modifier
+    if abs(angle) > 180 :
+        sign = angle / abs(angle)
+        newangle = -1*sign*180 +(angle -1*sign*180)
+    #returneaza de fiecare data un unghiul modificat sub forma care se incadreaza in intervalul [-180,180]
+    return newangle
     

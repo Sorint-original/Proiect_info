@@ -1,48 +1,64 @@
 import pygame
 import os
 import random
+import copy
 
 from Geometrie import get_angle , get_pos
 
 #Toate proiectilele care se vor afla pe harta
 Harmful_Stuff = []
 
-EX_sequences = [pygame.image.load(os.path.join('Assets\Explosion','EX0.png')),pygame.image.load(os.path.join('Assets\Explosion','EX1.png')),pygame.image.load(os.path.join('Assets\Explosion','EX2.png')),pygame.image.load(os.path.join('Assets\Explosion','EX3.png')),pygame.image.load(os.path.join('Assets\Explosion','EX4.png')),pygame.image.load(os.path.join('Assets\Explosion','EX5.png')),pygame.image.load(os.path.join('Assets\Explosion','EX6.png')),pygame.image.load(os.path.join('Assets\Explosion','EX7.png'))]
+EX_sequences = [pygame.image.load(os.path.join('Assets\Explosion','EX0.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX1.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX2.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX3.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX4.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX5.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX6.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX7.png' ))]
 
 class explosion :
-    def __init__(self,x,y,size) :
+    def __init__ (self,x,y,size,dmg) :
         self.GX = x
         self.GY = y
+        self.PGX = x
+        self.PGY = y
         self.existance = 57
         self.size = size
+        self.damage = dmg
+        #Fiecare player poate sa ia damage doar o data de la o anumita explozie
+        self.noharm = []
 
-    def update(self) :
+    def update (self) :
         self.existance = self.existance - 1
         if self.existance == 0 :
             Harmful_Stuff.remove(self)
     def afisare(self,screen) :
         if self.existance > 49 :
-            screen.blit(pygame.transform.scale(EX_sequences[0],(self.size / 2,self.size / 2)),(self.GX - self.size / 4,self.GY - self.size / 4))
+            screen.blit(pygame.transform.scale(EX_sequences[0],(self.size/2,self.size/2)),(self.GX -self.size/4,self.GY -self.size/4))
         elif self.existance > 42 :
-            screen.blit(pygame.transform.scale(EX_sequences[1],(self.size * 2 / 3,self.size * 2 / 3)),(self.GX - self.size / 3,self.GY - self.size / 3))
+            screen.blit(pygame.transform.scale(EX_sequences[1],(self.size*2/3,self.size*2/3)),(self.GX -self.size/3,self.GY -self.size/3))
         elif self.existance > 35 :
-            screen.blit(pygame.transform.scale(EX_sequences[2],(self.size,self.size)),(self.GX - self.size / 2,self.GY - self.size / 2))
+            screen.blit(pygame.transform.scale(EX_sequences[2],(self.size,self.size)),(self.GX -self.size/2,self.GY -self.size/2))
         elif self.existance > 28 :
-            screen.blit(pygame.transform.scale(EX_sequences[3],(self.size,self.size)),(self.GX - self.size / 2,self.GY - self.size / 2))
-        elif  self.existance > 21 :
-            screen.blit(pygame.transform.scale(EX_sequences[4],(self.size,self.size)),(self.GX - self.size / 2,self.GY - self.size / 2))
-        elif  self.existance > 14 :
-            screen.blit(pygame.transform.scale(EX_sequences[5],(self.size,self.size)),(self.GX - self.size / 2,self.GY - self.size / 2))
-        elif  self.existance > 7 :
-            screen.blit(pygame.transform.scale(EX_sequences[6],(self.size,self.size)),(self.GX - self.size / 2,self.GY - self.size / 2))
+            screen.blit(pygame.transform.scale(EX_sequences[3],(self.size,self.size)),(self.GX -self.size/2,self.GY -self.size/2))
+        elif  self.existance >21 :
+            screen.blit(pygame.transform.scale(EX_sequences[4],(self.size,self.size)),(self.GX -self.size/2,self.GY -self.size/2))
+        elif  self.existance >14 :
+            screen.blit(pygame.transform.scale(EX_sequences[5],(self.size,self.size)),(self.GX -self.size/2,self.GY -self.size/2))
+        elif  self.existance >7 :
+            screen.blit(pygame.transform.scale(EX_sequences[6],(self.size,self.size)),(self.GX -self.size/2,self.GY -self.size/2))
         elif self.existance > 0 :
-            screen.blit(pygame.transform.scale(EX_sequences[7],(self.size,self.size / 2)),(self.GX - self.size / 2,self.GY - self.size / 4))
+            screen.blit(pygame.transform.scale(EX_sequences[7],(self.size,self.size/2)),(self.GX -self.size/2,self.GY -self.size/4))
+    #aceasta functie va fi chemata cand un anumit glont intra in contact cu alt obiect
+    #other va tine un fel de id explicand ce si unde se afla obiectul lovit
+    def impact (self,other) :
+        #momentan nimic
+        print("yeet")
 
 
 class proiectil :
-    def __init__(self,x,y,image,angle,speed,Dmg,A,mins,ext,EXPLOD,Bounce,nh) :
+    def __init__ (self,x,y,size,image,angle,speed,Dmg,A,mins,ext,EXPLOD,Bounce,nh) :
         self.GX = x
         self.GY = y
+        #pgx si pgy sunt coordonatele pe care le avea inainte Playeru
+        self.PGX = x
+        self.PGY = y
+        #self.size reprezinta diametru cercului de coliziunea a glontului
+        self.size = size
         self.Angle = angle
         self.IMG = pygame.transform.rotate(image , angle)
         self.Speed = speed
@@ -53,23 +69,25 @@ class proiectil :
         self.existence = ext
         self.Will_Explode = EXPLOD
         self.Bouncy = Bounce
-    def update(self) :
+    def update (self) :
         #Verifica daca mai exista atacu
         if self.existence > 0 :
-            self.existence = self.existence - 1
+            self.existence = self.existence -1
         if self.existence == 0 :
             if self.Will_Explode :
-                Harmful_Stuff.append(explosion(self.GX,self.GY,150))
+                Harmful_Stuff.append(explosion(self.GX,self.GY,200,self.dmg))
             Harmful_Stuff.remove(self)
 
         #misca atackul
+        self.PGX = self.GX
+        self.PGY = self.GY
         newcords = get_pos(self.Angle , self.Speed)
         self.GX = self.GX + newcords[0]
         self.GY = self.GY + newcords[1]
         #ii modifica viteza
         if self.Speed > self.minspeed :
             self.Speed = self.Speed + self.acceleration
-            if self.Speed <= self.minspeed:
+            if self.Speed <=  self.minspeed:
                 self.Speed = self.minspeed
 
     def afisare(self,screen) :
@@ -77,9 +95,17 @@ class proiectil :
         y = self.GY - self.IMG.get_height() / 2
         screen.blit(self.IMG,(x,y))
 
+    #aceasta functie va fi chemata cand un anumit glont intra in contact cu alt obiect
+    #other va tine un fel de id explicand ce si unde se afla obiectul lovit
+    def impact (self,other) :
+        #momentan nimic
+        print("yeet")
+
 
 class weapon :
-    def __init__(self,count,speed,spread,coold,shots_per_fire,H,damage,A,mins,bext,EXP,B,ammo) :
+    def __init__ (self,size,count,speed,spread,coold,shots_per_fire,H,damage,A,mins,bext,EXP,B,ammo) :
+        #marimea diametrului unui glont
+        self.size = size
         #if count is -1 it means that it is unlimited
         self.Ammo_count = count
         self.Ammo_speed = speed
@@ -114,7 +140,7 @@ class weapon :
     # x si y vor fi GX SI GY de la player
     def check_fire(self , angle , action ,x , y) :
         if self.cooldown > 0 :
-            self.cooldown = self.cooldown - 1
+            self.cooldown = self.cooldown -1
         if self.heat > 0 :
             self.heat = self.heat - self.cooling
         if self.OVERHEATED == True and self.heat <= 0 :
@@ -129,9 +155,9 @@ class weapon :
             self.cooldown = self.fire_cooldown
             if self.Spread > 0 and self.spfire > 1 :
                 A = []
-                for i in range(-self.Spread , self.Spread + 1) :
+                for i in range(-self.Spread , self.Spread+1) :
                     A.append(i)
-            for i in range(self.spfire) :
+            for i in range (self.spfire) :
                 newangle = angle
                 if self.Spread > 0 and self.spfire > 1:
                     deviasion = random.choice(A)
@@ -139,23 +165,23 @@ class weapon :
                     A.remove(deviasion)
                 elif self.Spread > 0 :
                     newangle = newangle + random.randint(-self.Spread,self.Spread)
-                new_shot = proiectil(x,y,self.Ammo,newangle,self.Ammo_speed,self.dmg,self.acceleration,self.minspeed,self.existence,self.explosive,self.bounce,self.noharm)
+                new_shot = proiectil(x,y,self.size,self.Ammo,newangle,self.Ammo_speed,self.dmg,self.acceleration,self.minspeed,self.existence,self.explosive,self.bounce,self.noharm)
                 Harmful_Stuff.append(new_shot)
             if self.Spread > 0 and self.spfire > 1 :
                 del A
             if self.Ammo_count != -1 :
                 self.Ammo_count = self.Ammo_count - 1
 
-# Main Weopans care se folosesc in joc
-Rifle = weapon(-1,25,0,10,1,10,25,0,25,-1,False,False,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Bullet.png')),(25,5)))
-Shotgun = weapon(-1,25,3,30,5,40,75,0,25,-1,False,False,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Bullet.png')),(25,5)))
-SMG = weapon(-1,25,5,0,1,1.5,5,0,25,-1,False,False,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Bullet.png')),(25,5)))
+# Main Weopans care se folosesc in joc 
+Rifle = weapon(10,-1,25,0,10,1,10,25,0,25,-1,False,False,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Bullet.png' )),(25,5)))
+Shotgun = weapon(10,-1,25,3,30,5,40,75,0,25,-1,False,False,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Bullet.png' )),(25,5)))
+SMG = weapon(10,-1,25,5,0,1,1.5,5,0,25,-1,False,False,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Bullet.png' )),(25,5)))
 Main_Weapons = [Rifle,Shotgun,SMG]
 MWcount = 3
 
 #Secondary weapons care se folosesc in joc
-Grenade_Launcher = weapon(-1,30,0,60,1,0,0,-0.5,0,120,True,True,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Grenade.png')),(15,18)))
-Flame_Thrower = weapon(-1,25,15,0,1,0,5,-0.7,6,100,False,True,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Flame.png')),(39,30)))
+Grenade_Launcher = weapon(15,10,30,0,60,1,0,0,-0.5,0,120,True,True,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Grenade.png' )),(15,18)))
+Flame_Thrower = weapon(30,180,25,15,0,1,0,5,-0.7,6,100,False,True,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Flame.png' )),(39,30)))
 Secondary_Weapons = [Grenade_Launcher,Flame_Thrower]
 SWcount = 2
 
@@ -184,12 +210,10 @@ class control :
             #BUTOANELE DE PE MOUSE 0 LeftClick 1 Middlemouse button 2 Right
             #click , restul sunt in caz daca are mai multe butoane pe mous ca
             #sa nu dea crash , nu le folosim
-            self.MouseButtons = [False , False , False , False , False , False , False , False , False , False]
-            #controalele de la tastatura care pot fi modificate
-            # 0 - sus , 1 - stanga , 2 - jos , 3 - dreapta , 4 - abilitate
-            # activa , 5 - abilitate pasiva
-            self.action = [0, 0, 0, 0, 0, 0]
-            #ce modifica anumite taste
+            self.MouseButtons = [False , False , False , False , False , False , False , False , False , False]   #controalele de la tastatura care pot fi modificate 
+            # 0 - sus , 1 - stanga , 2 - jos , 3 - dreapta , 4 - abilitate activa , 5 - abilitate pasiva
+            self.action =[0, 0, 0, 0, 0, 0]
+            #ce modifica anumite taste 
             self.input = {pygame.K_w:0 , pygame.K_a:1 , pygame.K_s:2 , pygame.K_d:3 , pygame.K_q:4 , pygame.K_e:5}
             #de ce tasta e modificata fiecare valoare din action
             self.set = [pygame.K_w , pygame.K_a , pygame.K_s , pygame.K_d , pygame.K_q , pygame.K_e]
@@ -222,9 +246,11 @@ class player:
         #Variabile pentru Gameplay
         self.Health = 1000
         self.maxspeed = 5
-        self.MainWeapon = Main_Weapons[0]
+        self.MainWeapon = copy.copy(Main_Weapons[0])
+        self.MainWeapon.noharm = self.number
         self.MW = 0
-        self.SecondaryWeapon = Secondary_Weapons[0]
+        self.SecondaryWeapon = copy.copy(Secondary_Weapons[0])
+        self.SecondaryWeapon.noharm = self.number
         self.SW = 0
 
     #schimbarea marimi are nevoie de o re introducere a imagini ne modificate
@@ -234,17 +260,25 @@ class player:
         self.Bottom_image = pygame.transform.scale(BIMG,(9 * self.size / 8, 7 * self.size / 8))
         self.Upper_image = pygame.transform.scale(UIMG,(self.size,self.size))
 
-    def Next_MWeapon(self) :
+    def refresh_weapons (self) :
+        self.MainWeapon = copy.copy(Main_Weapons[self.MW])
+        self.MainWeapon.noharm = self.number
+        self.SecondaryWeapon = copy.copy(Secondary_Weapons[self.SW])
+        self.SecondaryWeapon.noharm = self.number
+
+    def Next_MWeapon (self) :
         self.MW = self.MW + 1
         if self.MW == MWcount :
             self.MW = 0 
-        self.MainWeapon = Main_Weapons[self.MW]
+        self.MainWeapon = copy.copy(Main_Weapons[self.MW])
+        self.MainWeapon.noharm = self.number
 
-    def Next_SWeapon(self) :
+    def Next_SWeapon (self) :
         self.SW = self.SW + 1
         if self.SW == SWcount :
             self.SW = 0 
-        self.SecondaryWeapon = Secondary_Weapons[self.SW]
+        self.SecondaryWeapon = copy.copy(Secondary_Weapons[self.SW])
+        self.SecondaryWeapon.noharm = self.number
 
     #Functie de resetat controalele pleyerului
     def reset_control(self) :
@@ -313,11 +347,11 @@ class player:
                 self.Bottom_angle = get_angle(self.Control.orientation[0])
                 #movement
                 if self.Control.action[0] == False and self.Control.action[1] == False :
-                    self.GX = self.GX + self.Control.orientation[0][0] * self.maxspeed
-                    self.GY = self.GY + self.Control.orientation[0][1] * self.maxspeed
+                    coord = get_pos(self.Bottom_angle,self.maxspeed)
                 else :
-                    self.GX = self.GX + self.Control.orientation[0][0] * self.maxspeed / 2
-                    self.GY = self.GY + self.Control.orientation[0][1] * self.maxspeed / 2
+                    coord = get_pos(self.Bottom_angle,self.maxspeed*2/3)
+                self.GX = self.GX + coord[0]
+                self.GY = self.GY + coord[1]
             #upper image
             if abs(self.Control.orientation[1][0]) > 0.1 or abs(self.Control.orientation[1][1]) > 0.1 :
                 self.Upper_angle = get_angle(self.Control.orientation[1])
@@ -332,15 +366,15 @@ class player:
             #bottom angle
             axay = -self.Control.action[0] + self.Control.action[2]
             axax = -self.Control.action[1] + self.Control.action[3]
-            if axax != 0 or axay != 0 :
+            if axax !=0  or axay != 0 :
                 self.Bottom_angle = get_angle([axax,axay])
                 if self.Control.MouseButtons[0] == False and self.Control.MouseButtons[2] == False :
-                    self.GX = self.GX + axax * self.maxspeed
-                    self.GY = self.GY + axay * self.maxspeed
+                    coord = get_pos(self.Bottom_angle,self.maxspeed)
                 else :
-                    self.GX = self.GX + axax * self.maxspeed / 2
-                    self.GY = self.GY + axay * self.maxspeed / 2
-            #Upper angle
+                    coord = get_pos(self.Bottom_angle,self.maxspeed*2/3)
+                self.GX = self.GX + coord[0]
+                self.GY = self.GY + coord[1]
+            #Upper angle 
             if self.Control.Mouse[0] != 0 or self.Control.Mouse[1] != 0 :
                 self.Upper_angle = get_angle(self.Control.Mouse)
             #
@@ -349,8 +383,8 @@ class player:
                 self.SecondaryWeapon.check_fire(self.Upper_angle,self.Control.MouseButtons[2],self.GX,self.GY)
             else :
                 self.SecondaryWeapon.check_fire(self.Upper_angle,False,self.GX,self.GY)
-    #Afisarea playerului pe ecran la coordonatele lui
-    def afisare(self,WIN) :
+    #Afisarea playerului pe ecran la coordonatele lui 
+    def afisare (self,WIN) :
         BIMAGE = pygame.transform.rotate(self.Bottom_image,self.Bottom_angle)
         x = self.GX - BIMAGE.get_width() / 2
         y = self.GY - BIMAGE.get_height() / 2
