@@ -14,6 +14,8 @@ class explosion :
     def __init__ (self,x,y,size,dmg) :
         self.GX = x
         self.GY = y
+        self.PGX = x
+        self.PGY = y
         self.existance = 57
         self.size = size
         self.damage = dmg
@@ -52,6 +54,9 @@ class proiectil :
     def __init__ (self,x,y,size,image,angle,speed,Dmg,A,mins,ext,EXPLOD,Bounce,nh) :
         self.GX = x
         self.GY = y
+        #pgx si pgy sunt coordonatele pe care le avea inainte Playeru
+        self.PGX = x
+        self.PGY = y
         #self.size reprezinta diametru cercului de coliziunea a glontului
         self.size = size
         self.Angle = angle
@@ -74,6 +79,8 @@ class proiectil :
             Harmful_Stuff.remove(self)
 
         #misca atackul
+        self.PGX = self.GX
+        self.PGY = self.GY
         newcords = get_pos(self.Angle , self.Speed)
         self.GX = self.GX + newcords[0]
         self.GY = self.GY + newcords[1]

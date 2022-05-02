@@ -36,4 +36,7 @@ def map_select(WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks) :
         if ButtonClass.StrToBool(wordList[2]) :
             colision_tiles[int(wordList[1])][int(wordList[0])] = 1
         line = fstream.readline()
+
+    WIN.blit(Map,(0,0))
+    time.sleep(1000)
     gameplay(WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks,Map,colision_tiles)

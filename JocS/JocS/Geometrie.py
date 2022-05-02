@@ -33,4 +33,12 @@ def get_pos (angle,lenght) :
             y = -y
     #se returneaza pozitia in cazul in care originea vectorului e 0 0 
     return ((x,y))
+
+def modify_angle (angle,modifier) :
+    angle = angle + modifier
+    if abs(angle) > 180 :
+        sign = angle / abs(angle)
+        newangle = -1*sign*180 +(angle -1*sign*180)
+    #returneaza de fiecare data un unghiul modificat sub forma care se incadreaza in intervalul [-180,180]
+    return newangle
     
