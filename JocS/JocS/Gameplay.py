@@ -1,6 +1,5 @@
 import pygame
 import os
-import copy
 
 from EventH import exit , controller_verify
 # dau inport la clasa de butoane deoarece sar putea sa avem un Pause Menu si cred ca nu o sal putem face separat de gameplay
@@ -12,6 +11,10 @@ import QuadTree
 def gameplay (WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks,Map,qTree) :
     sw = Map.get_width()
     sh = Map.get_height()
+
+    queries = []
+    points = []
+
     #pregatirea playerilor pentru  Gameplay
     Botimg = ['Bottom-Blue.png','Bottom-Green.png','Bottom-Yellow.png','Bottom-Red.png']
     Upimg = ['Upper-Blue.png','Upper-Green.png','Upper-Yellow.png','Upper-Red.png']
@@ -47,29 +50,30 @@ def gameplay (WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks,Map,qTree) :
     y = (HEIGHT - h )/2
     if y < 100 :
         y = 10
-    things_to_delete = [] #Things to delete from quadTree each frame
 
     #Suprafata pe care se va intampla totul
     DisplayG = pygame.Surface((sw,sh))
     See_collisions = False
     def environment_update () :
         DisplayG.blit(Map,(0,0))
-        for i in Playeri :
-            if i.Selected :
-                i.afisare(DisplayG)
-                x = round(i.GX)
-                y = round(i.GY)
-                print(qTree.boundary.w, qTree.boundary.h,x,y)
-                treeObj = QuadTree.TreeObject(x, y)
+        for i in range(4) :
+            if Playeri[i].Selected :
+                Playeri[i].afisare(DisplayG)
+                x = round(Playeri[i].GX)
+                y = round(Playeri[i].GY)
+                treeObj = QuadTree.TreeObject(x, y, False)
                 qTree.insert(treeObj)
-                things_to_delete.append(treeObj)
+                queries.append(QuadTree.Circle(x, y, Playeri[i].size))
+                
         for attack in Harmful_Stuff :
             attack.afisare(DisplayG)
-            treeObj = QuadTree.TreeObject(attack.GX, attack.GY)
+            treeObj = QuadTree.TreeObject(attack.GX, attack.GY, False)
             qTree.insert(treeObj)
-            things_to_delete.append(treeObj)
+            queries.append(QuadTree.Circle(attack.GX, attack.GY, attack.size))
             if See_collisions :
                 pygame.draw.circle(DisplayG,(204, 0, 204),(attack.GX,attack.GY),attack.size/2)
+        for i in queries:
+            qTree.query(i, points)
 
     hfont = pygame.font.Font("freesansbold.ttf", 11)
     afont = pygame.font.Font("freesansbold.ttf", 20)
@@ -85,7 +89,7 @@ def gameplay (WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks,Map,qTree) :
         WIN.fill((0,0,0))
         #Afisarea Gameplay Environment
         environment_update()
-        qTree.show_tree(DisplayG)
+        qTree.show_tree(DisplayG, points, queries)
         WIN.blit(pygame.transform.scale(DisplayG,(w,h)),(x,y))
         #Afisare HUD playeri
         #spatiu alocat pentru fiecare hud va fi de 250 x 90
@@ -114,6 +118,8 @@ def gameplay (WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks,Map,qTree) :
     run=True
     while run :
         clock.tick(FPS)
+        points.clear()
+        queries.clear()
         # THE EVENT LOOP
         for event in pygame.event.get() :
             exit(event)
@@ -147,7 +153,7 @@ def gameplay (WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks,Map,qTree) :
         for attack in Harmful_Stuff :
             attack.update()
         draw_window()
-        draw_window()
-
+        qTree.clear()
+        
     # Ce se intampla ca sa iasa din gameplay
     Harmful_Stuff.clear()
