@@ -81,7 +81,7 @@ class proiectil :
         #misca atackul
         self.PGX = self.GX
         self.PGY = self.GY
-        newcords = get_pos(self.Angle , self.Speed)
+        newcords = get_pos(self.Angle, self.Speed)
         self.GX = self.GX + newcords[0]
         self.GY = self.GY + newcords[1]
         #ii modifica viteza
@@ -181,7 +181,7 @@ MWcount = 3
 
 #Secondary weapons care se folosesc in joc
 Grenade_Launcher = weapon(15,10,30,0,60,1,0,0,-0.5,0,120,True,True,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Grenade.png' )),(15,18)))
-Flame_Thrower = weapon(30,180,25,15,0,1,0,5,-0.7,6,100,False,True,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Flame.png' )),(39,30)))
+Flame_Thrower = weapon(30,-1,25,15,0,1,0,5,-0.7,6,100,False,True,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Flame.png' )),(39,30)))
 Secondary_Weapons = [Grenade_Launcher,Flame_Thrower]
 SWcount = 2
 

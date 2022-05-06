@@ -54,7 +54,7 @@ class QuadTree:
     _MaxCapacity = 8
     _MaxDepth = 8
 
-    def __init__(self, boundary, capacity=_MaxCapacity, depth=0):
+    def __init__(self, boundary, depth=0, capacity=_MaxCapacity):
         self.boundary = boundary
         self.capacity = capacity
         self.objects = []
@@ -64,13 +64,13 @@ class QuadTree:
     def subdivide(self):
         rect = self.boundary
         NW = Rectangle(rect.x - rect.w // 4, rect.y - rect.h // 4, rect.w // 2, rect.h // 2)
-        self.northwest = QuadTree(NW)
+        self.northwest = QuadTree(NW, self.depth + 1)
         NE = Rectangle(rect.x + rect.w // 4, rect.y - rect.h // 4, rect.w // 2, rect.h // 2)
-        self.northeast = QuadTree(NE)
+        self.northeast = QuadTree(NE, self.depth + 1)
         SW = Rectangle(rect.x - rect.w // 4, rect.y + rect.h // 4, rect.w // 2, rect.h // 2)
-        self.southwest = QuadTree(SW)
+        self.southwest = QuadTree(SW, self.depth + 1)
         SE = Rectangle(rect.x + rect.w // 4, rect.y + rect.h // 4, rect.w // 2, rect.h // 2)
-        self.southeast = QuadTree(SE)
+        self.southeast = QuadTree(SE, self.depth + 1)
 
         for obj in self.objects:
             self.northwest.insert(obj)
@@ -81,10 +81,11 @@ class QuadTree:
 
     def insert(self, treeObj):
         if not self.boundary.contains(treeObj):
-            return
+            return False
 
-        if len(self.objects) < self.capacity and not self.divided:
+        if (len(self.objects) < self.capacity and not self.divided) or self.depth == self._MaxDepth:
             self.objects.append(treeObj)
+            return True
         else:
             if not self.divided:
                 self.subdivide()
@@ -93,6 +94,7 @@ class QuadTree:
             self.northeast.insert(treeObj)
             self.southwest.insert(treeObj)
             self.southeast.insert(treeObj)
+            
 
     def query(self, range, found = []):
         if not range.intersects(self.boundary):
