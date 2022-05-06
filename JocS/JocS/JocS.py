@@ -1,3 +1,4 @@
+#Gameplay.py will no longer exist, the gameplay function will be located here for multiprocessing purposes
 import pygame
 import os
 
