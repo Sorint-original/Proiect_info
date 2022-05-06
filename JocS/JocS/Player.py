@@ -60,7 +60,7 @@ class proiectil :
         #self.size reprezinta diametru cercului de coliziunea a glontului
         self.size = size
         self.Angle = angle
-        self.IMG = pygame.transform.rotate(image , angle)
+        self.IMG = image #pygame.transform.rotate(image , angle)
         self.Speed = speed
         self.noharm = nh
         self.dmg = Dmg
@@ -91,9 +91,11 @@ class proiectil :
                 self.Speed = self.minspeed
 
     def afisare(self,screen) :
-        x = self.GX - self.IMG.get_width() / 2
-        y = self.GY - self.IMG.get_height() / 2
-        screen.blit(self.IMG,(x,y))
+        image = pygame.transform.scale(pygame.image.load(os.path.join('Assets', self.IMG)),(25,5))
+        x = self.GX - image.get_width() / 2
+        y = self.GY - image.get_height() / 2
+
+        screen.blit(pygame.transform.rotate(image, self.Angle),(x,y))
 
     #aceasta functie va fi chemata cand un anumit glont intra in contact cu alt obiect
     #other va tine un fel de id explicand ce si unde se afla obiectul lovit
@@ -117,7 +119,7 @@ class weapon :
         # cate gloante sunt trase pe fire
         self.spfire = shots_per_fire
         #Imaginea pe care o are proiectilul tras
-        self.Ammo = ammo
+        self.Ammo = ammo    #Super counter-intuitive choice of variable name man
         #the player who will not be harmed by this bullet it is none or 0 to 3
         self.noharm = None
         #overheating variables
@@ -173,7 +175,7 @@ class weapon :
                 self.Ammo_count = self.Ammo_count - 1
 
 # Main Weopans care se folosesc in joc 
-Rifle = weapon(10,-1,25,0,10,1,10,25,0,25,-1,False,False,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Bullet.png' )),(25,5)))
+Rifle = weapon(10,-1,25,0,10,1,10,25,0,25,-1,False,False,'Bullet.png')
 Shotgun = weapon(10,-1,25,3,30,5,40,75,0,25,-1,False,False,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Bullet.png' )),(25,5)))
 SMG = weapon(10,-1,25,5,0,1,1.5,5,0,25,-1,False,False,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Bullet.png' )),(25,5)))
 Main_Weapons = [Rifle,Shotgun,SMG]

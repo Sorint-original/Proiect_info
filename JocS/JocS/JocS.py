@@ -1,38 +1,38 @@
 #Gameplay.py will no longer exist, the gameplay function will be located here for multiprocessing purposes
 import pygame
 import os
+import multiprocessing as mp
+from functools import partial
 
 from Lobby import lobby
 from MenuMain import Menu
 from MapEditor import Editor
+import QuadTree
 
 import Map_select
 
-pygame.init()
+def attack_stuff(Harmful_Stuff, qTree, queries, i):
+    print("NEW THING")
+    attack = Harmful_Stuff[i]
+    treeObj = QuadTree.TreeObject(attack.GX, attack.GY, False)
+    qTree.insert(treeObj)
+    queries.append(QuadTree.Circle(attack.GX, attack.GY, attack.size))
 
-screen = pygame.display.Info()
-WIDTH = screen.current_w
-HEIGHT = screen.current_h
-WIN = pygame.display.set_mode((WIDTH, HEIGHT))
-FPS = 60
-
-while True:
-
-    #Menu(WIN, WIDTH, HEIGHT, FPS)
-    theInput, thePlayers, theJoysticks, theMap = lobby(WIN, WIDTH, HEIGHT, FPS)
-    #Editor(WIN, WIDTH, HEIGHT, FPS)
-
+if __name__ == '__main__':
+    print("STARTED")
+    newPool = mp.Pool()
     def gameplay(Input,Playeri,joysticks,Map,qTree):
         import ButtonClass
         from Player import Harmful_Stuff
-        import QuadTree
         from EventH import exit , controller_verify
+
         sw = Map.get_width()
         sh = Map.get_height()
 
         queries = []
         points = []
 
+        process_list = []
         #pregatirea playerilor pentru Gameplay
         Botimg = ['Bottom-Blue.png','Bottom-Green.png','Bottom-Yellow.png','Bottom-Red.png']
         Upimg = ['Upper-Blue.png','Upper-Green.png','Upper-Yellow.png','Upper-Red.png']
@@ -83,18 +83,10 @@ while True:
                     treeObj = QuadTree.TreeObject(x, y, False)
                     qTree.insert(treeObj)
                     queries.append(QuadTree.Circle(x, y, Playeri[i].size))
-
-            def attack_stuff(i):
+            newPool.map(partial(attack_stuff, Harmful_Stuff, qTree, queries), range(len(Harmful_Stuff)))
+            for i in range(len(Harmful_Stuff)):
                 attack = Harmful_Stuff[i]
                 attack.afisare(DisplayG)
-                treeObj = QuadTree.TreeObject(attack.GX, attack.GY, False)
-                qTree.insert(treeObj)
-                queries.append(QuadTree.Circle(attack.GX, attack.GY, attack.size))
-                if See_collisions :
-                    pygame.draw.circle(DisplayG,(204, 0, 204),(attack.GX,attack.GY),attack.size / 2)
-
-            for i in range(len(Harmful_Stuff)):
-                attack_stuff(i)
 
             for i in queries:
                 qTree.query(i, points)
@@ -103,11 +95,11 @@ while True:
         afont = pygame.font.Font("freesansbold.ttf", 20)
         uy = y + h + (HEIGHT - y - h - 90) / 2 - 1
         if len(HUD_info) == 4 :
-           pas = (WIDTH - 1000) / 5 + 250
+            pas = (WIDTH - 1000) / 5 + 250
         elif len(HUD_info) == 3 :
-           pas = (((WIDTH - 1000) / 5) * 3 + 250 * 2) / 2
+            pas = (((WIDTH - 1000) / 5) * 3 + 250 * 2) / 2
         else :
-           pas = ((WIDTH - 1000) / 5) * 3 + 250 * 3
+            pas = ((WIDTH - 1000) / 5) * 3 + 250 * 3
 
         def draw_window() :
             WIN.fill((0,0,0))
@@ -182,6 +174,20 @@ while True:
         # Ce se intampla ca sa iasa din gameplay
         Harmful_Stuff.clear()
 
-    gameplay(theInput, thePlayers, theJoysticks, theMap, Map_select.qTree)
+    pygame.init()
+
+    screen = pygame.display.Info()
+    WIDTH = screen.current_w
+    HEIGHT = screen.current_h
+    WIN = pygame.display.set_mode((WIDTH, HEIGHT))
+    FPS = 60
+
+    while True:
+
+        #Menu(WIN, WIDTH, HEIGHT, FPS)
+        theInput, thePlayers, theJoysticks, theMap = lobby(WIN, WIDTH, HEIGHT, FPS)
+        #Editor(WIN, WIDTH, HEIGHT, FPS)
+
+        gameplay(theInput, thePlayers, theJoysticks, theMap, Map_select.qTree)
 
 
