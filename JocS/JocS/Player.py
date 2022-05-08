@@ -93,7 +93,7 @@ class proiectil :
     def afisare(self,screen) :
         x = self.GX - self.IMG.get_width() / 2
         y = self.GY - self.IMG.get_height() / 2
-        screen.blit(self.IMG,(x,y))
+        screen.blit(self.IMG, (x,y))
 
     #aceasta functie va fi chemata cand un anumit glont intra in contact cu alt obiect
     #other va tine un fel de id explicand ce si unde se afla obiectul lovit
@@ -181,7 +181,7 @@ MWcount = 3
 
 #Secondary weapons care se folosesc in joc
 Grenade_Launcher = weapon(15,10,30,0,60,1,0,0,-0.5,0,120,True,True,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Grenade.png' )),(15,18)))
-Flame_Thrower = weapon(30,180,25,15,0,1,0,5,-0.7,6,100,False,True,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Flame.png' )),(39,30)))
+Flame_Thrower = weapon(30,-1,25,15,0,1,0,5,-0.7,6,100,False,True,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Flame.png' )),(39,30)))
 Secondary_Weapons = [Grenade_Launcher,Flame_Thrower]
 SWcount = 2
 
