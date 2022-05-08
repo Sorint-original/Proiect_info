@@ -191,7 +191,8 @@ def lobby (WIN,WIDTH,HEIGHT,FPS) :
 
         if start_cooldown == 0 :
             #aici pun momentan ca se va duce direct la gemplay dar in mod normal sar duce la map select
-            map_select(WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks)
+            theMap = map_select(WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks)
+            run = False
             for i in range(4) :
                 Playeri[i].Ready = False
                 Playeri[i].GX = 30 + i * ((WIDTH - 150) / 4 + 30) + (WIDTH - 150) / 8
@@ -200,5 +201,6 @@ def lobby (WIN,WIDTH,HEIGHT,FPS) :
                 Playeri[i].Upper_angle = 90 
                 Playeri[i].Bottom_angle = 90
                 Playeri[i].refresh_weapons()
+            return Input, Playeri, joysticks, theMap
 
         draw_window()

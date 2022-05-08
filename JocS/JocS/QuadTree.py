@@ -1,5 +1,6 @@
 import pygame
 import random
+import time
 
 pygame.init()
 screen = pygame.display.Info()
@@ -13,6 +14,7 @@ class TreeObject:
         self.y = y
         self.isWall = isWall
         #self.userData = userData
+
 class Rectangle:
     def __init__(self, x, y, w, h):
         #Center and dimensions
@@ -51,7 +53,7 @@ class Circle:
         return edges <= self.r * self.r
 
 class QuadTree:
-    _MaxCapacity = 8
+    _MaxCapacity = 9
     _MaxDepth = 8
 
     def __init__(self, boundary, capacity=_MaxCapacity, depth=0):
@@ -73,30 +75,40 @@ class QuadTree:
         self.southeast = QuadTree(SE)
 
         for obj in self.objects:
-            self.northwest.insert(obj)
-            self.northeast.insert(obj)
-            self.southwest.insert(obj)
-            self.southeast.insert(obj)
-        self.objects.clear()
+            if self.northwest.insert(obj):
+                continue
+            if self.northeast.insert(obj):
+                continue
+            if self.southwest.insert(obj):
+                continue
+            if self.southeast.insert(obj):
+                continue
+        self.objects = []
 
     def insert(self, treeObj):
         if not self.boundary.contains(treeObj):
-            return
-
-        if len(self.objects) < self.capacity and not self.divided:
+            return False
+        if len(self.objects) < self.capacity:
             self.objects.append(treeObj)
         else:
             if not self.divided:
                 self.subdivide()
                 self.divided = True
-            self.northwest.insert(treeObj)
-            self.northeast.insert(treeObj)
-            self.southwest.insert(treeObj)
-            self.southeast.insert(treeObj)
+            if self.northwest.insert(treeObj):
+                return True
+            if self.northeast.insert(treeObj):
+                return True
+            if self.southwest.insert(treeObj):
+                return True
+            if self.southeast.insert(treeObj):
+                return True
+            #This below shouldn't happen
+            return False
+            
 
     def query(self, range, found = []):
         if not range.intersects(self.boundary):
-            return
+            return found
         else:
             for p in self.objects:
                 if range.contains(p):
@@ -141,13 +153,13 @@ class QuadTree:
                     self.objects.remove(i)
                     del i
 
-    def show_tree(self, screen, points=[], queries=[]):
-        for i in self.objects:
-            pygame.draw.circle(screen, (255,0,0), (i.x, i.y), 5)
+    def show_tree(self, screen, points=[], queries=[], depth = 1): 
         for i in queries:
             pygame.draw.circle(screen, (76,0,153), (i.x, i.y), i.r, 3)
         for i in points:
             pygame.draw.circle(screen, (0,255,0), (i.x, i.y), 8)
+        for i in self.objects:
+             pygame.draw.circle(screen, (255,0,0), (i.x, i.y), 5)
         pygame.draw.rect(screen, (0,255,255), pygame.Rect(self.boundary.x - self.boundary.w // 2, self.boundary.y - self.boundary.h // 2, self.boundary.w, self.boundary.h), 1)
         if self.divided:
             self.northwest.show_tree(screen)

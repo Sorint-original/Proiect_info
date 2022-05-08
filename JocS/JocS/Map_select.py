@@ -22,10 +22,10 @@ texture_dict = {
     'empty' : pygame.image.load(default_path + 'empty' + '.jpg')
     }
 
-rect = QuadTree.Rectangle(28 * latura // 2, 16 * latura // 2, 28 * latura + latura + 10, 16 * latura + latura + 10)
-qTree = QuadTree.QuadTree(rect)
-
 collision_tiles = []
+
+collision_vector = []
+theMap = None
 
 def generate_points():
     for i in range(18):
@@ -33,8 +33,7 @@ def generate_points():
             if collision_tiles[i][j] == True:
                 x = latura * j - latura // 2
                 y = latura * i - latura // 2
-                obj = QuadTree.TreeObject(x, y, True)
-                qTree.insert(obj)
+                collision_vector.append((x,y))
 
 def generate_outer_points():
     collision_tiles.clear()
@@ -61,5 +60,6 @@ def map_select(WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks) :
         collision_tiles[int(wordList[0]) + 1][int(wordList[1]) + 1] = boolean
         line = fstream.readline()
     generate_points()
-    gameplay(WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks,Map,qTree)
+    return Map
+    #gameplay(WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks,Map,qTree)
 
