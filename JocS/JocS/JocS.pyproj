@@ -31,9 +31,6 @@
     <Compile Include="Gameplay.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="kd_tree.py">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Map_select.py">
       <SubType>Code</SubType>
     </Compile>

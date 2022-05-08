@@ -11,7 +11,6 @@ from MenuMain import Menu
 from MapEditor import Editor
 import QuadTree
 import QuadTreeTuple
-import kd_tree
 
 import Map_select
 
@@ -109,9 +108,8 @@ def gameplay(Input,Playeri,joysticks,Map):
 
     def environment_update(qtree_points) :
         DisplayG.blit(Map,(0,0))
-        def temp_att(i):
-            attack = Harmful_Stuff[i]
-            attack.afisare(DisplayG)
+        def temp_att(attack):
+            #attack.afisare(DisplayG)
             treeObj = (attack.GX, attack.GY)
             qtree_points.append(treeObj)
             #queries.append(QuadTree.Circle(attack.GX, attack.GY, attack.size))
@@ -129,9 +127,20 @@ def gameplay(Input,Playeri,joysticks,Map):
 
         #newPool.map(partial(attack_stuff, Harmful_Stuff, qTree, queries), range(len(Harmful_Stuff)))
         #start = time.time()
-        for i in range(len(Harmful_Stuff)):
+        count = 0
+        witdh = None
+        heihgt = None
+        y = None
+        blit_sequence = []
+        for i in Harmful_Stuff:
             temp_att(i)
-            #pygame.time.wait(0)
+            if count == 0:
+                witdh = i.IMG.get_width() / 2
+                height = i.IMG.get_height() / 2
+                count += 1
+            blit_sequence.append((i.IMG, (i.GX - witdh, i.GY - height)))
+        #print(blit_sequence)
+        DisplayG.blits(blit_sequence)
         #end = time.time()
         #print(end - start)
 
@@ -152,7 +161,7 @@ def gameplay(Input,Playeri,joysticks,Map):
         environment_update(qtree_points)
         #print(len(Harmful_Stuff))
         qtree = QuadTreeTuple.make(qtree_points, rect)
-        QuadTreeTuple.show_tree(DisplayG, qtree, rect)
+        #QuadTreeTuple.show_tree(DisplayG, qtree, rect)
         WIN.blit(pygame.transform.scale(DisplayG,(w,h)),(x,y))
         #Afisare HUD playeri
         #spatiu alocat pentru fiecare hud va fi de 250 x 90
@@ -179,8 +188,6 @@ def gameplay(Input,Playeri,joysticks,Map):
 
     WX = w / 1920
     WH = h / 1080
-
-    
 
     clock = pygame.time.Clock()
     run = True

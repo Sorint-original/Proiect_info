@@ -56,3 +56,43 @@ def show_tree(screen, qtree, boundbox, level = 0):
             for i in qtree:
                 pygame.draw.circle(screen, (255,0,0), (i[0], i[1]), 5)
  
+def intersects(range, boundbox):
+    circlex = range[0]
+    circley = range[1]
+    circler = range[2]
+
+    middle_x = boundbox[0]
+    middle_y = boundbox[1]
+    width = boundbox[2]
+    height = boundbox[3]
+
+    xDist = abs(middle_x - self.x)
+    yDist = abs(middle_y - self.y)
+
+    edges = (xDist - witdh // 2) * (xDist - witdh // 2) + (yDist - height // 2) * (yDist - height // 2)
+
+    #no intersection
+    if xDist > (self.r + witdh // 2) or yDist > (self.r + height // 2):
+        return False
+
+    #intersection withing circle
+    if xDist <= witdh // 2 or yDist <= height // 2:
+        return True
+
+    #intersection on the edge of the circle
+    return edges <= self.r * self.r
+
+def query(qtree, range, found = []):
+        if not range.intersects(self.boundary):
+            return found
+        else:
+            for p in self.objects:
+                if range.contains(p):
+                    found.append(p)
+
+            if self.divided:
+                self.northwest.query(range, found)
+                self.northeast.query(range, found)
+                self.southwest.query(range, found)
+                self.southeast.query(range, found)
+
