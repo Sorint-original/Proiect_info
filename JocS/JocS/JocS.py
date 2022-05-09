@@ -80,17 +80,17 @@ def gameplay(Input,Playeri,joysticks,Map):
             Playeri[i].Health = 1000
             Playeri[i].GX = poziti[alcat]
             Playeri[i].GY = poziti[alcat + 1]
-            Playeri[i].change_size(150,pygame.image.load(os.path.join('Assets\Robots', Botimg[i])),pygame.image.load(os.path.join('Assets\Robots', Upimg[i])))
+            Playeri[i].change_size(150,pygame.Surface.convert_alpha(pygame.image.load(os.path.join('Assets\Robots', Botimg[i]))),pygame.Surface.convert_alpha(pygame.image.load(os.path.join('Assets\Robots', Upimg[i]))))
             alcat = alcat + 2
     #informatiile pentru hud
     Hud = [(0, 0, 255),(51, 204, 51),(255, 204, 0),(255, 51, 0)]
-    HEAT = pygame.image.load(os.path.join('Assets\HUD', "HEAT.png"))
+    HEAT = pygame.Surface.convert_alpha(pygame.image.load(os.path.join('Assets\HUD', "HEAT.png")))
     for i in range(len(HUD_info)) :
         HUD_info[i].append(Hud[HUD_info[i][0]])
         if Playeri[HUD_info[i][0]].SW == 0 :
-            HUD_info[i].append(pygame.image.load(os.path.join('Assets\HUD', "Grenade_Launcher.png")))
+            HUD_info[i].append(pygame.Surface.convert_alpha(pygame.image.load(os.path.join('Assets\HUD', "Grenade_Launcher.png"))))
         elif Playeri[HUD_info[i][0]].SW == 1 :
-            HUD_info[i].append(pygame.image.load(os.path.join('Assets\HUD', "Flame_Thrower.png")))
+            HUD_info[i].append(pygame.Surface.convert_alpha(pygame.image.load(os.path.join('Assets\HUD', "Flame_Thrower.png"))))
 
     #stabilirea dimensiunilor pentru afisarea gameplayului
     h = HEIGHT - 110
@@ -253,10 +253,15 @@ HEIGHT = screen.current_h
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 FPS = 60
 
-while True:
+Start = True
 
-    #Menu(WIN, WIDTH, HEIGHT, FPS)
-    theInput, thePlayers, theJoysticks, theMap = lobby(WIN, WIDTH, HEIGHT, FPS)
+while True:
+    while True :
+        #if Start == True :
+            #Menu(WIN, WIDTH, HEIGHT, FPS)
+        theInput, thePlayers, theJoysticks, theMap, Start = lobby(WIN, WIDTH, HEIGHT, FPS, Start)
+        if Start == False :
+            break
     #Editor(WIN, WIDTH, HEIGHT, FPS)
 
     gameplay(theInput, thePlayers, theJoysticks, theMap)

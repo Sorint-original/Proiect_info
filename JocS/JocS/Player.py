@@ -12,6 +12,7 @@ EX_sequences = [pygame.image.load(os.path.join('Assets\Explosion','EX0.png' )),p
 
 class explosion :
     def __init__ (self,x,y,size,dmg) :
+        self.diametru = 200
         self.GX = x
         self.GY = y
         self.PGX = x
@@ -58,7 +59,7 @@ class proiectil :
         self.PGX = x
         self.PGY = y
         #self.size reprezinta diametru cercului de coliziunea a glontului
-        self.size = size
+        self.diametru = size
         self.Angle = angle
         self.IMG = pygame.transform.rotate(image , angle)
         self.Speed = speed
@@ -252,6 +253,7 @@ class player:
         self.SecondaryWeapon = copy.copy(Secondary_Weapons[0])
         self.SecondaryWeapon.noharm = self.number
         self.SW = 0
+        self.diametru = 150
 
     #schimbarea marimi are nevoie de o re introducere a imagini ne modificate
     #ca sa arate cat mai bine
