@@ -103,27 +103,34 @@ def gameplay(Input,Playeri,joysticks,Map):
         y = 10
 
     #Suprafata pe care se va intampla totul
-    DisplayG = pygame.Surface((sw,sh))
+    #DisplayG = pygame.Surface((sw,sh))
     #See_collisions = False
 
     def environment_update(qtree_points) :
-        DisplayG.blit(Map,(0,0))
+        #DisplayG.blit(Map,(0,0))
         def temp_att(attack):
             #attack.afisare(DisplayG)
             treeObj = (attack.GX, attack.GY)
             qtree_points.append(treeObj)
-            #queries.append(QuadTree.Circle(attack.GX, attack.GY, attack.size))
+            #qTree.insert(QuadTree.TreeObject(attack.GX, attack.GY, False))
         #elapsed_time = time.process_time() - t
 
         #print(elapsed_time)
 
         for i in range(4) :
             if Playeri[i].Selected :
-                Playeri[i].afisare(DisplayG)
+                Playeri[i].afisare(WIN)
                 treeObj = (Playeri[i].GX, Playeri[i].GY)
-                qtree_points.append(treeObj)
+                #qTree.insert(QuadTree.TreeObject(Playeri[i].GX, Playeri[i].GY, False))
                 #queries.append(QuadTree.Circle(Playeri[i].GX, Playeri[i].GY, Playeri[i].size))
+                qtree_points.append(treeObj)
+                queries.append((Playeri[i].GX, Playeri[i].GY, Playeri[i].size))
+
         qtree_points.extend(wall_points)
+
+        for i in wall_points:
+            queries.append((i[0], i[1], 25))
+            #queries.append(QuadTree.Circle(i.x, i.y, 25))
 
         #newPool.map(partial(attack_stuff, Harmful_Stuff, qTree, queries), range(len(Harmful_Stuff)))
         #start = time.time()
@@ -140,7 +147,7 @@ def gameplay(Input,Playeri,joysticks,Map):
                 count += 1
             blit_sequence.append((i.IMG, (i.GX - witdh, i.GY - height)))
         #print(blit_sequence)
-        DisplayG.blits(blit_sequence)
+        WIN.blits(blit_sequence)
         #end = time.time()
         #print(end - start)
 
@@ -154,15 +161,22 @@ def gameplay(Input,Playeri,joysticks,Map):
     else :
         pas = ((WIDTH - 1000) / 5) * 3 + 250 * 3
 
-    def draw_window() :
+    def draw_window():
         WIN.fill((0,0,0))
         qtree_points = []
         #Afisarea Gameplay Environment
         environment_update(qtree_points)
+        #for q in queries:
+        #    qTree.query(q, points)
+        #qTree.show_tree(WIN, points, queries)
         #print(len(Harmful_Stuff))
         qtree = QuadTreeTuple.make(qtree_points, rect)
-        #QuadTreeTuple.show_tree(DisplayG, qtree, rect)
-        WIN.blit(pygame.transform.scale(DisplayG,(w,h)),(x,y))
+        start = time.time()
+        for i in queries:
+            QuadTreeTuple.theQuery(qtree, rect, i, points)
+        print("TIME IT TOOK:", time.time() - start)
+        QuadTreeTuple.show_tree(WIN, qtree, rect, queries, points)
+        #WIN.blit(pygame.transform.scale(DisplayG,(w,h)),(x,y))
         #Afisare HUD playeri
         #spatiu alocat pentru fiecare hud va fi de 250 x 90
         ux = (WIDTH - 1000) / 5
@@ -195,9 +209,12 @@ def gameplay(Input,Playeri,joysticks,Map):
     rect = (28 * latura // 2, 16 * latura // 2, 28 * latura + latura + 10, 16 * latura + latura + 10)
     while run :
         clock.tick(60)
+        #pygame.time.wait(0)
         print(clock.get_fps())
         points.clear()
         queries.clear()
+
+        #qTree = QuadTree.QuadTree(rect)
 
         #DAS EVENT LOOP
         for event in pygame.event.get() :

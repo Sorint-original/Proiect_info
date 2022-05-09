@@ -34,6 +34,7 @@ def generate_points():
                 x = latura * j - latura // 2
                 y = latura * i - latura // 2
                 collision_vector.append((x,y))
+                #collision_vector.append(QuadTree.TreeObject(x,y,True))
 
 def generate_outer_points():
     collision_tiles.clear()
