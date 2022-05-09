@@ -13,48 +13,19 @@ import QuadTree
 import QuadTreeTuple
 
 import Map_select
-
-def attack_stuff(Harmful_Stuff, qTree, queries, i):
-    print("NEW THING")
-    attack = Harmful_Stuff[i]
-    treeObj = QuadTree.TreeObject(attack.GX, attack.GY, False)
-    qTree.insert(treeObj)
-    queries.append(QuadTree.Circle(attack.GX, attack.GY, attack.size))
-
-print("STARTED")
-#newPool = mp.Pool(5)
-#latura = 68
-
-#rect = QuadTree.Rectangle(28 * latura // 2, 16 * latura // 2, 28 * latura + latura + 10, 16 * latura + latura + 10)
-
-#test_trees = []
-#test_qtree = QuadTree.QuadTree(rect)
-##test_qtree_touple = QuadTreeTuple.QuadTree_Tuple((28 * latura // 2, 16 * latura // 2, 28 * latura + latura + 10, 16 * latura + latura + 10))
-#test_trees_touple = []
-#test_trees_tuples_kdtree = []
-#now = time.time()
-#for i in range(1000):
-#    test_tree = QuadTree.TreeObject(1, 1, False)
-#    #test_trees.append(test_tree)
-#    test_qtree.insert(test_tree)
-
-#print(f'Tree: {time.time() - now}')
+from Player import convert_and_resize_assets, EX_sequences
 
 
-#for i in range(1000):
-#    #test_tree = (1,1)
-#    test_tree = (random.randrange(latura + 5, 28 * latura), random.randrange(latura + 5, 16 * latura))
-#    test_trees_touple.append(test_tree)
-#    #test_qtree_touple.insert(test_tree)        
-#now = time.time()
-#tree = QuadTreeTuple.make(test_trees_touple, (28 * latura // 2, 16 * latura // 2, 28 * latura + latura + 10, 16 * latura + latura + 10))
-#print(f'Tree: {time.time() - now}')
-#print(tree)
+Botimg = ['Bottom-Blue.png','Bottom-Green.png','Bottom-Yellow.png','Bottom-Red.png']
+Upimg = ['Upper-Blue.png','Upper-Green.png','Upper-Yellow.png','Upper-Red.png']
 
 def gameplay(Input,Playeri,joysticks,Map):
     import ButtonClass
     from Player import Harmful_Stuff
     from EventH import exit , controller_verify
+
+    WIN.fill((0,0,0))
+    pygame.display.update()
 
     sw = Map.get_width()
     sh = Map.get_height()
@@ -63,36 +34,10 @@ def gameplay(Input,Playeri,joysticks,Map):
     points = []
 
     wall_points = Map_select.collision_vector
-
+    L = Map_select.latura
     clears = []
     process_list = []
-    #pregatirea playerilor pentru Gameplay
-    Botimg = ['Bottom-Blue.png','Bottom-Green.png','Bottom-Yellow.png','Bottom-Red.png']
-    Upimg = ['Upper-Blue.png','Upper-Green.png','Upper-Yellow.png','Upper-Red.png']
-    # cele patru poziti in care se pot spauna playeri
-    poziti = (100 , 100 , sw - 100 , sh - 100 , sw - 100 , 100 , 100 , sh - 100)
-    alcat = 0
-    HUD_info = []
-    #pregatirea playerilor
-    for i in range(4) :
-        if Playeri[i].Selected :
-            HUD_info.append([i])
-            Playeri[i].Health = 1000
-            Playeri[i].GX = poziti[alcat]
-            Playeri[i].GY = poziti[alcat + 1]
-            Playeri[i].change_size(150,pygame.Surface.convert_alpha(pygame.image.load(os.path.join('Assets\Robots', Botimg[i]))),pygame.Surface.convert_alpha(pygame.image.load(os.path.join('Assets\Robots', Upimg[i]))))
-            alcat = alcat + 2
-    #informatiile pentru hud
-    Hud = [(0, 0, 255),(51, 204, 51),(255, 204, 0),(255, 51, 0)]
-    HEAT = pygame.Surface.convert_alpha(pygame.image.load(os.path.join('Assets\HUD', "HEAT.png")))
-    for i in range(len(HUD_info)) :
-        HUD_info[i].append(Hud[HUD_info[i][0]])
-        if Playeri[HUD_info[i][0]].SW == 0 :
-            HUD_info[i].append(pygame.Surface.convert_alpha(pygame.image.load(os.path.join('Assets\HUD', "Grenade_Launcher.png"))))
-        elif Playeri[HUD_info[i][0]].SW == 1 :
-            HUD_info[i].append(pygame.Surface.convert_alpha(pygame.image.load(os.path.join('Assets\HUD', "Flame_Thrower.png"))))
 
-    #stabilirea dimensiunilor pentru afisarea gameplayului
     h = HEIGHT - 110
     while (round(h * 1.75) > WIDTH - 50) :
         h = h - 1
@@ -101,6 +46,40 @@ def gameplay(Input,Playeri,joysticks,Map):
     y = (HEIGHT - h) / 2
     if y < 100 :
         y = 10
+    print(h)
+    print(w)
+
+    #se da resize la harta
+    Map = pygame.transform.scale(Map,(w,h))
+    convert_and_resize_assets(WIN,w,h,L)
+    #pregatirea playerilor pentru Gameplay
+    # cele patru poziti in care se pot spauna playeri
+    poziti = (100 , 100 , sw - 100 , sh - 100 , sw - 100 , 100 , 100 , sh - 100)
+    alcat = 0
+    HUD_info = []
+    size_P = 150 * (w/(L*28))
+    #pregatirea playerilor
+    for i in range(4) :
+        if Playeri[i].Selected :
+            HUD_info.append([i])
+            Playeri[i].Health = 1000
+            Playeri[i].GX = poziti[alcat]
+            Playeri[i].GY = poziti[alcat + 1]
+            Playeri[i].change_size(size_P,pygame.Surface.convert_alpha(pygame.image.load(os.path.join('Assets\Robots', Botimg[i]))),pygame.Surface.convert_alpha(pygame.image.load(os.path.join('Assets\Robots', Upimg[i]))))
+            alcat = alcat + 2
+    #informatiile pentru hud
+    Hud = [(0, 0, 255),(51, 204, 51),(255, 204, 0),(255, 51, 0)]
+    HEAT = pygame.Surface.convert_alpha(pygame.Surface.convert_alpha(pygame.image.load(os.path.join('Assets\HUD', "HEAT.png"))))
+    for i in range(len(HUD_info)) :
+        HUD_info[i].append(Hud[HUD_info[i][0]])
+        if Playeri[HUD_info[i][0]].SW == 0 :
+            HUD_info[i].append(pygame.Surface.convert_alpha(pygame.image.load(os.path.join('Assets\HUD', "Grenade_Launcher.png"))))
+        elif Playeri[HUD_info[i][0]].SW == 1 :
+            HUD_info[i].append(pygame.Surface.convert_alpha(pygame.image.load(os.path.join('Assets\HUD', "Flame_Thrower.png"))))
+
+    #stabilirea dimensiunilor pentru afisarea gameplayului
+
+    Dupdate = [x,y,w,h]
 
     #Suprafata pe care se va intampla totul
     DisplayG = pygame.Surface((sw,sh))
@@ -113,9 +92,7 @@ def gameplay(Input,Playeri,joysticks,Map):
             treeObj = (attack.GX, attack.GY)
             qtree_points.append(treeObj)
             #queries.append(QuadTree.Circle(attack.GX, attack.GY, attack.size))
-        #elapsed_time = time.process_time() - t
 
-        #print(elapsed_time)
 
         for i in range(4) :
             if Playeri[i].Selected :
@@ -124,9 +101,6 @@ def gameplay(Input,Playeri,joysticks,Map):
                 qtree_points.append(treeObj)
                 #queries.append(QuadTree.Circle(Playeri[i].GX, Playeri[i].GY, Playeri[i].size))
         qtree_points.extend(wall_points)
-
-        #newPool.map(partial(attack_stuff, Harmful_Stuff, qTree, queries), range(len(Harmful_Stuff)))
-        #start = time.time()
         count = 0
         witdh = None
         heihgt = None
@@ -139,10 +113,8 @@ def gameplay(Input,Playeri,joysticks,Map):
                 height = i.IMG.get_height() / 2
                 count += 1
             blit_sequence.append((i.IMG, (i.GX - witdh, i.GY - height)))
-        #print(blit_sequence)
         DisplayG.blits(blit_sequence)
-        #end = time.time()
-        #print(end - start)
+
 
     hfont = pygame.font.Font("freesansbold.ttf", 11)
     afont = pygame.font.Font("freesansbold.ttf", 20)
@@ -155,14 +127,40 @@ def gameplay(Input,Playeri,joysticks,Map):
         pas = ((WIDTH - 1000) / 5) * 3 + 250 * 3
 
     def draw_window() :
-        WIN.fill((0,0,0))
         qtree_points = []
         #Afisarea Gameplay Environment
-        environment_update(qtree_points)
+        #environment_update(qtree_points)
+        WIN.blit(Map,(x,y))
         #print(len(Harmful_Stuff))
-        qtree = QuadTreeTuple.make(qtree_points, rect)
+        #qtree = QuadTreeTuple.make(qtree_points, rect)
         #QuadTreeTuple.show_tree(DisplayG, qtree, rect)
-        WIN.blit(pygame.transform.scale(DisplayG,(w,h)),(x,y))
+        for i in range(4) :
+            if Playeri[i].Selected :
+                #Afisare Player
+                BIMAGE = pygame.transform.rotate(Playeri[i].Bottom_image,Playeri[i].Bottom_angle)
+                Px = (Playeri[i].GX - BIMAGE.get_width() / 2) * (w/(L*28)) + x
+                Py = (Playeri[i].GY - BIMAGE.get_height() / 2) * (h/(L*16)) + y
+                WIN.blit(BIMAGE,(Px,Py))
+                UIMAGE = pygame.transform.rotate(Playeri[i].Upper_image,Playeri[i].Upper_angle)
+                Px = (Playeri[i].GX - UIMAGE.get_width() / 2) * (w/(L*28)) + x
+                Py = (Playeri[i].GY - UIMAGE.get_height() / 2) * (h/(L*16)) + y
+                WIN.blit(UIMAGE,(Px,Py))
+                #End Afisare
+                treeObj = (Playeri[i].GX, Playeri[i].GY)
+                qtree_points.append(treeObj)
+                #queries.append(QuadTree.Circle(Playeri[i].GX, Playeri[i].GY, Playeri[i].size))
+        del BIMAGE
+        del UIMAGE
+        #Afisare proiectile
+        for i in range(len(Harmful_Stuff)) :
+            if Harmful_Stuff[i].type == 0 :
+                Hx =(Harmful_Stuff[i].GX - Harmful_Stuff[i].IMG.get_width()/2)* (w/(L*28)) + x
+                Hy =(Harmful_Stuff[i].GY - Harmful_Stuff[i].IMG.get_height()/2)* (h/(L*16)) + y
+                WIN.blit(Harmful_Stuff[i].IMG,(Hx,Hy))
+            elif Harmful_Stuff[i].type == 1 :
+                Hx =(Harmful_Stuff[i].GX - EX_sequences[Harmful_Stuff[i].nrimg].get_width()/2)* (w/(L*28)) + x
+                Hy =(Harmful_Stuff[i].GY - EX_sequences[Harmful_Stuff[i].nrimg].get_height()/2)* (h/(L*16)) + y
+                WIN.blit(EX_sequences[Harmful_Stuff[i].nrimg],(Hx,Hy))
         #Afisare HUD playeri
         #spatiu alocat pentru fiecare hud va fi de 250 x 90
         ux = (WIDTH - 1000) / 5
@@ -182,9 +180,10 @@ def gameplay(Input,Playeri,joysticks,Map):
             WIN.blit(HUD_info[i][2],(ux + 15,uy + 59))
             ammo_count = afont.render(str(Playeri[HUD_info[i][0]].SecondaryWeapon.Ammo_count) ,True,(255,255,255))
             WIN.blit(ammo_count,(ux + 20 + HUD_info[i][2].get_width(),uy + 59))
+            pygame.display.update((ux,uy+1,250,90))
             ux = ux + pas
-           
-        pygame.display.update()
+        #Display Update
+        pygame.display.update(Dupdate)
 
     WX = w / 1920
     WH = h / 1080
@@ -231,15 +230,8 @@ def gameplay(Input,Playeri,joysticks,Map):
                 Playeri[i].gameplay_update()
         for attack in Harmful_Stuff :
             attack.update()
-        #start = time.time()
         draw_window()
-        #end = time.time()
 
-
-
-        #print(end-start)
-
-        #del qTree
         
     # Ce se intampla ca sa iasa din gameplay
     Harmful_Stuff.clear()
