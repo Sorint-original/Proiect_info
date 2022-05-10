@@ -135,7 +135,7 @@ def gameplay(Input,Playeri,joysticks,Map):
         QuadTreeTuple.divide(qtree, rect)
         for query in queries:
             QuadTreeTuple.query(query, points)
-        QuadTreeTuple.show_tree(WIN, qtree, rect, queries, points)
+        QuadTreeTuple.show_tree(WIN, qtree, afisrect, queries, points)
 
         #Afisare HUD playeri
         #spatiu alocat pentru fiecare hud va fi de 250 x 90
@@ -168,6 +168,7 @@ def gameplay(Input,Playeri,joysticks,Map):
     run = True
     latura = 68 
     rect = (28 * latura // 2, 16 * latura // 2, 28 * latura + latura + 10, 16 * latura + latura + 10)
+    afisrect = (x+w//2,y+h//2,(w/28)*30,(h/16)*18)
     while run :
         clock.tick(60)
         #pygame.time.wait(0)
