@@ -80,7 +80,6 @@ def gameplay(Input,Playeri,joysticks,Map):
     #stabilirea dimensiunilor pentru afisarea gameplayului
 
     Dupdate = [x,y,w,h]
-
     hfont = pygame.font.Font("freesansbold.ttf", 11)
     afont = pygame.font.Font("freesansbold.ttf", 20)
     uy = y + h + (HEIGHT - y - h - 90) / 2 - 1
@@ -171,9 +170,12 @@ def gameplay(Input,Playeri,joysticks,Map):
     rect = (28 * latura // 2, 16 * latura // 2, 28 * latura + latura + 10, 16 * latura + latura + 10)
     while run :
         clock.tick(60)
+        #pygame.time.wait(0)
         print(clock.get_fps())
         points.clear()
         queries.clear()
+
+        #qTree = QuadTree.QuadTree(rect)
 
         #DAS EVENT LOOP
         for event in pygame.event.get() :

@@ -58,7 +58,8 @@ def make(points, boundbox, level=0):
     else:
         return points
 
-def show_tree(screen, qtree, boundbox, queries=[], qpoints=[], level=0):
+
+def show_tree(screen, qtree, boundbox, queries = [], qpoints = [], level = 0):
         middle_x = boundbox[0]
         middle_y = boundbox[1]
         width = boundbox[2]
