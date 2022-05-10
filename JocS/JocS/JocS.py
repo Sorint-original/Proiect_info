@@ -40,10 +40,10 @@ def gameplay(Input,Playeri,joysticks,Map):
 
     h = HEIGHT - 110
     while (round(h * 1.75) > WIDTH - 50) :
-        h = h - 1
+        h -=  1
     w = round(h * 1.75)
-    x = (WIDTH - w) / 2
-    y = (HEIGHT - h) / 2
+    x = (WIDTH - w) // 2
+    y = (HEIGHT - h) // 2
     if y < 100 :
         y = 10
     print(h)
@@ -81,41 +81,6 @@ def gameplay(Input,Playeri,joysticks,Map):
 
     Dupdate = [x,y,w,h]
 
-    #Suprafata pe care se va intampla totul
-    DisplayG = pygame.Surface((sw,sh))
-    #See_collisions = False
-
-    def environment_update(qtree_points) :
-        DisplayG.blit(Map,(0,0))
-        def temp_att(attack):
-            #attack.afisare(DisplayG)
-            treeObj = (attack.GX, attack.GY)
-            qtree_points.append(treeObj)
-            #queries.append(QuadTree.Circle(attack.GX, attack.GY, attack.size))
-
-
-        for i in range(4) :
-            if Playeri[i].Selected :
-                Playeri[i].afisare(DisplayG)
-                treeObj = (Playeri[i].GX, Playeri[i].GY)
-                qtree_points.append(treeObj)
-                #queries.append(QuadTree.Circle(Playeri[i].GX, Playeri[i].GY, Playeri[i].size))
-        qtree_points.extend(wall_points)
-        count = 0
-        witdh = None
-        heihgt = None
-        y = None
-        blit_sequence = []
-        for i in Harmful_Stuff:
-            temp_att(i)
-            if count == 0:
-                witdh = i.IMG.get_width() / 2
-                height = i.IMG.get_height() / 2
-                count += 1
-            blit_sequence.append((i.IMG, (i.GX - witdh, i.GY - height)))
-        DisplayG.blits(blit_sequence)
-
-
     hfont = pygame.font.Font("freesansbold.ttf", 11)
     afont = pygame.font.Font("freesansbold.ttf", 20)
     uy = y + h + (HEIGHT - y - h - 90) / 2 - 1
@@ -129,11 +94,8 @@ def gameplay(Input,Playeri,joysticks,Map):
     def draw_window() :
         qtree_points = []
         #Afisarea Gameplay Environment
-        #environment_update(qtree_points)
+
         WIN.blit(Map,(x,y))
-        #print(len(Harmful_Stuff))
-        #qtree = QuadTreeTuple.make(qtree_points, rect)
-        #QuadTreeTuple.show_tree(DisplayG, qtree, rect)
         for i in range(4) :
             if Playeri[i].Selected :
                 #Afisare Player
@@ -148,11 +110,15 @@ def gameplay(Input,Playeri,joysticks,Map):
                 #End Afisare
                 treeObj = (Playeri[i].GX, Playeri[i].GY)
                 qtree_points.append(treeObj)
-                #queries.append(QuadTree.Circle(Playeri[i].GX, Playeri[i].GY, Playeri[i].size))
+                queries.append((Playeri[i].GX, Playeri[i].GY, Playeri[i].size // 2))
         del BIMAGE
         del UIMAGE
         #Afisare proiectile
         for i in range(len(Harmful_Stuff)) :
+            #Quadtree insertion
+            treeObj = (Harmful_Stuff[i].GX, Harmful_Stuff[i].GY)
+            qtree_points.append(treeObj)
+
             if Harmful_Stuff[i].type == 0 :
                 Hx =(Harmful_Stuff[i].GX - Harmful_Stuff[i].IMG.get_width()/2)* (w/(L*28)) + x
                 Hy =(Harmful_Stuff[i].GY - Harmful_Stuff[i].IMG.get_height()/2)* (h/(L*16)) + y
@@ -161,6 +127,17 @@ def gameplay(Input,Playeri,joysticks,Map):
                 Hx =(Harmful_Stuff[i].GX - EX_sequences[Harmful_Stuff[i].nrimg].get_width()/2)* (w/(L*28)) + x
                 Hy =(Harmful_Stuff[i].GY - EX_sequences[Harmful_Stuff[i].nrimg].get_height()/2)* (h/(L*16)) + y
                 WIN.blit(EX_sequences[Harmful_Stuff[i].nrimg],(Hx,Hy))
+
+        #Quadtree generation and queries
+        qtree_points.extend(wall_points)
+        qtree = QuadTreeTuple.make(qtree_points, rect)
+        for i in wall_points:
+            queries.append((i[0], i[1], 25))
+        QuadTreeTuple.divide(qtree, rect)
+        for query in queries:
+            QuadTreeTuple.query(query, points)
+        QuadTreeTuple.show_tree(WIN, qtree, rect, queries, points)
+
         #Afisare HUD playeri
         #spatiu alocat pentru fiecare hud va fi de 250 x 90
         ux = (WIDTH - 1000) / 5

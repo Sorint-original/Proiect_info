@@ -42,7 +42,7 @@ def generate_outer_points():
         newVec = []
         for j in range(30):
             if (j == 0 or j == 28 + 1) or (i == 0 or i == 16 + 1):
-                newVec.append(True)
+                newVec.append(False)
             else:
                 newVec.append(False)
         collision_tiles.append(newVec)
