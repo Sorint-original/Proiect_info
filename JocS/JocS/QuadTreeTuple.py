@@ -2,10 +2,26 @@ import pygame
 import random
 import time
 
-_MaxCapacity = 8
+import Map_select
+
+_MaxCapacity = 10
 _MaxDepth = 8
 
 quadtree = []
+
+screen = pygame.display.Info()
+WIDTH = screen.current_w
+HEIGHT = screen.current_h
+
+L = Map_select.latura
+h = HEIGHT - 110
+while (round(h * 1.75) > WIDTH - 50) :
+    h = h - 1
+w = round(h * 1.75)
+x = (WIDTH - w) // 2
+y = (HEIGHT - h) // 2
+if y < 100 :
+    y = 10
 
 def make(points, boundbox, level=0):
     if not len(points):
@@ -42,6 +58,7 @@ def make(points, boundbox, level=0):
     else:
         return points
 
+
 def show_tree(screen, qtree, boundbox, queries = [], qpoints = [], level = 0):
         middle_x = boundbox[0]
         middle_y = boundbox[1]
@@ -56,12 +73,12 @@ def show_tree(screen, qtree, boundbox, queries = [], qpoints = [], level = 0):
             show_tree(screen, qtree[3], (middle_x + width // 4, middle_y + height // 4,  width // 2, height // 2), queries, qpoints, level + 1)
         elif len(qtree) != 0:
             for i in qtree:
-                pygame.draw.circle(screen, (255,0,0), (i[0], i[1]), 5)
+                pygame.draw.circle(screen, (255,0,0), (i[0] * (w / (L * 28)) + x, i[1] * (h / (L * 16)) + y), 5)
         if level == 0:
             for i in queries:
-                pygame.draw.circle(screen, (153,51,255), (i[0], i[1]), i[2], 3)
+                pygame.draw.circle(screen, (153,51,255), (i[0] * (w / (L * 28)) + x, i[1] * (h / (L * 16)) + y), i[2], 3)
             for i in qpoints:
-                pygame.draw.circle(screen, (0,255,0), (i[0], i[1]), 8)
+                pygame.draw.circle(screen, (0,255,0), (i[0] * (w / (L * 28)) + x, i[1] * (h / (L * 16)) + y), 8)
  
 def intersects(range, boundbox):
     circlex = range[0]
@@ -94,25 +111,7 @@ def contains(circle, point):
     yDist = point[1] - circle[1]
     return circle[2] ** 2 >= xDist ** 2 + yDist ** 2
 
-def query(qtree, bounds, circle, found = []):
-    middle_x = bounds[0]
-    middle_y = bounds[1]
-    width = bounds[2]
-    height = bounds[3]
-    if not intersects(circle, bounds):
-        return found
-    if len(qtree) != 0 and type(qtree[0]) is list:
-        query(qtree[0], (middle_x - width // 4, middle_y - height // 4,  width // 2, height // 2), circle, found)
-        query(qtree[1], (middle_x + width // 4, middle_y - height // 4,  width // 2, height // 2), circle, found)
-        query(qtree[2], (middle_x - width // 4, middle_y + height // 4,  width // 2, height // 2), circle, found)
-        query(qtree[3], (middle_x + width // 4, middle_y + height // 4,  width // 2, height // 2), circle, found)
-    else:
-        for point in qtree:
-            if circle[2] ** 2 >= (point[0] - circle[0]) ** 2 + (point[1] - circle[1]) ** 2:
-                found.append(point)
-    return found
-
-def theQuery(circle, found = []):
+def query(circle, found=[]):
     print(len(quadtree))
     for tree in quadtree:
         if intersects(circle, tree[1]):
@@ -132,6 +131,3 @@ def divide(qtree, bounds):
         else:
             quadtree.append((queue[0][0], queue[0][1]))
         queue.pop(0)
-
-
-
