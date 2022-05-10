@@ -82,25 +82,29 @@ def gameplay(Input,Playeri,joysticks,Map):
     Dupdate = [x,y,w,h]
 
     #Suprafata pe care se va intampla totul
-    DisplayG = pygame.Surface((sw,sh))
+    #DisplayG = pygame.Surface((sw,sh))
     #See_collisions = False
 
     def environment_update(qtree_points) :
-        DisplayG.blit(Map,(0,0))
+        #DisplayG.blit(Map,(0,0))
         def temp_att(attack):
             #attack.afisare(DisplayG)
             treeObj = (attack.GX, attack.GY)
             qtree_points.append(treeObj)
-            #queries.append(QuadTree.Circle(attack.GX, attack.GY, attack.size))
-
 
         for i in range(4) :
             if Playeri[i].Selected :
-                Playeri[i].afisare(DisplayG)
+                Playeri[i].afisare(WIN)
                 treeObj = (Playeri[i].GX, Playeri[i].GY)
-                qtree_points.append(treeObj)
+                #qTree.insert(QuadTree.TreeObject(Playeri[i].GX, Playeri[i].GY, False))
                 #queries.append(QuadTree.Circle(Playeri[i].GX, Playeri[i].GY, Playeri[i].size))
+                qtree_points.append(treeObj)
+                queries.append((Playeri[i].GX, Playeri[i].GY, Playeri[i].size))
+
         qtree_points.extend(wall_points)
+        for i in wall_points:
+            queries.append((i[0], i[1], 25))
+
         count = 0
         witdh = None
         heihgt = None
@@ -114,7 +118,6 @@ def gameplay(Input,Playeri,joysticks,Map):
                 count += 1
             blit_sequence.append((i.IMG, (i.GX - witdh, i.GY - height)))
         DisplayG.blits(blit_sequence)
-
 
     hfont = pygame.font.Font("freesansbold.ttf", 11)
     afont = pygame.font.Font("freesansbold.ttf", 20)
@@ -194,9 +197,12 @@ def gameplay(Input,Playeri,joysticks,Map):
     rect = (28 * latura // 2, 16 * latura // 2, 28 * latura + latura + 10, 16 * latura + latura + 10)
     while run :
         clock.tick(60)
+        #pygame.time.wait(0)
         print(clock.get_fps())
         points.clear()
         queries.clear()
+
+        #qTree = QuadTree.QuadTree(rect)
 
         #DAS EVENT LOOP
         for event in pygame.event.get() :
