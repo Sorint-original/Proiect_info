@@ -5,6 +5,8 @@ import time
 _MaxCapacity = 8
 _MaxDepth = 8
 
+quadtree = []
+
 def make(points, boundbox, level=0):
     if not len(points):
         return []
@@ -110,20 +112,25 @@ def query(qtree, bounds, circle, found = []):
                 found.append(point)
     return found
 
-def theQuery(qtree, bounds, circle, found = []):
-    queue = [(qtree, bounds)]
+def theQuery(circle, found = []):
+    print(len(quadtree))
+    for tree in quadtree:
+        if intersects(circle, tree[1]):
+            for point in tree[0]:
+                if contains(circle, point):
+                    found.append(point)
 
+def divide(qtree, bounds):
+    quadtree.clear()
+    queue = [(qtree, bounds)]
     while len(queue) != 0:
-        if intersects(circle, queue[0][1]) :
-            if len(queue[0][0]) != 0 and type(queue[0][0][0]) is list:
-                queue.append((queue[0][0][0], (queue[0][1][0] - queue[0][1][2] // 4, queue[0][1][1] - queue[0][1][3] // 4,  queue[0][1][2] // 2, queue[0][1][3] // 2)))
-                queue.append((queue[0][0][1], (queue[0][1][0] + queue[0][1][2] // 4, queue[0][1][1] - queue[0][1][3] // 4,  queue[0][1][2] // 2, queue[0][1][3] // 2)))
-                queue.append((queue[0][0][2], (queue[0][1][0] - queue[0][1][2] // 4, queue[0][1][1] + queue[0][1][3] // 4,  queue[0][1][2] // 2, queue[0][1][3] // 2)))
-                queue.append((queue[0][0][3], (queue[0][1][0] + queue[0][1][2] // 4, queue[0][1][1] + queue[0][1][3] // 4,  queue[0][1][2] // 2, queue[0][1][3] // 2)))
-            else:
-                for point in queue[0][0]:
-                    if contains(circle, point):
-                        found.append(point)
+        if len(queue[0][0]) != 0 and type(queue[0][0][0]) is list:
+            queue.append((queue[0][0][0], (queue[0][1][0] - queue[0][1][2] // 4, queue[0][1][1] - queue[0][1][3] // 4,  queue[0][1][2] // 2, queue[0][1][3] // 2)))
+            queue.append((queue[0][0][1], (queue[0][1][0] + queue[0][1][2] // 4, queue[0][1][1] - queue[0][1][3] // 4,  queue[0][1][2] // 2, queue[0][1][3] // 2)))
+            queue.append((queue[0][0][2], (queue[0][1][0] - queue[0][1][2] // 4, queue[0][1][1] + queue[0][1][3] // 4,  queue[0][1][2] // 2, queue[0][1][3] // 2)))
+            queue.append((queue[0][0][3], (queue[0][1][0] + queue[0][1][2] // 4, queue[0][1][1] + queue[0][1][3] // 4,  queue[0][1][2] // 2, queue[0][1][3] // 2)))
+        else:
+            quadtree.append((queue[0][0], queue[0][1]))
         queue.pop(0)
 
 

@@ -112,6 +112,7 @@ def gameplay(Input,Playeri,joysticks,Map):
             #attack.afisare(DisplayG)
             treeObj = (attack.GX, attack.GY)
             qtree_points.append(treeObj)
+            #queries.append((attack.GX, attack.GY, attack.size))
             #qTree.insert(QuadTree.TreeObject(attack.GX, attack.GY, False))
         #elapsed_time = time.process_time() - t
 
@@ -171,10 +172,9 @@ def gameplay(Input,Playeri,joysticks,Map):
         #qTree.show_tree(WIN, points, queries)
         #print(len(Harmful_Stuff))
         qtree = QuadTreeTuple.make(qtree_points, rect)
-        start = time.time()
+        QuadTreeTuple.divide(qtree, rect)
         for i in queries:
-            QuadTreeTuple.theQuery(qtree, rect, i, points)
-        print("TIME IT TOOK:", time.time() - start)
+            QuadTreeTuple.theQuery(i, points)
         QuadTreeTuple.show_tree(WIN, qtree, rect, queries, points)
         #WIN.blit(pygame.transform.scale(DisplayG,(w,h)),(x,y))
         #Afisare HUD playeri
