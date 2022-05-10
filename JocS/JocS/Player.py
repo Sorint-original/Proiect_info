@@ -9,40 +9,44 @@ from Geometrie import get_angle , get_pos
 Harmful_Stuff = []
 
 EX_sequences = [pygame.image.load(os.path.join('Assets\Explosion','EX0.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX1.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX2.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX3.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX4.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX5.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX6.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX7.png' ))]
+Iproiectile = [pygame.transform.scale(pygame.image.load(os.path.join('Assets','Bullet.png' )),(25,5)),pygame.transform.scale(pygame.image.load(os.path.join('Assets','Grenade.png' )),(15,18)),pygame.transform.scale(pygame.image.load(os.path.join('Assets','Flame.png' )),(39,30))]
+
+def convert_and_resize_assets (WIN,w,h,L) :
+    global EX_sequences
+    global Iproiectile
+    for i in range(len(Iproiectile)) :
+        Iproiectile[i] = pygame.transform.scale(pygame.Surface.convert_alpha(Iproiectile[i]),(Iproiectile[i].get_width()*(w/(L*28)),Iproiectile[i].get_height()*(h/(L*16))))
+    for i in range(len(EX_sequences)) :
+        if i == 0 :
+            s = 100
+        elif i == 1 :
+            s = 150
+        else :
+            s = 200
+        EX_sequences[i] = pygame.transform.scale(pygame.Surface.convert_alpha(EX_sequences[i]),(s*(w/(L*28)),s*(h/(L*16))))
+
 
 class explosion :
     def __init__ (self,x,y,size,dmg) :
+        self.diametru = 200
         self.GX = x
         self.GY = y
         self.PGX = x
         self.PGY = y
-        self.existance = 57
+        self.existance = 55
+        self.nrimg = 0
         self.size = size
         self.damage = dmg
+        self.type = 1
         #Fiecare player poate sa ia damage doar o data de la o anumita explozie
         self.noharm = []
 
     def update (self) :
         self.existance = self.existance - 1
+        self.nrimg = 8-(self.existance // 7 + 1)
         if self.existance == 0 :
             Harmful_Stuff.remove(self)
-    def afisare(self,screen) :
-        if self.existance > 49 :
-            screen.blit(pygame.transform.scale(EX_sequences[0],(self.size/2,self.size/2)),(self.GX -self.size/4,self.GY -self.size/4))
-        elif self.existance > 42 :
-            screen.blit(pygame.transform.scale(EX_sequences[1],(self.size*2/3,self.size*2/3)),(self.GX -self.size/3,self.GY -self.size/3))
-        elif self.existance > 35 :
-            screen.blit(pygame.transform.scale(EX_sequences[2],(self.size,self.size)),(self.GX -self.size/2,self.GY -self.size/2))
-        elif self.existance > 28 :
-            screen.blit(pygame.transform.scale(EX_sequences[3],(self.size,self.size)),(self.GX -self.size/2,self.GY -self.size/2))
-        elif  self.existance >21 :
-            screen.blit(pygame.transform.scale(EX_sequences[4],(self.size,self.size)),(self.GX -self.size/2,self.GY -self.size/2))
-        elif  self.existance >14 :
-            screen.blit(pygame.transform.scale(EX_sequences[5],(self.size,self.size)),(self.GX -self.size/2,self.GY -self.size/2))
-        elif  self.existance >7 :
-            screen.blit(pygame.transform.scale(EX_sequences[6],(self.size,self.size)),(self.GX -self.size/2,self.GY -self.size/2))
-        elif self.existance > 0 :
-            screen.blit(pygame.transform.scale(EX_sequences[7],(self.size,self.size/2)),(self.GX -self.size/2,self.GY -self.size/4))
+
     #aceasta functie va fi chemata cand un anumit glont intra in contact cu alt obiect
     #other va tine un fel de id explicand ce si unde se afla obiectul lovit
     def impact (self,other) :
@@ -51,16 +55,16 @@ class explosion :
 
 
 class proiectil :
-    def __init__ (self,x,y,size,image,angle,speed,Dmg,A,mins,ext,EXPLOD,Bounce,nh) :
+    def __init__ (self,x,y,size,nrimage,angle,speed,Dmg,A,mins,ext,EXPLOD,Bounce,nh) :
         self.GX = x
         self.GY = y
         #pgx si pgy sunt coordonatele pe care le avea inainte Playeru
         self.PGX = x
         self.PGY = y
         #self.size reprezinta diametru cercului de coliziunea a glontului
-        self.size = size
+        self.diametru = size
         self.Angle = angle
-        self.IMG = pygame.transform.rotate(image , angle)
+        self.IMG = pygame.transform.rotate(Iproiectile[nrimage] , angle)
         self.Speed = speed
         self.noharm = nh
         self.dmg = Dmg
@@ -69,6 +73,7 @@ class proiectil :
         self.existence = ext
         self.Will_Explode = EXPLOD
         self.Bouncy = Bounce
+        self.type = 0
     def update (self) :
         #Verifica daca mai exista atacu
         if self.existence > 0 :
@@ -90,10 +95,6 @@ class proiectil :
             if self.Speed <=  self.minspeed:
                 self.Speed = self.minspeed
 
-    def afisare(self,screen) :
-        x = self.GX - self.IMG.get_width() / 2
-        y = self.GY - self.IMG.get_height() / 2
-        screen.blit(self.IMG, (x,y))
 
     #aceasta functie va fi chemata cand un anumit glont intra in contact cu alt obiect
     #other va tine un fel de id explicand ce si unde se afla obiectul lovit
@@ -173,15 +174,15 @@ class weapon :
                 self.Ammo_count = self.Ammo_count - 1
 
 # Main Weopans care se folosesc in joc 
-Rifle = weapon(10,-1,25,0,10,1,10,25,0,25,-1,False,False,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Bullet.png' )),(25,5)))
-Shotgun = weapon(10,-1,25,3,30,5,40,75,0,25,-1,False,False,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Bullet.png' )),(25,5)))
-SMG = weapon(10,-1,25,5,0,1,1.5,5,0,25,-1,False,False,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Bullet.png' )),(25,5)))
+Rifle = weapon(10,-1,25,0,10,1,10,25,0,25,-1,False,False,0)
+Shotgun = weapon(10,-1,25,3,30,5,40,75,0,25,-1,False,False,0)
+SMG = weapon(10,-1,25,5,0,1,1.5,5,0,25,-1,False,False,0)
 Main_Weapons = [Rifle,Shotgun,SMG]
 MWcount = 3
 
 #Secondary weapons care se folosesc in joc
-Grenade_Launcher = weapon(15,10,30,0,60,1,0,0,-0.5,0,120,True,True,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Grenade.png' )),(15,18)))
-Flame_Thrower = weapon(30,-1,25,15,0,1,0,5,-0.7,6,100,False,True,pygame.transform.scale(pygame.image.load(os.path.join('Assets','Flame.png' )),(39,30)))
+Grenade_Launcher = weapon(15,10,30,0,60,1,0,0,-0.5,0,120,True,True,1)
+Flame_Thrower = weapon(30,-1,25,15,0,1,0,5,-0.7,6,100,False,True,2)
 Secondary_Weapons = [Grenade_Launcher,Flame_Thrower]
 SWcount = 2
 
@@ -252,6 +253,7 @@ class player:
         self.SecondaryWeapon = copy.copy(Secondary_Weapons[0])
         self.SecondaryWeapon.noharm = self.number
         self.SW = 0
+        self.diametru = 150
 
     #schimbarea marimi are nevoie de o re introducere a imagini ne modificate
     #ca sa arate cat mai bine

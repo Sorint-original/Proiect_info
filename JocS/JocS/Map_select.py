@@ -11,6 +11,7 @@ default_path = 'Assets/Tiles/'
 
 latura = 68
 
+
 #THIS IS UPDATE
 
 texture_dict = {
