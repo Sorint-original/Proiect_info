@@ -4,7 +4,6 @@ import random
 
 import ButtonClass
 import TileClass
-import QuadTree
 
 rows = 16
 tiles_per_row = 28
@@ -17,9 +16,6 @@ collidable = False
 
 xoffset = (TileClass.w - tiles_per_row * TileClass.size) // 2
 yoffset = (TileClass.h - rows * TileClass.size) // 2
-
-rect = QuadTree.Rectangle(xoffset + tiles_per_row * TileClass.size // 2, yoffset + rows * TileClass.size // 2, tiles_per_row * TileClass.size + TileClass.size + 10, rows * TileClass.size + TileClass.size + 10)
-qTree = QuadTree.QuadTree(rect)
 
 def save_map(tileMap):
     with open("Maps/test.map", "w") as f:
@@ -43,8 +39,7 @@ def Editor(WIN, WIDTH, HEIGHT, FPS):
                             boolean = False
                         vector[i][j].canCollide = collidable
                         if collidable == True and boolean == True:
-                            qTree.insert(QuadTree.TreeObject(TileClass.size * (j) + xoffset + TileClass.size // 2, TileClass.size * (i) + yoffset + TileClass.size // 2))
-                        break
+                            break
         elif removeBool == True:
             for i in range(rows):
                 for j in range(tiles_per_row):

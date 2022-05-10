@@ -1,15 +1,12 @@
 import pygame
 import os
 import time
-#import cython
 import random
-#import multiprocessing as mp
 #from functools import partial
 
 from Lobby import lobby
 from MenuMain import Menu
 from MapEditor import Editor
-import QuadTree
 import QuadTreeTuple
 
 import Map_select
@@ -233,6 +230,6 @@ while True:
         theInput, thePlayers, theJoysticks, theMap, Start = lobby(WIN, WIDTH, HEIGHT, FPS, Start)
         if Start == False :
             break
-    #Editor(WIN, WIDTH, HEIGHT, FPS)
+        #Editor(WIN, WIDTH, HEIGHT, FPS)
 
     gameplay(theInput, thePlayers, theJoysticks, theMap)

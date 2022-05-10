@@ -112,7 +112,7 @@ def contains(circle, point):
     return circle[2] ** 2 >= xDist ** 2 + yDist ** 2
 
 def query(circle, found=[]):
-    print(len(quadtree))
+    #print(len(quadtree))
     for tree in quadtree:
         if intersects(circle, tree[1]):
             for point in tree[0]:
