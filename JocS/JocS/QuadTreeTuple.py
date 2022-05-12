@@ -4,7 +4,7 @@ import time
 
 import Map_select
 
-_MaxCapacity = 10
+_MaxCapacity = 20
 _MaxDepth = 8
 
 quadtree = []
@@ -59,7 +59,7 @@ def make(points, boundbox, level=0):
         return points
 
 
-def show_tree(screen, qtree, boundbox, queries = [], qpoints = [], level = 0):
+def show_tree(screen, qtree, boundbox, queries=[], qpoints=[], level=0):
         middle_x = boundbox[0]
         middle_y = boundbox[1]
         width = boundbox[2]
@@ -76,9 +76,12 @@ def show_tree(screen, qtree, boundbox, queries = [], qpoints = [], level = 0):
                 pygame.draw.circle(screen, (255,0,0), (i[0] * (w / (L * 28)) + x, i[1] * (h / (L * 16)) + y), 5)
         if level == 0:
             for i in queries:
-                pygame.draw.circle(screen, (153,51,255), (i[0] * (w / (L * 28)) + x, i[1] * (h / (L * 16)) + y), i[2], 3)
+                if len(i) == 3:
+                    pygame.draw.circle(screen, (178,102,255), (i[0] * (w / (L * 28)) + x, i[1] * (h / (L * 16)) + y), i[2], 3)
+                else:
+                    pygame.draw.rect(screen, (178,102,255), pygame.Rect((i[0] - i[2] // 2) * (w / (L * 28)) + x , (i[1] - i[3] // 2) * (h / (L * 16)) + y, i[2] * (w / (L * 28)), i[3] * (h / (L * 16))), 2)
             for i in qpoints:
-                pygame.draw.circle(screen, (0,255,0), (i[0] * (w / (L * 28)) + x, i[1] * (h / (L * 16)) + y), 8)
+                pygame.draw.circle(screen, (0,255,0), (i[0] * (w / (L * 28)) + x, i[1] * (h / (L * 16)) + y), 6)
  
 def intersects(range, boundbox):
     circlex = range[0]
@@ -106,18 +109,49 @@ def intersects(range, boundbox):
     #intersection on the edge of the circle
     return edges <= circler * circler
 
+def intersects_rectangle(range, boundbox):
+    boxx = range[0]
+    boxy = range[1]
+    boxw = range[2]
+    boxh = range[3]
+
+    middle_x = boundbox[0]
+    middle_y = boundbox[1]
+    width = boundbox[2]
+    height = boundbox[3]
+    return not(middle_x + width // 2 < boxx - boxw // 2 or boxx + boxw // 2 < middle_x - width // 2 or middle_y + height // 2 < boxy - boxh // 2 or boxy + boxh // 2 < middle_y - height // 2)
+
 def contains(circle, point):
     xDist = point[0] - circle[0]
     yDist = point[1] - circle[1]
     return circle[2] ** 2 >= xDist ** 2 + yDist ** 2
 
-def query(circle, found=[]):
+def contains_rectangle(range, point):
+    boxx = range[0]
+    boxy = range[1]
+    boxw = range[2]
+    boxh = range[3]
+
+    ptrx = point[0]
+    ptry = point[1]
+    return(boxx - boxw // 2 <= ptrx and boxx + boxw // 2 >= ptrx and boxy - boxh // 2 <= ptry and boxy + boxh // 2 >= ptry)
+
+def query(shape, found=[]):
     #print(len(quadtree))
+    isCircle = False
+    if len(shape) == 3:
+        isCircle = True
     for tree in quadtree:
-        if intersects(circle, tree[1]):
-            for point in tree[0]:
-                if contains(circle, point):
-                    found.append(point)
+        if isCircle == True:
+            if intersects(shape, tree[1]):
+                for point in tree[0]:
+                    if contains(shape, point):
+                        found.append(point)
+        else:
+            if intersects_rectangle(shape, tree[1]):
+                for point in tree[0]:
+                    if contains_rectangle(shape, point):
+                        found.append(point)
 
 def divide(qtree, bounds):
     quadtree.clear()

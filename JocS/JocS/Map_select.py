@@ -69,7 +69,7 @@ def generate_points():
                 Ymax = points[0]
         x = latura * (Xmin + Xmax) // 2 - latura // 2
         y = latura * (Ymin + Ymax) // 2 - latura // 2
-        collision_vector.append((x,y))
+        collision_vector.append((x, y, latura * abs(Xmax - Xmin + 1), latura * abs(Ymax - Ymin + 1)))
     #print(collision_vector)
 
 #x = latura * j - latura // 2

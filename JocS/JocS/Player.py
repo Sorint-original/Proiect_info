@@ -62,7 +62,7 @@ class proiectil :
         self.PGX = x
         self.PGY = y
         #self.size reprezinta diametru cercului de coliziunea a glontului
-        self.diametru = size
+        self.diametru = size    #Please keep constant with variable name language, thank you
         self.Angle = angle
         self.IMG = pygame.transform.rotate(Iproiectile[nrimage] , angle)
         self.Speed = speed

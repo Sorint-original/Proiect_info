@@ -3,15 +3,16 @@ import os
 import time
 import random
 #from functools import partial
-
 from Lobby import lobby
 from MenuMain import Menu
 from MapEditor import Editor
 import QuadTreeTuple
+import Geometrie
 
 import Map_select
 from Player import convert_and_resize_assets, EX_sequences
 
+VISUALIZE_COLLIDERS = True
 
 Botimg = ['Bottom-Blue.png','Bottom-Green.png','Bottom-Yellow.png','Bottom-Red.png']
 Upimg = ['Upper-Blue.png','Upper-Green.png','Upper-Yellow.png','Upper-Red.png']
@@ -29,11 +30,10 @@ def gameplay(Input,Playeri,joysticks,Map):
 
     queries = []
     points = []
+    collided_points = []
 
     wall_points = Map_select.collision_vector
     L = Map_select.latura
-    clears = []
-    process_list = []
 
     h = HEIGHT - 110
     while (round(h * 1.75) > WIDTH - 50) :
@@ -54,7 +54,7 @@ def gameplay(Input,Playeri,joysticks,Map):
     poziti = (100 , 100 , sw - 100 , sh - 100 , sw - 100 , 100 , 100 , sh - 100)
     alcat = 0
     HUD_info = []
-    size_P = 150 * (w/(L*28))
+    size_P = 150 * (w / (L * 28))
     #pregatirea playerilor
     for i in range(4) :
         if Playeri[i].Selected :
@@ -96,43 +96,68 @@ def gameplay(Input,Playeri,joysticks,Map):
             if Playeri[i].Selected :
                 #Afisare Player
                 BIMAGE = pygame.transform.rotate(Playeri[i].Bottom_image,Playeri[i].Bottom_angle)
-                Px = (Playeri[i].GX - BIMAGE.get_width() / 2) * (w/(L*28)) + x
-                Py = (Playeri[i].GY - BIMAGE.get_height() / 2) * (h/(L*16)) + y
+                Px = (Playeri[i].GX - BIMAGE.get_width() / 2) * (w / (L * 28)) + x
+                Py = (Playeri[i].GY - BIMAGE.get_height() / 2) * (h / (L * 16)) + y
                 WIN.blit(BIMAGE,(Px,Py))
                 UIMAGE = pygame.transform.rotate(Playeri[i].Upper_image,Playeri[i].Upper_angle)
-                Px = (Playeri[i].GX - UIMAGE.get_width() / 2) * (w/(L*28)) + x
-                Py = (Playeri[i].GY - UIMAGE.get_height() / 2) * (h/(L*16)) + y
+                Px = (Playeri[i].GX - UIMAGE.get_width() / 2) * (w / (L * 28)) + x
+                Py = (Playeri[i].GY - UIMAGE.get_height() / 2) * (h / (L * 16)) + y
                 WIN.blit(UIMAGE,(Px,Py))
                 #End Afisare
-                treeObj = (Playeri[i].GX, Playeri[i].GY)
+                treeObj = (Playeri[i].GX, Playeri[i].GY, (Playeri[i].GX, Playeri[i].GY, Playeri[i].size // 2))
                 qtree_points.append(treeObj)
-                queries.append((Playeri[i].GX, Playeri[i].GY, Playeri[i].size // 2))
+                #queries.append((Playeri[i].GX, Playeri[i].GY, Playeri[i].size))
+                if VISUALIZE_COLLIDERS:
+                    pygame.draw.circle(WIN, (0,0,255), (Playeri[i].GX * (w / (L * 28)) + x, Playeri[i].GY * (h / (L * 16)) + y), Playeri[i].size // 2, 3)
         del BIMAGE
         del UIMAGE
         #Afisare proiectile
         for i in range(len(Harmful_Stuff)) :
             #Quadtree insertion
-            treeObj = (Harmful_Stuff[i].GX, Harmful_Stuff[i].GY)
+            treeObj = (Harmful_Stuff[i].GX, Harmful_Stuff[i].GY, (Harmful_Stuff[i].GX, Harmful_Stuff[i].GY, Harmful_Stuff[i].diametru // 2))
             qtree_points.append(treeObj)
 
             if Harmful_Stuff[i].type == 0 :
-                Hx =(Harmful_Stuff[i].GX - Harmful_Stuff[i].IMG.get_width()/2)* (w/(L*28)) + x
-                Hy =(Harmful_Stuff[i].GY - Harmful_Stuff[i].IMG.get_height()/2)* (h/(L*16)) + y
+                Hx = (Harmful_Stuff[i].GX - Harmful_Stuff[i].IMG.get_width() / 2) * (w / (L * 28)) + x
+                Hy = (Harmful_Stuff[i].GY - Harmful_Stuff[i].IMG.get_height() / 2) * (h / (L * 16)) + y
                 WIN.blit(Harmful_Stuff[i].IMG,(Hx,Hy))
             elif Harmful_Stuff[i].type == 1 :
-                Hx =(Harmful_Stuff[i].GX - EX_sequences[Harmful_Stuff[i].nrimg].get_width()/2)* (w/(L*28)) + x
-                Hy =(Harmful_Stuff[i].GY - EX_sequences[Harmful_Stuff[i].nrimg].get_height()/2)* (h/(L*16)) + y
+                Hx = (Harmful_Stuff[i].GX - EX_sequences[Harmful_Stuff[i].nrimg].get_width() / 2) * (w / (L * 28)) + x
+                Hy = (Harmful_Stuff[i].GY - EX_sequences[Harmful_Stuff[i].nrimg].get_height() / 2) * (h / (L * 16)) + y
                 WIN.blit(EX_sequences[Harmful_Stuff[i].nrimg],(Hx,Hy))
+            if VISUALIZE_COLLIDERS:
+                pygame.draw.circle(WIN, (255,255,0), (Harmful_Stuff[i].GX * (w / (L * 28)) + x, Harmful_Stuff[i].GY * (h / (L * 16)) + y), Harmful_Stuff[i].diametru // 2, 3)
 
         #Quadtree generation and queries
-        qtree_points.extend(wall_points)
+        for ptr in wall_points:
+            qtree_points.append((ptr[0], ptr[1], (ptr[0], ptr[1], ptr[2], ptr[3])))
         qtree = QuadTreeTuple.make(qtree_points, rect)
         for i in wall_points:
-            queries.append((i[0], i[1], 25))
+            queries.append((i[0], i[1], i[2] + size_P + 20, i[3] + size_P + 20))
+            if VISUALIZE_COLLIDERS:
+               pygame.draw.rect(WIN, (255,128,0), pygame.Rect((i[0] - i[2] // 2) * (w / (L * 28)) + x , (i[1] - i[3] // 2) * (h / (L * 16)) + y, i[2] * (w / (L * 28)), i[3] * (h / (L * 16))), 3)
+        
         QuadTreeTuple.divide(qtree, rect)
+
         for query in queries:
-            QuadTreeTuple.query(query, points)
+            newVec = []
+            QuadTreeTuple.query(query, newVec)
+            newShape = None
+            if len(query) == 3:
+                newShape = (query[0], query[1], query[2] // 2)
+            else:
+                newShape = (query[0], query[1], query[2] - size_P, query[3] - size_P)
+            for point in newVec:
+                if Geometrie.check_collision(newShape, point[len(point) - 1]):
+                    collided_points.append(point)
+
+            points.extend(newVec)
+
         QuadTreeTuple.show_tree(WIN, qtree, rect, queries, points)
+
+        #Collided points
+        for ptr in collided_points:
+            pygame.draw.circle(WIN, (255,255,255), (ptr[0] * (w / (L * 28)) + x, ptr[1] * (h / (L * 16)) + y), 8)
 
         #Afisare HUD playeri
         #spatiu alocat pentru fiecare hud va fi de 250 x 90
@@ -153,7 +178,7 @@ def gameplay(Input,Playeri,joysticks,Map):
             WIN.blit(HUD_info[i][2],(ux + 15,uy + 59))
             ammo_count = afont.render(str(Playeri[HUD_info[i][0]].SecondaryWeapon.Ammo_count) ,True,(255,255,255))
             WIN.blit(ammo_count,(ux + 20 + HUD_info[i][2].get_width(),uy + 59))
-            pygame.display.update((ux,uy+1,250,90))
+            pygame.display.update((ux,uy + 1,250,90))
             ux = ux + pas
         #Display Update
         pygame.display.update(Dupdate)
@@ -171,6 +196,7 @@ def gameplay(Input,Playeri,joysticks,Map):
         print(clock.get_fps())
         points.clear()
         queries.clear()
+        collided_points.clear()
 
         #qTree = QuadTree.QuadTree(rect)
 
