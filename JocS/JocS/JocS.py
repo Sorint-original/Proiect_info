@@ -190,6 +190,7 @@ def gameplay(Input,Playeri,joysticks,Map):
     run = True
     latura = 68 
     rect = (28 * latura // 2, 16 * latura // 2, 28 * latura + latura + 10, 16 * latura + latura + 10)
+    afisrect = (x+w//2,y+h//2,(w/28)*30,(h/16)*18)
     while run :
         clock.tick(60)
         #pygame.time.wait(0)
