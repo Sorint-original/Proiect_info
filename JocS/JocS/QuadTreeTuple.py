@@ -76,7 +76,7 @@ def show_tree(screen, qtree, boundbox, queries=[], qpoints=[], level=0):
                 pygame.draw.circle(screen, (255,0,0), (i[0] * (w / (L * 28)) + x, i[1] * (h / (L * 16)) + y), 5)
         if level == 0:
             for i in queries:
-                if len(i) == 3:
+                if len(i) == 4:
                     pygame.draw.circle(screen, (178,102,255), (i[0] * (w / (L * 28)) + x, i[1] * (h / (L * 16)) + y), i[2], 3)
                 else:
                     pygame.draw.rect(screen, (178,102,255), pygame.Rect((i[0] - i[2] // 2) * (w / (L * 28)) + x , (i[1] - i[3] // 2) * (h / (L * 16)) + y, i[2] * (w / (L * 28)), i[3] * (h / (L * 16))), 2)
@@ -139,7 +139,7 @@ def contains_rectangle(range, point):
 def query(shape, found=[]):
     #print(len(quadtree))
     isCircle = False
-    if len(shape) == 3:
+    if len(shape) == 4:
         isCircle = True
     for tree in quadtree:
         if isCircle == True:
