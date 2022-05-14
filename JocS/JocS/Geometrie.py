@@ -4,6 +4,11 @@ import time
 
 # Aici bagam toate functiile pe care le folosim mai des si au legatura cu
 # geometria
+def boolToSign(argument):
+    if argument == False:
+        return -1
+    else: 
+        return 1
 
 def intersects(range, boundbox):
     circlex = range[0]
@@ -18,51 +23,25 @@ def intersects(range, boundbox):
     xDist = abs(middle_x - circlex)
     yDist = abs(middle_y - circley)
 
-    edges = (xDist - width // 2) * (xDist - width // 2) + (yDist - height // 2) * (yDist - height // 2)
+    pitagora = math.sqrt(xDist ** 2 + yDist ** 2)
+
+    edges = (xDist - width // 2) ** 2 + (yDist - height // 2) ** 2
 
     #no intersection
     if xDist > (circler + width // 2) or yDist > (circler + height // 2):
-        return False
+        return False, (0, 0)
 
     #intersection withing circle
-    if xDist <= width // 2 or yDist <= height // 2:
-        return True
+    if xDist <= width // 2: 
+        return True, (0, (circler - (yDist - height // 2)) * boolToSign(circley > middle_y))
+    if yDist <= height // 2:
+        return True, ((circler - (xDist - width // 2)) * boolToSign(circlex > middle_x), 0)
+
+    yStuff = (yDist - height // 2) / math.sqrt(edges) * circler - (yDist - height // 2)
+    xStuff = (xDist - width // 2) / math.sqrt(edges) * circler - (xDist - width // 2)
 
     #intersection on the edge of the circle
-    return edges <= circler * circler
-
-def intersects_unused(range, boundbox):
-    circlex = range[0]
-    circley = range[1]
-    circler = range[2]
-
-    middle_x = boundbox[0]
-    middle_y = boundbox[1]
-    width = boundbox[2]
-    height = boundbox[3]
-
-    testX = circlex
-    testY = circley
-
-    if circlex < middle_x - width // 2:
-        testX = middle_x - width // 2
-    elif circlex > middle_x + width // 2:
-        testX = middle_x + width // 2
-
-    if circley < middle_y - height // 2:
-        testY = middle_y - height // 2
-    elif circley < middle_y + height // 2:
-        testY = middle_y + height // 2
-
-    xDist = circlex - testX
-    yDist = circley - testY
-
-    distance = xDist ** 2 + yDist ** 2
-
-    if distance <= circler ** 2:
-        return True
-
-    return False
+    return edges <= circler ** 2, (round(xStuff) * boolToSign(circlex > middle_x), round(yStuff) * boolToSign(circley > middle_y))
 
 def intersects_rectangle(range, boundbox):
     boxx = range[0]
@@ -107,16 +86,18 @@ def contains_rectangle(range, point):
     return(boxx - boxw // 2 <= ptrx and boxx + boxw // 2 >= ptrx and boxy - boxh // 2 <= ptry and boxy + boxh // 2 >= ptry)
 
 def check_collision(shape, compare):
-    isCircle = False
-    if len(shape) == 3:
-        isCircle = True
-    if not isCircle:
-        if intersects(compare, shape):
-            return True
+    if len(shape) == 5:
+        if len(compare) == 3: 
+            boolean, offset = intersects(compare, shape)
+            if boolean:
+                return True, offset
+        else:
+            if intersects_rectangle(compare, shape):
+                return True, None
     else:
         if intersects_circle(shape, compare):
-            return True
-    return False
+            return True, "PLAYER"
+    return False, None
 
 
 def get_angle(v1) :
