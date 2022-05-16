@@ -106,7 +106,7 @@ def gameplay(Input,Playeri,joysticks,Map):
                 #End Afisare
                 treeObj = (Playeri[i].GX, Playeri[i].GY, (Playeri[i].GX, Playeri[i].GY, Playeri[i].size // 2))
                 qtree_points.append(treeObj)
-                #queries.append((Playeri[i].GX, Playeri[i].GY, Playeri[i].size))
+                queries.append((Playeri[i].GX, Playeri[i].GY, Playeri[i].size))
                 if VISUALIZE_COLLIDERS:
                     pygame.draw.circle(WIN, (0,0,255), (Playeri[i].GX * (w / (L * 28)) + x, Playeri[i].GY * (h / (L * 16)) + y), Playeri[i].size // 2, 3)
         del BIMAGE
