@@ -89,7 +89,7 @@ class proiectil :
     def update (self) :
         #Verifica daca mai exista atacu
         if self.existence > 0 :
-            self.existence = self.existence -1
+            self.existence = self.existence - 1
         if self.existence == 0 :
             if self.Will_Explode :
                 Harmful_Stuff.append(explosion(self.GX,self.GY,200,self.dmg))
@@ -161,7 +161,7 @@ class weapon :
     #functia care verifica daca poata sa traga , action e true sau fals si
     #determina daca playeru da comanda
     # x si y vor fi GX SI GY de la player
-    def check_fire(self , angle , action ,x , y) :
+    def check_fire(self , angle , action ,x , y, caster) :
         if self.cooldown > 0 :
             self.cooldown = self.cooldown -1
         if self.heat > 0 :
@@ -380,11 +380,11 @@ class player:
             if abs(self.Control.orientation[1][0]) > 0.1 or abs(self.Control.orientation[1][1]) > 0.1 :
                 self.Upper_angle = get_angle(self.Control.orientation[1])
             #verificarea attackurilor
-            self.MainWeapon.check_fire(self.Upper_angle,self.Control.action[0],self.GX,self.GY)
+            self.MainWeapon.check_fire(self.Upper_angle,self.Control.action[0],self.GX,self.GY,self.number)
             if self.Control.action[0] == False :
-                self.SecondaryWeapon.check_fire(self.Upper_angle,self.Control.action[1],self.GX,self.GY)
+                self.SecondaryWeapon.check_fire(self.Upper_angle,self.Control.action[1],self.GX,self.GY,self.number)
             else :
-                self.SecondaryWeapon.check_fire(self.Upper_angle,False,self.GX,self.GY)
+                self.SecondaryWeapon.check_fire(self.Upper_angle,False,self.GX,self.GY,self.number)
         else :
             #Daca este controlat de tastatura
             #bottom angle
@@ -402,11 +402,11 @@ class player:
             if self.Control.Mouse[0] != 0 or self.Control.Mouse[1] != 0 :
                 self.Upper_angle = get_angle(self.Control.Mouse)
             #
-            self.MainWeapon.check_fire(self.Upper_angle,self.Control.MouseButtons[0],self.GX,self.GY)
+            self.MainWeapon.check_fire(self.Upper_angle,self.Control.MouseButtons[0],self.GX,self.GY, self.number)
             if self.Control.MouseButtons[0] == False :
-                self.SecondaryWeapon.check_fire(self.Upper_angle,self.Control.MouseButtons[2],self.GX,self.GY)
+                self.SecondaryWeapon.check_fire(self.Upper_angle,self.Control.MouseButtons[2],self.GX,self.GY, self.number)
             else :
-                self.SecondaryWeapon.check_fire(self.Upper_angle,False,self.GX,self.GY)
+                self.SecondaryWeapon.check_fire(self.Upper_angle,False,self.GX,self.GY, self.number)
     #Afisarea playerului pe ecran la coordonatele lui 
     def afisare (self,WIN) :
         BIMAGE = pygame.transform.rotate(self.Bottom_image,self.Bottom_angle)
