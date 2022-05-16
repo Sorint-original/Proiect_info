@@ -53,13 +53,13 @@ class explosion :
     def impact (self,other) :
         #momentan nimic
         nh = True
-        if other[0] == "Player" :
+        if other[0] == "PLR" :
             for i in range(len(self.noharm)) :
                 if self.noharm[i] == other[1] :
                     nh = False
                     break
             if nh :
-                Lobby.Playeri[other[1]].Health == Lobby.Playeri[other[1]].Health - self.damage
+                Lobby.Playeri[other[1]].Health = Lobby.Playeri[other[1]].Health - self.damage
                 self.noharm.append(other[1])
 
 
@@ -111,9 +111,9 @@ class proiectil :
     #aceasta functie va fi chemata cand un anumit glont intra in contact cu alt obiect
     #other va tine un fel de id explicand ce si unde se afla obiectul lovit
     def impact (self,other) :
-        if other[0] == "Player" :
+        if other[0] == "PLR" :
             if self.hurt and self.noharm != other[1] :
-                Lobby.Playeri[other[1]].Health == Lobby.Playeri[other[1]].Health - self.damage
+                Lobby.Playeri[other[1]].Health = Lobby.Playeri[other[1]].Health - self.dmg
                 if self.destroy_on_damage :
                     Harmful_Stuff.remove(self)
         elif other[0] == "Wall" :

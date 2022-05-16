@@ -108,7 +108,7 @@ def gameplay(Input,Playeri,joysticks,Map):
                 #End Afisare
                 treeObj = (Playeri[i].GX, Playeri[i].GY, (Playeri[i].GX, Playeri[i].GY, Playeri[i].size // 2), Playeri[i])
                 qtree_points.append(treeObj)
-                queries.append((Playeri[i].GX, Playeri[i].GY, Playeri[i].size, Playeri[i]))
+                queries.append((Playeri[i].GX, Playeri[i].GY, Playeri[i].size, ("PLR",i)))
                 if VISUALIZE_COLLIDERS:
                     pygame.draw.circle(WIN, (0,0,255), (Playeri[i].GX * (w / (L * 28)) + x, Playeri[i].GY * (h / (L * 16)) + y), Playeri[i].size // 2, 3)
         del BIMAGE
@@ -160,11 +160,11 @@ def gameplay(Input,Playeri,joysticks,Map):
                             object.GY += addon[1]
                         elif type(point[len(point) - 1]) is Player.proiectil:
                            if point[len(point) - 1] in Harmful_Stuff:
-                               if newShape[len(newShape) - 1] is Player.player and not newShape[len(newShape) - 1].number == point[len(point) - 1].caster:
-                                   point[len(point) - 1].impact(["Player", newShape[len(newShape) - 1].number])
+                               if newShape[len(newShape) - 1][0] == "PLR" :
+                                   print("yeees")
+                                   point[len(point) - 1].impact(newShape[len(newShape) - 1])
                                elif newShape[len(newShape) - 1] == "WALL":
                                    point[len(point) - 1].impact(["Wall"])
-                                   Harmful_Stuff.remove(point[len(point) - 1])
 
             points.extend(newVec)
         if VISUALIZE_QUADTREE:
