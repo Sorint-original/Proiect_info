@@ -75,6 +75,8 @@ def gameplay(Input,Playeri,joysticks,Map):
             HUD_info[i].append(pygame.Surface.convert_alpha(pygame.image.load(os.path.join('Assets\HUD', "Grenade_Launcher.png"))))
         elif Playeri[HUD_info[i][0]].SW == 1 :
             HUD_info[i].append(pygame.Surface.convert_alpha(pygame.image.load(os.path.join('Assets\HUD', "Flame_Thrower.png"))))
+        else :
+            HUD_info[i].append(pygame.Surface.convert_alpha(pygame.image.load(os.path.join('Assets\HUD', "Rocket_Launcher.png"))))
 
     #stabilirea dimensiunilor pentru afisarea gameplayului
 
@@ -161,10 +163,9 @@ def gameplay(Input,Playeri,joysticks,Map):
                         elif type(point[len(point) - 1]) is Player.proiectil:
                            if point[len(point) - 1] in Harmful_Stuff:
                                if newShape[len(newShape) - 1][0] == "PLR" :
-                                   print("yeees")
                                    point[len(point) - 1].impact(newShape[len(newShape) - 1])
                                elif newShape[len(newShape) - 1] == "WALL":
-                                   point[len(point) - 1].impact(["Wall"])
+                                   point[len(point) - 1].impact(["Wall",newShape[len(newShape) - 2]])
 
             points.extend(newVec)
         if VISUALIZE_QUADTREE:
