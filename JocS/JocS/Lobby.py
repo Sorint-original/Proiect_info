@@ -2,7 +2,7 @@ import pygame
 import os
 
 from EventH import exit , controller_verify
-from Player import player, Playeri
+from Player import player
 import ButtonClass
 from Gameplay import gameplay
 from Map_select import map_select
@@ -20,7 +20,7 @@ for i in range(4) :
 Botimg = ['Bottom-Blue.png','Bottom-Green.png','Bottom-Yellow.png','Bottom-Red.png']
 Upimg = ['Upper-Blue.png','Upper-Green.png','Upper-Yellow.png','Upper-Red.png']
 #variabile care trebe salvate
-
+Playeri = []
 joysticks = []
 Input = {"Keyboard" : None , 0:None , 1:None , 2:None , 3:None , 4:None}
 

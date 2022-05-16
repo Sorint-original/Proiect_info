@@ -10,7 +10,7 @@ import Lobby
 Harmful_Stuff = []
 
 EX_sequences = [pygame.image.load(os.path.join('Assets\Explosion','EX0.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX1.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX2.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX3.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX4.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX5.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX6.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX7.png' ))]
-Iproiectile = [pygame.transform.scale(pygame.image.load(os.path.join('Assets','Bullet.png' )),(25,5)),pygame.transform.scale(pygame.image.load(os.path.join('Assets','Grenade.png' )),(15,18)),pygame.transform.scale(pygame.image.load(os.path.join('Assets','Flame.png' )),(39,30))]
+Iproiectile = [pygame.transform.scale(pygame.image.load(os.path.join('Assets\Proiectile','Bullet.png' )),(25,5)),pygame.transform.scale(pygame.image.load(os.path.join('Assets\Proiectile','Grenade.png' )),(15,18)),pygame.transform.scale(pygame.image.load(os.path.join('Assets\Proiectile','Flame.png' )),(39,30)),pygame.transform.scale(pygame.image.load(os.path.join('Assets\Proiectile','Rocket.png' )),(60,20))]
 
 def convert_and_resize_assets (WIN,w,h,L) :
     global EX_sequences
@@ -52,14 +52,15 @@ class explosion :
     #other va tine un fel de id explicand ce si unde se afla obiectul lovit
     def impact (self,other) :
         #momentan nimic
-        nh = True
-        if other[0] == "Player" :
+        if other[0] == "PLR" :
+            nh = True
             for i in range(len(self.noharm)) :
                 if self.noharm[i] == other[1] :
                     nh = False
                     break
             if nh :
-                Lobby.Playeri[other[1]].Health == Lobby.Playeri[other[1]].Health - self.damage
+                print("YEEEEEEEEEEEEEEES")
+                Lobby.Playeri[other[1]].Health = Lobby.Playeri[other[1]].Health - self.damage
                 self.noharm.append(other[1])
 
 
@@ -111,16 +112,22 @@ class proiectil :
     #aceasta functie va fi chemata cand un anumit glont intra in contact cu alt obiect
     #other va tine un fel de id explicand ce si unde se afla obiectul lovit
     def impact (self,other) :
-        if other[0] == "Player" :
+        if other[0] == "PLR" :
             if self.hurt and self.noharm != other[1] :
-                Lobby.Playeri[other[1]].Health == Lobby.Playeri[other[1]].Health - self.damage
-                if self.destroy_on_damage :
+                if self.Will_Explode == False :
+                    Lobby.Playeri[other[1]].Health = Lobby.Playeri[other[1]].Health - self.dmg
+                    if self.destroy_on_damage :
+                        Harmful_Stuff.remove(self)
+                else :
+                    Harmful_Stuff.append(explosion(self.GX,self.GY,200,self.dmg))
                     Harmful_Stuff.remove(self)
         elif other[0] == "Wall" :
             if self.Bouncy == False :
                 if self.Will_Explode :
                     Harmful_Stuff.append(explosion(self.GX,self.GY,200,self.dmg))
                 Harmful_Stuff.remove(self)
+            else :
+                box = other[1]
 
 class weapon :
     def __init__ (self,size,count,speed,spread,coold,shots_per_fire,H,damage,A,mins,bext,hurt_player,destroy_on_dmg,EXP,B,ammo) :
@@ -203,10 +210,11 @@ Main_Weapons = [Rifle,Shotgun,SMG]
 MWcount = 3
 
 #Secondary weapons care se folosesc in joc
-Grenade_Launcher = weapon(15,10,30,0,60,1,0,0,-0.5,0,120,False,False,True,True,1)
+Grenade_Launcher = weapon(15,10,30,0,60,1,0,150,-0.5,0,120,False,False,True,True,1)
 Flame_Thrower = weapon(30,-1,25,15,0,1,0,5,-0.7,6,100,True,False,False,True,2)
-Secondary_Weapons = [Grenade_Launcher,Flame_Thrower]
-SWcount = 2
+Rocket_Launcher = weapon(20,5,25,0,30,1,0,150,0,25,-1,True,True,True,False,3)
+Secondary_Weapons = [Grenade_Launcher,Flame_Thrower,Rocket_Launcher]
+SWcount = 3
 
 
 class control :
