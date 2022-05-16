@@ -4,6 +4,7 @@ import random
 import copy
 
 from Geometrie import get_angle , get_pos
+import Lobby
 
 #Toate proiectilele care se vor afla pe harta
 Harmful_Stuff = []
@@ -20,7 +21,7 @@ def convert_and_resize_assets (WIN,w,h,L) :
         if i == 0 :
             s = 100
         elif i == 1 :
-            s = 150
+            s = 200
         else :
             s = 200
         EX_sequences[i] = pygame.transform.scale(pygame.Surface.convert_alpha(EX_sequences[i]),(s*(w/(L*28)),s*(h/(L*16))))
@@ -51,11 +52,19 @@ class explosion :
     #other va tine un fel de id explicand ce si unde se afla obiectul lovit
     def impact (self,other) :
         #momentan nimic
-        print("yeet")
+        nh = True
+        if other[0] == "Player" :
+            for i in range(len(self.noharm)) :
+                if self.noharm[i] == other[1] :
+                    nh = False
+                    break
+            if nh :
+                Lobby.Playeri[other[1]].Health == Lobby.Playeri[other[1]].Health - self.damage
+                self.noharm.append(other[1])
 
 
 class proiectil :
-    def __init__ (self,x,y,size,nrimage,angle,speed,Dmg,A,mins,ext,EXPLOD,Bounce,nh,caster) :
+    def __init__ (self,x,y,size,nrimage,angle,speed,Dmg,A,mins,ext,Hurts_player,DOD,EXPLOD,Bounce,nh) :
         self.GX = x
         self.GY = y
         #pgx si pgy sunt coordonatele pe care le avea inainte Playeru
@@ -71,10 +80,12 @@ class proiectil :
         self.acceleration = A
         self.minspeed = mins
         self.existence = ext
+        #proprietati meta
+        self.hurt = Hurts_player
+        self.destroy_on_damage = DOD
         self.Will_Explode = EXPLOD
         self.Bouncy = Bounce
         self.type = 0
-        self.caster = caster
     def update (self) :
         #Verifica daca mai exista atacu
         if self.existence > 0 :
@@ -100,12 +111,19 @@ class proiectil :
     #aceasta functie va fi chemata cand un anumit glont intra in contact cu alt obiect
     #other va tine un fel de id explicand ce si unde se afla obiectul lovit
     def impact (self,other) :
-        #momentan nimic
-        print("yeet")
-
+        if other[0] == "Player" :
+            if self.hurt and self.noharm != other[1] :
+                Lobby.Playeri[other[1]].Health == Lobby.Playeri[other[1]].Health - self.damage
+                if self.destroy_on_damage :
+                    Harmful_Stuff.remove(self)
+        elif other[0] == "Wall" :
+            if self.Bouncy == False :
+                if self.Will_Explode :
+                    Harmful_Stuff.append(explosion(self.GX,self.GY,200,self.dmg))
+                Harmful_Stuff.remove(self)
 
 class weapon :
-    def __init__ (self,size,count,speed,spread,coold,shots_per_fire,H,damage,A,mins,bext,EXP,B,ammo) :
+    def __init__ (self,size,count,speed,spread,coold,shots_per_fire,H,damage,A,mins,bext,hurt_player,destroy_on_dmg,EXP,B,ammo) :
         #marimea diametrului unui glont
         self.size = size
         #if count is -1 it means that it is unlimited
@@ -132,8 +150,11 @@ class weapon :
         #deaccelerarea
         self.acceleration = A
         self.minspeed = mins
-        #timer pentru existebta glontului
+        #timer pentru existenta glontului
         self.existence = bext
+        #Proprietati meta
+        self.hurts = hurt_player
+        self.DOD = destroy_on_dmg
         self.explosive = EXP
         self.bounce = B
 
@@ -167,7 +188,7 @@ class weapon :
                     A.remove(deviasion)
                 elif self.Spread > 0 :
                     newangle = newangle + random.randint(-self.Spread,self.Spread)
-                new_shot = proiectil(x,y,self.size,self.Ammo,newangle,self.Ammo_speed,self.dmg,self.acceleration,self.minspeed,self.existence,self.explosive,self.bounce,self.noharm, caster)
+                new_shot = proiectil(x,y,self.size,self.Ammo,newangle,self.Ammo_speed,self.dmg,self.acceleration,self.minspeed,self.existence,self.hurts,self.DOD,self.explosive,self.bounce,self.noharm)
                 Harmful_Stuff.append(new_shot)
             if self.Spread > 0 and self.spfire > 1 :
                 del A
@@ -175,15 +196,15 @@ class weapon :
                 self.Ammo_count = self.Ammo_count - 1
 
 # Main Weopans care se folosesc in joc 
-Rifle = weapon(10,-1,25,0,10,1,10,25,0,25,-1,False,False,0)
-Shotgun = weapon(10,-1,25,3,30,5,40,75,0,25,-1,False,False,0)
-SMG = weapon(10,-1,25,5,0,1,1.5,5,0,25,-1,False,False,0)
+Rifle = weapon(10,-1,25,0,10,1,10,25,0,25,-1,True,True,False,False,0)
+Shotgun = weapon(10,-1,25,3,30,5,40,75,0,25,-1,True,True,False,False,0)
+SMG = weapon(10,-1,25,5,0,1,1.5,5,0,25,-1,True,True,False,False,0)
 Main_Weapons = [Rifle,Shotgun,SMG]
 MWcount = 3
 
 #Secondary weapons care se folosesc in joc
-Grenade_Launcher = weapon(15,10,30,0,60,1,0,0,-0.5,0,120,True,True,1)
-Flame_Thrower = weapon(30,-1,25,15,0,1,0,5,-0.7,6,100,False,True,2)
+Grenade_Launcher = weapon(15,10,30,0,60,1,0,0,-0.5,0,120,False,False,True,True,1)
+Flame_Thrower = weapon(30,-1,25,15,0,1,0,5,-0.7,6,100,True,False,False,True,2)
 Secondary_Weapons = [Grenade_Launcher,Flame_Thrower]
 SWcount = 2
 
