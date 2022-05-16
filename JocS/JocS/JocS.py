@@ -229,13 +229,7 @@ def gameplay(Input,Playeri,joysticks,Map):
                 if Input["Keyboard"] != None and event.type != pygame.MOUSEMOTION :
                     Playeri[Input["Keyboard"]].update_input(event)
                 if event.type == pygame.KEYDOWN :
-                    if event.key == pygame.K_c :
-                        if See_collisions == True :
-                            See_collisions = False
-                        else :
-                            See_collisions = True
-                    elif event.key == pygame.K_h :
-                        print("works")
+                    if event.key == pygame.K_h :
                         run = False
         #Updatarea pozitiei mousului pentru Player
         if Input["Keyboard"] != None :

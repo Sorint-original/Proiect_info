@@ -51,7 +51,7 @@ class explosion :
     #aceasta functie va fi chemata cand un anumit glont intra in contact cu alt obiect
     #other va tine un fel de id explicand ce si unde se afla obiectul lovit
     def impact (self,other) :
-        #momentan nimic
+        print("yeeeeeet")
         if other[0] == "PLR" :
             nh = True
             for i in range(len(self.noharm)) :
@@ -59,7 +59,6 @@ class explosion :
                     nh = False
                     break
             if nh :
-                print("YEEEEEEEEEEEEEEES")
                 Lobby.Playeri[other[1]].Health = Lobby.Playeri[other[1]].Health - self.damage
                 self.noharm.append(other[1])
 
