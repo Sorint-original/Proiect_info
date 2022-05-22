@@ -168,7 +168,6 @@ def gameplay(Input,Playeri,joysticks,Map):
     def colide_update(qtree) :
         for i in wall_points:
             queries.append((i[0], i[1], i[2] + size_P + 20, i[3] + size_P + 20, "WALL"))
-        QuadTreeTuple.divide(qtree, rect)
         for query in queries:
             newVec = []
             QuadTreeTuple.query(query, newVec)
@@ -203,8 +202,9 @@ def gameplay(Input,Playeri,joysticks,Map):
     latura = 68 
     rect = (14 * latura , 8 * latura , 30 * latura , 18 * latura  )
     afisrect = (x+w//2,y+h//2,(w/28)*30,(h/16)*18)
+    qtree_points = []
     while run :
-        qtree_points = []
+        qtree_points.clear()
         clock.tick(60)
         #pygame.time.wait(0)
         #print(clock.get_fps())
@@ -246,8 +246,9 @@ def gameplay(Input,Playeri,joysticks,Map):
             treeObj = (attack.GX, attack.GY, (attack.GX, attack.GY, attack.diametru // 2), attack)
             qtree_points.append(treeObj)
         qtree = QuadTreeTuple.make(qtree_points, rect)
+        QuadTreeTuple.divide(qtree, rect)
         colide_update(qtree)
-        draw_window(qtree_points)
+        draw_window(qtree)
 
         
     # Ce se intampla ca sa iasa din gameplay
