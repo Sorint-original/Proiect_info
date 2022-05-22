@@ -134,8 +134,27 @@ def modify_angle(angle,modifier) :
     angle = angle + modifier
     if abs(angle) > 180 :
         sign = angle / abs(angle)
-        newangle = -1 * sign * 180 + (angle - 1 * sign * 180)
+        angle = -1 * sign * 180 + (angle - 1 * sign * 180)
     #returneaza de fiecare data un unghiul modificat sub forma care se
     #incadreaza in intervalul [-180,180]
-    return newangle
-    
+    return angle
+
+# o functie care rezolva y-y0 = m(x-x0) in care x sau y sunt necunoscute
+def point_pe_dreapta(y0,x0,m,y,x) :
+    if y == None :
+        return  -(m*(x - x0) - y0)
+    else :
+        if m == 0 :
+            return x0
+        return (y0 - y)/m + x0
+
+
+#Calculeaza dimensiunea vectorului care incepe din 0,0 si se termina in x,y
+def get_length(x,y) :
+    return math.sqrt(abs(x)**2 + abs(y)**2)
+
+#Intersectia dintre doua drepte
+def get_intersection(d1x,d1y,m1,d2x,d2y,m2) :
+    x = (m1*d1x+d2y-d2y)/(m2-m1)  
+    y = m1(x-d1x)+d1y
+    return x , y

@@ -2,8 +2,9 @@ import pygame
 import os
 import random
 import copy
+import math
 
-from Geometrie import get_angle , get_pos
+from Geometrie import get_angle , get_pos , get_length , point_pe_dreapta , get_intersection , modify_angle
 import Lobby
 
 #Toate proiectilele care se vor afla pe harta
@@ -51,7 +52,6 @@ class explosion :
     #aceasta functie va fi chemata cand un anumit glont intra in contact cu alt obiect
     #other va tine un fel de id explicand ce si unde se afla obiectul lovit
     def impact (self,other) :
-        print("yeeeeeet")
         if other[0] == "PLR" :
             nh = True
             for i in range(len(self.noharm)) :
@@ -94,18 +94,19 @@ class proiectil :
             if self.Will_Explode :
                 Harmful_Stuff.append(explosion(self.GX,self.GY,200,self.dmg))
             Harmful_Stuff.remove(self)
-
-        #misca atackul
-        self.PGX = self.GX
-        self.PGY = self.GY
-        newcords = get_pos(self.Angle , self.Speed)
-        self.GX = self.GX + newcords[0]
-        self.GY = self.GY + newcords[1]
-        #ii modifica viteza
-        if self.Speed > self.minspeed :
-            self.Speed = self.Speed + self.acceleration
-            if self.Speed <=  self.minspeed:
-                self.Speed = self.minspeed
+            del self
+        else :
+            #misca atackul
+            self.PGX = self.GX
+            self.PGY = self.GY
+            newcords = get_pos(self.Angle , self.Speed)
+            self.GX = self.GX + newcords[0]
+            self.GY = self.GY + newcords[1]
+            #ii modifica viteza
+            if self.Speed > self.minspeed :
+                self.Speed = self.Speed + self.acceleration
+                if self.Speed <=  self.minspeed:
+                    self.Speed = self.minspeed
 
 
     #aceasta functie va fi chemata cand un anumit glont intra in contact cu alt obiect
@@ -127,6 +128,103 @@ class proiectil :
                 Harmful_Stuff.remove(self)
             else :
                 box = other[1]
+                box[0] = box[0]-box[2]//2
+                box[1] = box[1]-box[3]//2
+                unghi = self.Angle
+                if unghi < 0 :
+                    unghi = 360 + unghi
+                #panta 
+                m = math.tan(math.radians(unghi))
+                if unghi == 180 :
+                    m = 0
+                print(box[0],box[1],box[2],box[3],self.Angle,m,self.PGX,self.PGY)
+                firsthit = [None,None]
+                #stabilirea a ce loveste prima data
+                Lungime = None
+                y=box[1]
+                x =point_pe_dreapta(self.PGY,self.PGX,m,y,None)
+                print(x,y)
+                if self.PGY <= y and(x>=box[0]-self.diametru/2 and x<=box[0]+box[2]+self.diametru/2) and ((self.PGX - self.GX >=0 and x <= self.PGX)or(self.PGX - self.GX <0 and x >= self.PGX)) and ((self.PGY - self.GY >=0 and y <= self.PGY)or(self.PGY - self.GY <0 and y >= self.PGY)):
+                    Lungime = get_length(x-self.PGX,y-self.PGY)
+                y = box[1]-self.diametru/2
+                x =point_pe_dreapta(self.PGY,self.PGX,m,y,None)
+                print(x,y)
+                if self.PGY <= y and(x>=box[0] and x<=box[0]+box[2]) and  (Lungime==None or get_length(x-self.PGX,y-self.PGY)<Lungime)and ((self.PGX - self.GX >=0 and x <= self.PGX)or(self.PGX - self.GX <0 and x >= self.PGX)) and ((self.PGY - self.GY >=0 and y <= self.PGY)or(self.PGY - self.GY <0 and y >= self.PGY)) :
+                    Lungime = get_length(x-self.PGX,y-self.PGY)
+                if Lungime!=None and (firsthit[0]==None or firsthit[0]>Lungime) :
+                    firsthit[0] = Lungime
+                    firsthit[1] = "SUS"
+
+                Lungime = None
+                y=box[1]+box[3]
+                x =point_pe_dreapta(self.PGY,self.PGX,m,y,None)
+                print(x,y)
+                if self.PGY>=y and (x>=box[0]-self.diametru/2 and x<=box[0]+box[2]+self.diametru/2)and ((self.PGX - self.GX >=0 and x <= self.PGX)or(self.PGX - self.GX <0 and x >= self.PGX)) and ((self.PGY - self.GY >=0 and y <= self.PGY)or(self.PGY - self.GY <0 and y >= self.PGY)) :
+                    Lungime = get_length(x-self.PGX,y-self.PGY)
+                y = box[1]+box[3]+self.diametru/2
+                x =point_pe_dreapta(self.PGY,self.PGX,m,y,None)
+                print(x,y)
+                if self.PGY>=y and(x>=box[0] and x<=box[0]+box[2]) and  (Lungime==None or get_length(x-self.PGX,y-self.PGY)<Lungime)and ((self.PGX - self.GX >=0 and x <= self.PGX)or(self.PGX - self.GX <0 and x >= self.PGX)) and ((self.PGY - self.GY >=0 and y <= self.PGY)or(self.PGY - self.GY <0 and y >= self.PGY)) :
+                    Lungime = get_length(x-self.PGX,y-self.PGY)
+                if Lungime!=None and (firsthit[0]==None or firsthit[0]>Lungime) :
+                    firsthit[0] = Lungime
+                    firsthit[1] = "JOS"
+
+                Lungime = None
+                x = box[0]
+                y =point_pe_dreapta(self.PGY,self.PGX,m,None,x)
+                print(x,y)
+                if self.PGX<=x and (y>=box[1]-self.diametru/2 and y<=box[1]+box[3]+self.diametru/2)and ((self.PGX - self.GX >=0 and x <= self.PGX)or(self.PGX - self.GX <0 and x >= self.PGX)) and ((self.PGY - self.GY >=0 and y <= self.PGY)or(self.PGY - self.GY <0 and y >= self.PGY)) :
+                    Lungime = get_length(x-self.PGX,y-self.PGY)
+                x = box[0] - self.diametru/2
+                y =point_pe_dreapta(self.PGY,self.PGX,m,None,x)
+                print(x,y)
+                if self.PGX<=x and(y>=box[1] and y<=box[1]+box[3]) and (Lungime==None or get_length(x-self.PGX,y-self.PGY)<Lungime)and ((self.PGX - self.GX >=0 and x <= self.PGX)or(self.PGX - self.GX <0 and x >= self.PGX)) and ((self.PGY - self.GY >=0 and y <= self.PGY)or(self.PGY - self.GY <0 and y >= self.PGY)) :
+                    Lungime = get_length(x-self.PGX,y-self.PGY)
+                if Lungime!=None and (firsthit[0]==None or firsthit[0]>Lungime) :
+                    firsthit[0] = Lungime
+                    firsthit[1] = "STANGA"
+
+                Lungime = None
+                x = box[0]+box[2]
+                y =point_pe_dreapta(self.PGY,self.PGX,m,None,x)
+                print(x,y)
+                if self.PGX>=x and(y>=box[1]-self.diametru/2 and y<=box[1]+box[3]+self.diametru/2)and ((self.PGX - self.GX >=0 and x <= self.PGX)or(self.PGX - self.GX <0 and x >= self.PGX)) and ((self.PGY - self.GY >=0 and y <= self.PGY)or(self.PGY - self.GY <0 and y >= self.PGY)) :
+                    Lungime = get_length(x-self.PGX,y-self.PGY)
+                x = box[0]+box[2]+self.diametru/2
+                y =point_pe_dreapta(self.PGY,self.PGX,m,None,x)
+                print(x,y)
+                if self.PGX>=x and(y>=box[1] and y<=box[1]+box[3]) and (Lungime==None or get_length(x-self.PGX,y-self.PGY)<Lungime)and ((self.PGX - self.GX >=0 and x <= self.PGX)or(self.PGX - self.GX <0 and x >= self.PGX)) and ((self.PGY - self.GY >=0 and y <= self.PGY)or(self.PGY - self.GY <0 and y >= self.PGY)) :
+                    Lungime = get_length(x-self.PGX,y-self.PGY)
+                if Lungime!=None and (firsthit[0]==None or firsthit[0]>Lungime) :
+                    firsthit[0] = Lungime
+                    firsthit[1] = "DREAPTA"
+                #pozitia la care se afla in momentul exact al loviri
+                if firsthit[1] == "SUS" or firsthit[1] == "JOS" :
+                    self.IMG = pygame.transform.flip(self.IMG,False,True)
+                    self.Angle = - self.Angle
+                    if firsthit[1] == "SUS" :
+                        y = box[1] - self.diametru/2
+                    else :
+                        y = box[1]+box[3] + self.diametru/2
+                    x =  point_pe_dreapta(self.PGY,self.PGX,m,y,None)
+                elif firsthit[1] != None :
+                    self.IMG = pygame.transform.flip(self.IMG,True,False)
+                    if firsthit[1] == "STANGA" :
+                        self.Angle = math.copysign(180,self.Angle) - self.Angle
+                        x = box[0] - self.diametru/2
+                    else :
+                        self.Angle = math.copysign(180,self.Angle) - self.Angle
+                        x = box[0]+box[2] + self.diametru/2
+                    y = point_pe_dreapta(self.PGY,self.PGX,m,None,x)
+                if firsthit[1] != None :
+                    print(firsthit[1])
+                    print(self.GX,self.GY)
+                    self.GX = x
+                    self.GY = y
+                    print(self.GX,self.GY)
+
+
 
 class weapon :
     def __init__ (self,size,count,speed,spread,coold,shots_per_fire,H,damage,A,mins,bext,hurt_player,destroy_on_dmg,EXP,B,ammo) :
@@ -202,7 +300,7 @@ class weapon :
                 self.Ammo_count = self.Ammo_count - 1
 
 # Main Weopans care se folosesc in joc 
-Rifle = weapon(10,-1,25,0,10,1,10,25,0,25,-1,True,True,False,False,0)
+Rifle = weapon(10,-1,25,0,10,1,10,25,0,25,250,True,True,False,True,0)
 Shotgun = weapon(10,-1,25,3,30,5,40,75,0,25,-1,True,True,False,False,0)
 SMG = weapon(10,-1,25,5,0,1,1.5,5,0,25,-1,True,True,False,False,0)
 Main_Weapons = [Rifle,Shotgun,SMG]
