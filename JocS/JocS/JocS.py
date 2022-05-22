@@ -2,6 +2,7 @@ import pygame
 import os
 import time
 import random
+import math
 #from functools import partial
 from Lobby import lobby
 from MenuMain import Menu
@@ -17,6 +18,8 @@ VISUALIZE_QUADTREE = True
 
 Botimg = ['Bottom-Blue.png','Bottom-Green.png','Bottom-Yellow.png','Bottom-Red.png']
 Upimg = ['Upper-Blue.png','Upper-Green.png','Upper-Yellow.png','Upper-Red.png']
+
+
 
 def gameplay(Input,Playeri,joysticks,Map):
     import ButtonClass
@@ -91,8 +94,8 @@ def gameplay(Input,Playeri,joysticks,Map):
     else :
         pas = ((WIDTH - 1000) / 5) * 3 + 250 * 3
 
-    def draw_window() :
-        qtree_points = []
+
+    def draw_window(qtree) :
         #Afisarea Gameplay Environment
 
         WIN.blit(Map,(x,y))
@@ -108,19 +111,12 @@ def gameplay(Input,Playeri,joysticks,Map):
                 Py = (Playeri[i].GY - UIMAGE.get_height() / 2) * (h / (L * 16)) + y
                 WIN.blit(UIMAGE,(Px,Py))
                 #End Afisare
-                treeObj = (Playeri[i].GX, Playeri[i].GY, (Playeri[i].GX, Playeri[i].GY, Playeri[i].size // 2), Playeri[i])
-                qtree_points.append(treeObj)
-                queries.append((Playeri[i].GX, Playeri[i].GY, Playeri[i].size, ("PLR",i)))
                 if VISUALIZE_COLLIDERS:
                     pygame.draw.circle(WIN, (0,0,255), (Playeri[i].GX * (w / (L * 28)) + x, Playeri[i].GY * (h / (L * 16)) + y), Playeri[i].size // 2, 3)
         del BIMAGE
         del UIMAGE
         #Afisare proiectile
         for i in range(len(Harmful_Stuff)) :
-            #Quadtree insertion
-            treeObj = (Harmful_Stuff[i].GX, Harmful_Stuff[i].GY, (Harmful_Stuff[i].GX, Harmful_Stuff[i].GY, Harmful_Stuff[i].diametru // 2), Harmful_Stuff[i])
-            qtree_points.append(treeObj)
-
             if Harmful_Stuff[i].type == 0 :
                 Hx = (Harmful_Stuff[i].GX - Harmful_Stuff[i].IMG.get_width() / 2) * (w / (L * 28)) + x
                 Hy = (Harmful_Stuff[i].GY - Harmful_Stuff[i].IMG.get_height() / 2) * (h / (L * 16)) + y
@@ -133,47 +129,16 @@ def gameplay(Input,Playeri,joysticks,Map):
                 pygame.draw.circle(WIN, (255,255,0), (Harmful_Stuff[i].GX * (w / (L * 28)) + x, Harmful_Stuff[i].GY * (h / (L * 16)) + y), Harmful_Stuff[i].diametru // 2, 3)
 
         #Quadtree generation and queries
-        for ptr in wall_points:
-            qtree_points.append((ptr[0], ptr[1], (ptr[0], ptr[1], ptr[2], ptr[3]), "WALL"))
-        qtree = QuadTreeTuple.make(qtree_points, rect)
-        for i in wall_points:
-            queries.append((i[0], i[1], i[2] + size_P + 20, i[3] + size_P + 20, "WALL"))
-            if VISUALIZE_COLLIDERS:
-               pygame.draw.rect(WIN, (255,128,0), pygame.Rect((i[0] - i[2] // 2) * (w / (L * 28)) + x , (i[1] - i[3] // 2) * (h / (L * 16)) + y, i[2] * (w / (L * 28)), i[3] * (h / (L * 16))), 3)
+        if VISUALIZE_COLLIDERS:
+            for i in wall_points:
+                pygame.draw.rect(WIN, (255,128,0), pygame.Rect((i[0] - i[2] // 2) * (w / (L * 28)) + x , (i[1] - i[3] // 2) * (h / (L * 16)) + y, i[2] * (w / (L * 28)), i[3] * (h / (L * 16))), 3)
         
-        QuadTreeTuple.divide(qtree, rect)
-
-        for query in queries:
-            newVec = []
-            QuadTreeTuple.query(query, newVec)
-            newShape = None
-            if len(query) == 4:
-                newShape = (query[0], query[1], query[2] // 2, query[3])
-            else:
-                newShape = (query[0], query[1], query[2] - size_P, query[3] - size_P, query[4])
-            for point in newVec:
-                boolean, addon = Geometrie.check_collision(newShape, point[len(point) - 2])
-                if boolean:
-                    collided_points.append(point)
-                    object = point[len(point) - 1]
-                    if object != None:
-                        if type(addon) is tuple and type(point[len(point) - 1]) is Player.player:
-                            object.GX += addon[0]
-                            object.GY += addon[1]
-                        elif type(point[len(point) - 1]) is Player.proiectil:
-                           if point[len(point) - 1] in Harmful_Stuff:
-                               if newShape[len(newShape) - 1][0] == "PLR" :
-                                   point[len(point) - 1].impact(newShape[len(newShape) - 1])
-                               elif newShape[len(newShape) - 1] == "WALL":
-                                   point[len(point) - 1].impact(["Wall",newShape[len(newShape) - 2]])
-
-            points.extend(newVec)
         if VISUALIZE_QUADTREE:
-            QuadTreeTuple.show_tree(WIN, qtree, rect, queries, points)
+            QuadTreeTuple.show_tree(WIN, qtree, afisrect, queries, points)
 
         #Collided points
-        for ptr in collided_points:
-            if VISUALIZE_COLLIDERS:
+        if VISUALIZE_COLLIDERS:
+            for ptr in collided_points:
                 pygame.draw.circle(WIN, (255,255,255), (ptr[0] * (w / (L * 28)) + x, ptr[1] * (h / (L * 16)) + y), 8)
 
         #Afisare HUD playeri
@@ -200,18 +165,49 @@ def gameplay(Input,Playeri,joysticks,Map):
         #Display Update
         pygame.display.update(Dupdate)
 
+    def colide_update(qtree) :
+        for i in wall_points:
+            queries.append((i[0], i[1], i[2] + size_P + 20, i[3] + size_P + 20, "WALL"))
+        for query in queries:
+            newVec = []
+            QuadTreeTuple.query(query, newVec)
+            newShape = None
+            if len(query) == 4:
+                newShape = (query[0], query[1], query[2] // 2, query[3])
+            else:
+                newShape = (query[0], query[1], query[2] - size_P-20, query[3] - size_P-20, query[4])
+            for point in newVec:
+                boolean, addon = Geometrie.check_collision(newShape, point[len(point) - 2])
+                if boolean:
+                    collided_points.append(point)
+                    object = point[len(point) - 1]
+                    if object != None:
+                        if type(addon) is tuple and type(point[len(point) - 1]) is Player.player:
+                            object.GX += addon[0]
+                            object.GY += addon[1]
+                        elif (type(point[len(point) - 1]) is Player.proiectil) or (type(point[len(point) - 1]) is Player.explosion):
+                           if point[len(point) - 1] in Harmful_Stuff:
+                               if newShape[len(newShape) - 1][0] == "PLR" :
+                                   point[len(point) - 1].impact(newShape[len(newShape) - 1])
+                               elif newShape[len(newShape) - 1] == "WALL":
+                                   point[len(point) - 1].impact(["Wall",[query[0], query[1], query[2] - size_P-20, query[3] - size_P-20]])
+
+            points.extend(newVec)
+
     WX = w / 1920
     WH = h / 1080
 
     clock = pygame.time.Clock()
     run = True
     latura = 68 
-    rect = (28 * latura // 2, 16 * latura // 2, 28 * latura + latura + 10, 16 * latura + latura + 10)
+    rect = (14 * latura , 8 * latura , 30 * latura , 18 * latura  )
     afisrect = (x+w//2,y+h//2,(w/28)*30,(h/16)*18)
+    qtree_points = []
     while run :
+        qtree_points.clear()
         clock.tick(60)
         #pygame.time.wait(0)
-        print(clock.get_fps())
+        #print(clock.get_fps())
         points.clear()
         queries.clear()
         collided_points.clear()
@@ -229,13 +225,7 @@ def gameplay(Input,Playeri,joysticks,Map):
                 if Input["Keyboard"] != None and event.type != pygame.MOUSEMOTION :
                     Playeri[Input["Keyboard"]].update_input(event)
                 if event.type == pygame.KEYDOWN :
-                    if event.key == pygame.K_c :
-                        if See_collisions == True :
-                            See_collisions = False
-                        else :
-                            See_collisions = True
-                    elif event.key == pygame.K_h :
-                        print("works")
+                    if event.key == pygame.K_h :
                         run = False
         #Updatarea pozitiei mousului pentru Player
         if Input["Keyboard"] != None :
@@ -248,9 +238,17 @@ def gameplay(Input,Playeri,joysticks,Map):
         for i in range(4) :
             if Playeri[i].Selected :
                 Playeri[i].gameplay_update()
+                treeObj = (Playeri[i].GX, Playeri[i].GY, (Playeri[i].GX, Playeri[i].GY, Playeri[i].size // 2), Playeri[i])
+                qtree_points.append(treeObj)
+                queries.append((Playeri[i].GX, Playeri[i].GY, Playeri[i].size, ("PLR",i)))
         for attack in Harmful_Stuff :
             attack.update()
-        draw_window()
+            treeObj = (attack.GX, attack.GY, (attack.GX, attack.GY, attack.diametru // 2), attack)
+            qtree_points.append(treeObj)
+        qtree = QuadTreeTuple.make(qtree_points, rect)
+        QuadTreeTuple.divide(qtree, rect)
+        colide_update(qtree)
+        draw_window(qtree)
 
         
     # Ce se intampla ca sa iasa din gameplay
