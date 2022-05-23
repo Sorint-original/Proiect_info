@@ -137,18 +137,18 @@ class proiectil :
                 m = math.tan(math.radians(unghi))
                 if unghi == 180 :
                     m = 0
-                print(box[0],box[1],box[2],box[3],self.Angle,m,self.PGX,self.PGY)
+                #print(box[0],box[1],box[2],box[3],self.Angle,m,self.PGX,self.PGY)
                 firsthit = [None,None]
                 #stabilirea a ce loveste prima data
                 Lungime = None
                 y=box[1]
                 x =point_pe_dreapta(self.PGY,self.PGX,m,y,None)
-                print(x,y)
+                #print(x,y)
                 if self.PGY <= y and(x>=box[0]-self.diametru/2 and x<=box[0]+box[2]+self.diametru/2) and ((self.PGX - self.GX >=0 and x <= self.PGX)or(self.PGX - self.GX <0 and x >= self.PGX)) and ((self.PGY - self.GY >=0 and y <= self.PGY)or(self.PGY - self.GY <0 and y >= self.PGY)):
                     Lungime = get_length(x-self.PGX,y-self.PGY)
                 y = box[1]-self.diametru/2
                 x =point_pe_dreapta(self.PGY,self.PGX,m,y,None)
-                print(x,y)
+                #print(x,y)
                 if self.PGY <= y and(x>=box[0] and x<=box[0]+box[2]) and  (Lungime==None or get_length(x-self.PGX,y-self.PGY)<Lungime)and ((self.PGX - self.GX >=0 and x <= self.PGX)or(self.PGX - self.GX <0 and x >= self.PGX)) and ((self.PGY - self.GY >=0 and y <= self.PGY)or(self.PGY - self.GY <0 and y >= self.PGY)) :
                     Lungime = get_length(x-self.PGX,y-self.PGY)
                 if Lungime!=None and (firsthit[0]==None or firsthit[0]>Lungime) :
@@ -158,12 +158,12 @@ class proiectil :
                 Lungime = None
                 y=box[1]+box[3]
                 x =point_pe_dreapta(self.PGY,self.PGX,m,y,None)
-                print(x,y)
+                #print(x,y)
                 if self.PGY>=y and (x>=box[0]-self.diametru/2 and x<=box[0]+box[2]+self.diametru/2)and ((self.PGX - self.GX >=0 and x <= self.PGX)or(self.PGX - self.GX <0 and x >= self.PGX)) and ((self.PGY - self.GY >=0 and y <= self.PGY)or(self.PGY - self.GY <0 and y >= self.PGY)) :
                     Lungime = get_length(x-self.PGX,y-self.PGY)
                 y = box[1]+box[3]+self.diametru/2
                 x =point_pe_dreapta(self.PGY,self.PGX,m,y,None)
-                print(x,y)
+                #print(x,y)
                 if self.PGY>=y and(x>=box[0] and x<=box[0]+box[2]) and  (Lungime==None or get_length(x-self.PGX,y-self.PGY)<Lungime)and ((self.PGX - self.GX >=0 and x <= self.PGX)or(self.PGX - self.GX <0 and x >= self.PGX)) and ((self.PGY - self.GY >=0 and y <= self.PGY)or(self.PGY - self.GY <0 and y >= self.PGY)) :
                     Lungime = get_length(x-self.PGX,y-self.PGY)
                 if Lungime!=None and (firsthit[0]==None or firsthit[0]>Lungime) :
@@ -173,12 +173,12 @@ class proiectil :
                 Lungime = None
                 x = box[0]
                 y =point_pe_dreapta(self.PGY,self.PGX,m,None,x)
-                print(x,y)
+                #print(x,y)
                 if self.PGX<=x and (y>=box[1]-self.diametru/2 and y<=box[1]+box[3]+self.diametru/2)and ((self.PGX - self.GX >=0 and x <= self.PGX)or(self.PGX - self.GX <0 and x >= self.PGX)) and ((self.PGY - self.GY >=0 and y <= self.PGY)or(self.PGY - self.GY <0 and y >= self.PGY)) :
                     Lungime = get_length(x-self.PGX,y-self.PGY)
                 x = box[0] - self.diametru/2
                 y =point_pe_dreapta(self.PGY,self.PGX,m,None,x)
-                print(x,y)
+                #print(x,y)
                 if self.PGX<=x and(y>=box[1] and y<=box[1]+box[3]) and (Lungime==None or get_length(x-self.PGX,y-self.PGY)<Lungime)and ((self.PGX - self.GX >=0 and x <= self.PGX)or(self.PGX - self.GX <0 and x >= self.PGX)) and ((self.PGY - self.GY >=0 and y <= self.PGY)or(self.PGY - self.GY <0 and y >= self.PGY)) :
                     Lungime = get_length(x-self.PGX,y-self.PGY)
                 if Lungime!=None and (firsthit[0]==None or firsthit[0]>Lungime) :
@@ -188,12 +188,12 @@ class proiectil :
                 Lungime = None
                 x = box[0]+box[2]
                 y =point_pe_dreapta(self.PGY,self.PGX,m,None,x)
-                print(x,y)
+                #print(x,y)
                 if self.PGX>=x and(y>=box[1]-self.diametru/2 and y<=box[1]+box[3]+self.diametru/2)and ((self.PGX - self.GX >=0 and x <= self.PGX)or(self.PGX - self.GX <0 and x >= self.PGX)) and ((self.PGY - self.GY >=0 and y <= self.PGY)or(self.PGY - self.GY <0 and y >= self.PGY)) :
                     Lungime = get_length(x-self.PGX,y-self.PGY)
                 x = box[0]+box[2]+self.diametru/2
                 y =point_pe_dreapta(self.PGY,self.PGX,m,None,x)
-                print(x,y)
+                #print(x,y)
                 if self.PGX>=x and(y>=box[1] and y<=box[1]+box[3]) and (Lungime==None or get_length(x-self.PGX,y-self.PGY)<Lungime)and ((self.PGX - self.GX >=0 and x <= self.PGX)or(self.PGX - self.GX <0 and x >= self.PGX)) and ((self.PGY - self.GY >=0 and y <= self.PGY)or(self.PGY - self.GY <0 and y >= self.PGY)) :
                     Lungime = get_length(x-self.PGX,y-self.PGY)
                 if Lungime!=None and (firsthit[0]==None or firsthit[0]>Lungime) :
@@ -218,11 +218,11 @@ class proiectil :
                         x = box[0]+box[2] + self.diametru/2
                     y = point_pe_dreapta(self.PGY,self.PGX,m,None,x)
                 if firsthit[1] != None :
-                    print(firsthit[1])
-                    print(self.GX,self.GY)
+                    #print(firsthit[1])
+                    #print(self.GX,self.GY)
                     self.GX = x
                     self.GY = y
-                    print(self.GX,self.GY)
+                    #print(self.GX,self.GY)
 
 
 class weapon :
@@ -303,14 +303,14 @@ Rifle = weapon(10,-1,25,0,10,1,10,25,0,25,250,True,True,False,True,0)
 Shotgun = weapon(10,-1,25,3,30,5,40,75,0,25,-1,True,True,False,False,0)
 SMG = weapon(10,-1,25,5,0,1,1.5,5,0,25,-1,True,True,False,False,0)
 Main_Weapons = [Rifle,Shotgun,SMG]
-MWcount = 3
+MWcount = len(Main_Weapons) #no reason to hardcode it, just let it be the length of array
 
 #Secondary weapons care se folosesc in joc
 Grenade_Launcher = weapon(15,10,30,0,60,1,0,150,-0.5,0,120,False,False,True,True,1)
-Flame_Thrower = weapon(30,-1,25,15,0,1,0,5,-0.7,6,100,True,False,False,True,2)
+Flame_Thrower = weapon(30,-1,25,15,2,1,0,5,-0.7,6,100,True,False,False,True,2)      #flamethrower with a cooldown of 2. If shot in an area where more queries overlap, it will not die (hopefully)
 Rocket_Launcher = weapon(20,5,25,0,30,1,0,150,0,25,-1,True,True,True,False,3)
 Secondary_Weapons = [Grenade_Launcher,Flame_Thrower,Rocket_Launcher]
-SWcount = 3
+SWcount = len(Secondary_Weapons)
 
 
 class control :

@@ -165,6 +165,8 @@ def gameplay(Input,Playeri,joysticks,Map):
     def colide_update(qtree) :
         for i in wall_points:
             queries.append((i[0], i[1], i[2] + size_P + 20, i[3] + size_P + 20, "WALL"))
+        for i in player_wall:
+            queries.append((i[0], i[1], i[2] + size_P + 20, i[3] + size_P + 20, "PLAYERWALL"))
         for query in queries:
             newVec = []
             QuadTreeTuple.query(query, newVec)
@@ -204,7 +206,7 @@ def gameplay(Input,Playeri,joysticks,Map):
         qtree_points.clear()
         clock.tick(60)
         #pygame.time.wait(0)
-        #print(clock.get_fps())
+        print(clock.get_fps())
         points.clear()
         queries.clear()
         collided_points.clear()
@@ -242,8 +244,10 @@ def gameplay(Input,Playeri,joysticks,Map):
             attack.update()
             treeObj = (attack.GX, attack.GY, (attack.GX, attack.GY, attack.diametru // 2), attack)
             qtree_points.append(treeObj)
+        QuadTreeTuple.quadtree.clear()
         qtree = QuadTreeTuple.make(qtree_points, rect)
-        QuadTreeTuple.divide(qtree, rect)
+        #print("AMOUNT OF QTREEES ", len(QuadTreeTuple.quadtree))
+        #QuadTreeTuple.divide(qtree, rect)
         colide_update(qtree)
         draw_window(qtree)
 

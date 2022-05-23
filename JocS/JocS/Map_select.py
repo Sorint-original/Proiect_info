@@ -17,6 +17,8 @@ y = (HEIGHT - h) // 2
 if y < 100 :
     y = 10
 
+ENABLE_TEST_MAP = True
+
 from Gameplay import gameplay
 
 default_path = 'Assets/Tiles/'
@@ -156,6 +158,7 @@ def generate_outer_players():
         for j in range(30):
             newVec.append(False)
         collision_players.append(newVec)
+
 def map_select(WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks) :
     #Aici va fi toata functia de a selecta ce harta vrei dar momentan ia doar ii da load hartii de test
     collision_tiles.clear()
@@ -175,9 +178,10 @@ def map_select(WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks) :
     Map.fill((255,255,255))
     maps = []
     for file in os.listdir("Assets/Maps"):
-        file = file[:-4]
-        img = pygame.image.load("Assets/Maps/" + file + '.jpg')
-        maps.append((file, img))
+        if file != "A_MAP_TEST.jpg" or ENABLE_TEST_MAP == True:
+            file = file[:-4]
+            img = pygame.image.load("Assets/Maps/" + file + '.jpg')
+            maps.append((file, img))
 
     WIN.fill((0,0,0))
     WIN.blit(maps[0][1], (x, y))
