@@ -99,7 +99,8 @@ class proiectil :
     #other va tine un fel de id explicand ce si unde se afla obiectul lovit
     def impact (self,other) :
         #momentan nimic
-        print("yeet")
+        a = 1
+        a = a+1
 
 
 class weapon :

@@ -17,15 +17,21 @@ BUTplayers = [[],[],[],[]]
 for i in range(4) :
     ButtonClass.Button_Load(buttontxt[i],BUTplayers[i])
 
-def lobby (WIN,WIDTH,HEIGHT,FPS) :
-    pygame.init()
-    pygame.joystick.init()
-    joysticks = [pygame.joystick.Joystick(i) for i in range(pygame.joystick.get_count())]
-    Playeri = []
-    #initializarea playerilor
-    Botimg = ['Bottom-Blue.png','Bottom-Green.png','Bottom-Yellow.png','Bottom-Red.png']
-    Upimg = ['Upper-Blue.png','Upper-Green.png','Upper-Yellow.png','Upper-Red.png']
-    #Size-ul reprezinta marimea playerului pe ecran poate fi modificata oricand 
+Botimg = ['Bottom-Blue.png','Bottom-Green.png','Bottom-Yellow.png','Bottom-Red.png']
+Upimg = ['Upper-Blue.png','Upper-Green.png','Upper-Yellow.png','Upper-Red.png']
+#variabile care trebe salvate
+Playeri = []
+joysticks = []
+Input = {"Keyboard" : None , 0:None , 1:None , 2:None , 3:None , 4:None}
+
+#initializarea playerilor
+#Size-ul reprezinta marimea playerului pe ecran poate fi modificata oricand 
+
+def initializare_info(WIDTH,HEIGHT) :
+    global joysticks 
+    global Playeri 
+    global Input
+
     size = min(HEIGHT//3,(WIDTH - 150)//4) -50
     for i in range (4) :
         Gx = 30 + i * ((WIDTH - 150) // 4 + 30) + (WIDTH - 150) // 8
