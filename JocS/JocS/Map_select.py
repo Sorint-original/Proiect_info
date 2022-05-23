@@ -158,6 +158,17 @@ def generate_outer_players():
         collision_players.append(newVec)
 def map_select(WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks) :
     #Aici va fi toata functia de a selecta ce harta vrei dar momentan ia doar ii da load hartii de test
+    collision_tiles.clear()
+    collision_players.clear()
+    everything.clear()
+    everything_players.clear()
+    global PlayerSpawns
+    PlayerSpawns = [(None,None),(None,None),(None,None),(None,None)] #Blue, Green, Red, Yellow
+    PowerSpawns.clear()
+    collision_vector.clear()
+    collision_players_vector.clear()
+    theMap = None
+
     generate_outer_points()
     generate_outer_players()
     Map = pygame.Surface((latura * 28,latura * 16))
