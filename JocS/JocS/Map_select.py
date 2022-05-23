@@ -136,6 +136,8 @@ def generate_points_player():
         y = latura * (Ymin + Ymax) // 2 - latura // 2
         collision_players_vector.append((x, y, latura * abs(Xmax - Xmin + 1), latura * abs(Ymax - Ymin + 1)))
 
+#x = latura * j - latura // 2
+#y = latura * i - latura // 2
 def generate_outer_points():
     collision_tiles.clear()
     for i in range(18):

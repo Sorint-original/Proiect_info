@@ -33,12 +33,41 @@ def initializare_info(WIDTH,HEIGHT) :
     global Input
 
     size = min(HEIGHT//3,(WIDTH - 150)//4) -50
+
+    joysticks = [pygame.joystick.Joystick(i) for i in range(pygame.joystick.get_count())]
     for i in range (4) :
         Gx = 30 + i * ((WIDTH - 150) // 4 + 30) + (WIDTH - 150) // 8
         Gy = HEIGHT//2
         P = player(pygame.image.load(os.path.join('Assets\Robots', Botimg[i])), pygame.image.load(os.path.join('Assets\Robots', Upimg[i])), Gx, Gy, size,i)
         Playeri.append(P)
     Input = {"Keyboard" : None , 0:None , 1:None , 2:None , 3:None , 4:None}
+
+def refreash_info(WIDTH,HEIGHT) :
+    global joysticks 
+    global Playeri 
+    global Input
+    size = min(HEIGHT//3,(WIDTH - 150)//4) -50
+    joysticks = [pygame.joystick.Joystick(i) for i in range(pygame.joystick.get_count())]
+    for i in range(4) :
+        Playeri[i].Ready = False
+        Playeri[i].GX = 30 + i * ((WIDTH - 150) / 4 + 30) + (WIDTH - 150) / 8
+        Playeri[i].GY = HEIGHT/2
+        Playeri[i].change_size(size,pygame.image.load(os.path.join('Assets\Robots', Botimg[i])),pygame.image.load(os.path.join('Assets\Robots', Upimg[i])))
+        Playeri[i].Upper_angle = 90 
+        Playeri[i].Bottom_angle = 90
+        Playeri[i].refresh_weapons()
+
+def lobby (WIN,WIDTH,HEIGHT,FPS,Start) :
+    pygame.init()
+    pygame.joystick.init()
+    global joysticks 
+    global Playeri 
+    global Input
+    if Start == True :
+        initializare_info(WIDTH,HEIGHT)
+    else :
+        refreash_info(WIDTH,HEIGHT)
+    
     #cooldownul de la momentu in care toti playeri selectati sunt ready si pana cand incepe meciul
     start_cooldown =181
     
@@ -197,14 +226,7 @@ def initializare_info(WIDTH,HEIGHT) :
 
         if start_cooldown == 0 :
             #aici pun momentan ca se va duce direct la gemplay dar in mod normal sar duce la map select
-            map_select(WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks)
-            for i in range(4) :
-                Playeri[i].Ready = False
-                Playeri[i].GX = 30 + i * ((WIDTH - 150) / 4 + 30) + (WIDTH - 150) / 8
-                Playeri[i].GY = HEIGHT/2
-                Playeri[i].change_size(size,pygame.image.load(os.path.join('Assets\Robots', Botimg[i])),pygame.image.load(os.path.join('Assets\Robots', Upimg[i])))
-                Playeri[i].Upper_angle = 90 
-                Playeri[i].Bottom_angle = 90
-                Playeri[i].refresh_weapons()
+            theMap = map_select(WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks)
+            return Input, Playeri, joysticks, theMap, False
 
         draw_window()

@@ -39,14 +39,14 @@
     <Compile Include="Map_select.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="QuadTreeTuple.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Player.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="JocS.py" />
     <Compile Include="Lobby.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="QuadTree.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TileClass.py" />

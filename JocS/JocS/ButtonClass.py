@@ -77,7 +77,7 @@ def Change_MWeapon (button) :
     button.text = weapons[button.text]
 
 def Change_SWeapon (button) :
-    weapons = {'Grenade Launcher' : 'Flame Thrower' , 'Flame Thrower' : 'Grenade Launcher'}
+    weapons = {'Grenade Launcher' : 'Flame Thrower' , 'Flame Thrower' : 'Rocket Launcher', 'Rocket Launcher':'Grenade Launcher'}
     button.text = weapons[button.text]
 
 dispatcher = {

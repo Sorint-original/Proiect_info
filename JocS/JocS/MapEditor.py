@@ -7,7 +7,6 @@ from os.path import exists
 
 import ButtonClass
 import TileClass
-import QuadTree
 
 rows = 16
 tiles_per_row = 28
