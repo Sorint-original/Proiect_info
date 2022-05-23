@@ -4,7 +4,7 @@ import os
 import ButtonClass
 
 #Testing ground below
-from Lobby import lobby
+from Lobby import initializare_info
 from MapEditor import Editor
 
 def Menu(WIN, WIDTH, HEIGHT, FPS):

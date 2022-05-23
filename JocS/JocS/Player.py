@@ -225,7 +225,6 @@ class proiectil :
                     print(self.GX,self.GY)
 
 
-
 class weapon :
     def __init__ (self,size,count,speed,spread,coold,shots_per_fire,H,damage,A,mins,bext,hurt_player,destroy_on_dmg,EXP,B,ammo) :
         #marimea diametrului unui glont

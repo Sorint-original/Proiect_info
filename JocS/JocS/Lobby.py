@@ -24,8 +24,6 @@ Playeri = []
 joysticks = []
 Input = {"Keyboard" : None , 0:None , 1:None , 2:None , 3:None , 4:None}
 
-
-
 #initializarea playerilor
 #Size-ul reprezinta marimea playerului pe ecran poate fi modificata oricand 
 

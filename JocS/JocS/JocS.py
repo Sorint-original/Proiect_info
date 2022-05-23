@@ -1,9 +1,10 @@
 import pygame
+
 import os
 import time
 import random
 import math
-#from functools import partial
+
 from Lobby import lobby
 from MenuMain import Menu
 from MapEditor import Editor
@@ -13,13 +14,11 @@ import Geometrie
 import Map_select
 from Player import convert_and_resize_assets, EX_sequences
 
-VISUALIZE_COLLIDERS = True
-VISUALIZE_QUADTREE = True
+VISUALIZE_COLLIDERS = False
+VISUALIZE_QUADTREE = False
 
 Botimg = ['Bottom-Blue.png','Bottom-Green.png','Bottom-Yellow.png','Bottom-Red.png']
 Upimg = ['Upper-Blue.png','Upper-Green.png','Upper-Yellow.png','Upper-Red.png']
-
-
 
 def gameplay(Input,Playeri,joysticks,Map):
     import ButtonClass
@@ -38,6 +37,7 @@ def gameplay(Input,Playeri,joysticks,Map):
     collided_points = []
 
     wall_points = Map_select.collision_vector
+    player_wall = Map_select.collision_players_vector
     L = Map_select.latura
 
     h = HEIGHT - 110
@@ -48,8 +48,8 @@ def gameplay(Input,Playeri,joysticks,Map):
     y = (HEIGHT - h) // 2
     if y < 100 :
         y = 10
-    print(h)
-    print(w)
+    #print(h)
+    #print(w)
 
     #se da resize la harta
     Map = pygame.transform.scale(Map,(w,h))
@@ -65,8 +65,8 @@ def gameplay(Input,Playeri,joysticks,Map):
         if Playeri[i].Selected :
             HUD_info.append([i])
             Playeri[i].Health = 1000
-            Playeri[i].GX = poziti[alcat]
-            Playeri[i].GY = poziti[alcat + 1]
+            Playeri[i].GX = Map_select.PlayerSpawns[i][1] * L - L // 2
+            Playeri[i].GY = Map_select.PlayerSpawns[i][0] * L - L // 2
             Playeri[i].change_size(size_P,pygame.Surface.convert_alpha(pygame.image.load(os.path.join('Assets\Robots', Botimg[i]))),pygame.Surface.convert_alpha(pygame.image.load(os.path.join('Assets\Robots', Upimg[i]))))
             alcat = alcat + 2
     #informatiile pentru hud
@@ -78,8 +78,6 @@ def gameplay(Input,Playeri,joysticks,Map):
             HUD_info[i].append(pygame.Surface.convert_alpha(pygame.image.load(os.path.join('Assets\HUD', "Grenade_Launcher.png"))))
         elif Playeri[HUD_info[i][0]].SW == 1 :
             HUD_info[i].append(pygame.Surface.convert_alpha(pygame.image.load(os.path.join('Assets\HUD', "Flame_Thrower.png"))))
-        else :
-            HUD_info[i].append(pygame.Surface.convert_alpha(pygame.image.load(os.path.join('Assets\HUD', "Rocket_Launcher.png"))))
 
     #stabilirea dimensiunilor pentru afisarea gameplayului
 
@@ -93,7 +91,6 @@ def gameplay(Input,Playeri,joysticks,Map):
         pas = (((WIDTH - 1000) / 5) * 3 + 250 * 2) / 2
     else :
         pas = ((WIDTH - 1000) / 5) * 3 + 250 * 3
-
 
     def draw_window(qtree) :
         #Afisarea Gameplay Environment
