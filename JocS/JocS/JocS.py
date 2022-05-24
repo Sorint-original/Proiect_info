@@ -22,6 +22,9 @@ Upimg = ['Upper-Blue.png','Upper-Green.png','Upper-Yellow.png','Upper-Red.png']
 
 
 def gameplay(Input,Playeri,joysticks,Map):
+    global VISUALIZE_COLLIDERS
+    global VISUALIZE_QUADTREE
+
     import ButtonClass
     import Player
     from Player import Harmful_Stuff
@@ -78,8 +81,10 @@ def gameplay(Input,Playeri,joysticks,Map):
             HUD_info[i].append(pygame.Surface.convert_alpha(pygame.image.load(os.path.join('Assets\HUD', "Grenade_Launcher.png"))))
         elif Playeri[HUD_info[i][0]].SW == 1 :
             HUD_info[i].append(pygame.Surface.convert_alpha(pygame.image.load(os.path.join('Assets\HUD', "Flame_Thrower.png"))))
-        else :
+        elif Playeri[HUD_info[i][0]].SW == 2 :
             HUD_info[i].append(pygame.Surface.convert_alpha(pygame.image.load(os.path.join('Assets\HUD', "Rocket_Launcher.png"))))
+        else :
+            HUD_info[i].append(pygame.Surface.convert_alpha(pygame.image.load(os.path.join('Assets\HUD', "Mine.png"))))
 
     #stabilirea dimensiunilor pentru afisarea gameplayului
 
@@ -227,6 +232,13 @@ def gameplay(Input,Playeri,joysticks,Map):
                 if event.type == pygame.KEYDOWN :
                     if event.key == pygame.K_h :
                         run = False
+                    elif event.key == pygame.K_c :
+                        if VISUALIZE_COLLIDERS == False :
+                            VISUALIZE_COLLIDERS = True
+                            VISUALIZE_QUADTREE = True
+                        else :
+                            VISUALIZE_QUADTREE = False
+                            VISUALIZE_COLLIDERS = False
         #Updatarea pozitiei mousului pentru Player
         if Input["Keyboard"] != None :
             cord = pygame.mouse.get_pos()

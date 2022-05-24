@@ -4,7 +4,7 @@ import time
 
 import Map_select
 
-_MaxCapacity = 10
+_MaxCapacity = 5
 _MaxDepth = 8
 
 quadtree = []
