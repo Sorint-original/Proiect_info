@@ -4,7 +4,8 @@ import time
 
 import Map_select
 
-_MaxCapacity = 5
+
+_MaxCapacity = 16
 _MaxDepth = 8
 
 quadtree = []
@@ -56,6 +57,7 @@ def make(points, boundbox, level=0):
                 make(SW, (middle_x - width // 4, middle_y + height // 4,  width // 2, height // 2), level + 1),
                 make(SE, (middle_x + width // 4, middle_y + height // 4,  width // 2, height // 2), level + 1)]
     else:
+        quadtree.append((points, boundbox))
         return points
 
 

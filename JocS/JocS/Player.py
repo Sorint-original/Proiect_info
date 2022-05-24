@@ -156,7 +156,7 @@ class proiectil :
                 m = math.tan(math.radians(unghi))
                 if unghi == 180 :
                     m = 0
-                print(box[0],box[1],box[2],box[3],self.Angle,m,self.PGX,self.PGY)
+                #print(box[0],box[1],box[2],box[3],self.Angle,m,self.PGX,self.PGY)
                 firsthit = [None,None]
                 #stabilirea a ce loveste prima data
                 if self.PGY <= box[1]+ box[3] :
@@ -239,12 +239,11 @@ class proiectil :
                         x = box[0]+box[2] + self.diametru/2
                     y = point_pe_dreapta(self.PGY,self.PGX,m,None,x)
                 if firsthit[1] != None :
-                    print(firsthit[1])
-                    print(self.GX,self.GY)
+                    #print(firsthit[1])
+                    #print(self.GX,self.GY)
                     self.GX = x
                     self.GY = y
-                    print(self.GX,self.GY)
-
+                    #print(self.GX,self.GY)
 
 
 class weapon :
@@ -332,15 +331,15 @@ Rifle = weapon(10,-1,25,0,10,1,10,25,0,25,-1,True,True,True,False,False,False,0)
 Shotgun = weapon(10,-1,25,3,30,5,40,75,0,25,-1,False,True,True,False,False,False,0)
 SMG = weapon(10,-1,25,5,0,1,1.5,5,0,25,-1,True,True,True,False,False,False,0)
 Main_Weapons = [Rifle,Shotgun,SMG]
-MWcount = 3
+MWcount = len(Main_Weapons) #no reason to hardcode it, just let it be the length of array
 
 #Secondary weapons care se folosesc in joc
 Grenade_Launcher = weapon(15,10,30,0,60,1,0,150,-0.5,0,120,False,False,False,True,True,False,1)
-Flame_Thrower = weapon(30,-1,25,15,0,1,0,5,-0.7,6,100,True,True,False,False,True,False,2)
+Flame_Thrower = weapon(30,-1,25,15,2,1,0,5,-0.7,6,100,True,True,False,False,True,False,2)
 Rocket_Launcher = weapon(20,5,25,0,30,1,0,150,0,25,-1,False,True,True,True,False,False,3)
 Mines = weapon(50,10,0,0,60,1,0,150,0,0,5400,False,True,True,True,False,True,4)
 Secondary_Weapons = [Grenade_Launcher,Flame_Thrower,Rocket_Launcher,Mines]
-SWcount = 4
+SWcount = len(Secondary_Weapons)
 
 
 class control :

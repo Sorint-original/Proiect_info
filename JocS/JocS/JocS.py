@@ -1,9 +1,10 @@
 import pygame
+
 import os
 import time
 import random
 import math
-#from functools import partial
+
 from Lobby import lobby
 from MenuMain import Menu
 from MapEditor import Editor
@@ -13,13 +14,11 @@ import Geometrie
 import Map_select
 from Player import convert_and_resize_assets, EX_sequences
 
-VISUALIZE_COLLIDERS = True
-VISUALIZE_QUADTREE = True
+VISUALIZE_COLLIDERS = False
+VISUALIZE_QUADTREE = False
 
 Botimg = ['Bottom-Blue.png','Bottom-Green.png','Bottom-Yellow.png','Bottom-Red.png']
 Upimg = ['Upper-Blue.png','Upper-Green.png','Upper-Yellow.png','Upper-Red.png']
-
-
 
 def gameplay(Input,Playeri,joysticks,Map):
     global VISUALIZE_COLLIDERS
@@ -41,6 +40,7 @@ def gameplay(Input,Playeri,joysticks,Map):
     collided_points = []
 
     wall_points = Map_select.collision_vector
+    player_wall = Map_select.collision_players_vector
     L = Map_select.latura
 
     h = HEIGHT - 110
@@ -51,8 +51,8 @@ def gameplay(Input,Playeri,joysticks,Map):
     y = (HEIGHT - h) // 2
     if y < 100 :
         y = 10
-    print(h)
-    print(w)
+    #print(h)
+    #print(w)
 
     #se da resize la harta
     Map = pygame.transform.scale(Map,(w,h))
@@ -68,8 +68,8 @@ def gameplay(Input,Playeri,joysticks,Map):
         if Playeri[i].Selected :
             HUD_info.append([i])
             Playeri[i].Health = 1000
-            Playeri[i].GX = poziti[alcat]
-            Playeri[i].GY = poziti[alcat + 1]
+            Playeri[i].GX = Map_select.PlayerSpawns[i][1] * L - L // 2
+            Playeri[i].GY = Map_select.PlayerSpawns[i][0] * L - L // 2
             Playeri[i].change_size(size_P,pygame.Surface.convert_alpha(pygame.image.load(os.path.join('Assets\Robots', Botimg[i]))),pygame.Surface.convert_alpha(pygame.image.load(os.path.join('Assets\Robots', Upimg[i]))))
             alcat = alcat + 2
     #informatiile pentru hud
@@ -86,6 +86,7 @@ def gameplay(Input,Playeri,joysticks,Map):
         else :
             HUD_info[i].append(pygame.Surface.convert_alpha(pygame.image.load(os.path.join('Assets\HUD', "Mine.png"))))
 
+
     #stabilirea dimensiunilor pentru afisarea gameplayului
 
     Dupdate = [x,y,w,h]
@@ -98,7 +99,6 @@ def gameplay(Input,Playeri,joysticks,Map):
         pas = (((WIDTH - 1000) / 5) * 3 + 250 * 2) / 2
     else :
         pas = ((WIDTH - 1000) / 5) * 3 + 250 * 3
-
 
     def draw_window(qtree) :
         #Afisarea Gameplay Environment
@@ -173,6 +173,8 @@ def gameplay(Input,Playeri,joysticks,Map):
     def colide_update(qtree) :
         for i in wall_points:
             queries.append((i[0], i[1], i[2] + size_P + 20, i[3] + size_P + 20, "WALL"))
+        for i in player_wall:
+            queries.append((i[0], i[1], i[2] + size_P + 20, i[3] + size_P + 20, "PLAYERWALL"))
         for query in queries:
             newVec = []
             QuadTreeTuple.query(query, newVec)
@@ -212,7 +214,7 @@ def gameplay(Input,Playeri,joysticks,Map):
         qtree_points.clear()
         clock.tick(60)
         #pygame.time.wait(0)
-        #print(clock.get_fps())
+        print(clock.get_fps())
         points.clear()
         queries.clear()
         collided_points.clear()
@@ -257,8 +259,10 @@ def gameplay(Input,Playeri,joysticks,Map):
             attack.update()
             treeObj = (attack.GX, attack.GY, (attack.GX, attack.GY, attack.diametru // 2), attack)
             qtree_points.append(treeObj)
+        QuadTreeTuple.quadtree.clear()
         qtree = QuadTreeTuple.make(qtree_points, rect)
-        QuadTreeTuple.divide(qtree, rect)
+        #print("AMOUNT OF QTREEES ", len(QuadTreeTuple.quadtree))
+        #QuadTreeTuple.divide(qtree, rect)
         colide_update(qtree)
         draw_window(qtree)
 
