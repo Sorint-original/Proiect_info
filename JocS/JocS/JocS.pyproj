@@ -39,6 +39,9 @@
     <Compile Include="Map_select.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Powerups_functions.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="QuadTreeTuple.py">
       <SubType>Code</SubType>
     </Compile>
