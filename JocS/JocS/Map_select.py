@@ -270,6 +270,6 @@ def map_select(WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks) :
         line = fstream.readline()
     generate_points()
     generate_points_player()
-    return Map
+    return Map, PowerSpawns
     #gameplay(WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks,Map,qTree)
 
