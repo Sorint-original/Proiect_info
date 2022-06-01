@@ -16,7 +16,7 @@ from Player import convert_and_resize_assets, EX_sequences
 
 font = pygame.font.SysFont("Times New Roman.ttf", 54)
 
-VISUALIZE_COLLIDERS = False
+VISUALIZE_COLLIDERS = True
 VISUALIZE_QUADTREE = False
 FPS_COUNTER = True
 

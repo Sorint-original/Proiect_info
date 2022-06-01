@@ -16,7 +16,7 @@ Iproiectile = [pygame.transform.scale(pygame.image.load(os.path.join('Assets\Pro
                pygame.transform.scale(pygame.image.load(os.path.join('Assets\Proiectile','Flame.png')),(39,30)),
                pygame.transform.scale(pygame.image.load(os.path.join('Assets\Proiectile','Rocket.png')),(60,20)),
                pygame.transform.scale(pygame.image.load(os.path.join('Assets\Proiectile','Mine.png')),(50,50)),
-               pygame.transform.scale(pygame.image.load(os.path.join('Assets\Proiectile','Energy.png')),(50,50))]
+               pygame.transform.scale(pygame.image.load(os.path.join('Assets\Proiectile','Energy.png')),(80,80))]
 
 def convert_and_resize_assets(WIN,w,h,L) :
     global EX_sequences
@@ -343,8 +343,8 @@ MWcount = len(Main_Weapons) #no reason to hardcode it, just let it be the length
 Grenade_Launcher = weapon(15,10,30,0,60,1,0,150,-0.5,0,120,False,False,False,True,True,False,1)
 Flame_Thrower = weapon(30,-1,25,15,2,1,0,5,-0.7,6,100,True,True,False,False,True,False,2)
 Rocket_Launcher = weapon(20,5,25,0,30,1,0,150,0,25,-1,False,True,True,True,False,False,3)
-Mines = weapon(50,10,0,0,60,1,0,150,0,0,5400,False,True,True,True,False,True,4)
-Energy_Gun = weapon(20,3,7,0,30,1,0,150,0,25,-1,False,True,False,True,True,False,5)
+Mines = weapon(50,10,0,0,60,1,0,80,0,0,5400,False,True,True,True,False,True,4)
+Energy_Gun = weapon(70,-1,7,0,30,1,0,500,0,25,1800,False,True,False,True,True,False,5)
 Secondary_Weapons = [Grenade_Launcher,Flame_Thrower,Rocket_Launcher,Mines,Energy_Gun]
 SWcount = len(Secondary_Weapons)
 

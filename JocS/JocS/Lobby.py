@@ -13,6 +13,14 @@ img = pygame.image.load("Assets/background/robou.png")
 img = pygame.transform.scale(img, (ButtonClass.w, ButtonClass.h))
 
 #Initializarea butoanelor la inceput astfel for fi gata de fiecare data cand se intra in lobby
+menuButtons = []
+ButtonClass.Button_Load("Lobby\menu", menuButtons)
+BUTconfig=[]
+ButtonClass.Button_Load("Lobby\config",BUTconfig)
+buttontxt = ["Lobby\BP0","Lobby\BP1","Lobby\BP2","Lobby\BP3"]
+BUTplayers = [[],[],[],[]]
+for i in range(4) :
+    ButtonClass.Button_Load(buttontxt[i],BUTplayers[i])
 
 Botimg = ['Bottom-Blue.png','Bottom-Green.png','Bottom-Yellow.png','Bottom-Red.png']
 Upimg = ['Upper-Blue.png','Upper-Green.png','Upper-Yellow.png','Upper-Red.png']
@@ -58,14 +66,6 @@ def refreash_info(WIDTH,HEIGHT) :
         Playeri[i].refresh_weapons()
 
 def lobby (WIN,WIDTH,HEIGHT,FPS,Start) :
-    menuButtons = []
-    ButtonClass.Button_Load("Lobby\menu", menuButtons)
-    BUTconfig=[]
-    ButtonClass.Button_Load("Lobby\config",BUTconfig)
-    buttontxt = ["Lobby\BP0","Lobby\BP1","Lobby\BP2","Lobby\BP3"]
-    BUTplayers = [[],[],[],[]]
-    for i in range(4) :
-        ButtonClass.Button_Load(buttontxt[i],BUTplayers[i])
 
     pygame.init()
     pygame.joystick.init()
