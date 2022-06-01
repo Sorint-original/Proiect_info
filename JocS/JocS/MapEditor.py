@@ -48,8 +48,6 @@ def texture_draw():
 
 def save_map(tileMap, name, game):
     add = ".map"
-    if game == "Strategy":
-        add = ".smap"
     with open("Maps/" + name + add, "w") as f:
         for i in range(rows):
             for j in range(tiles_per_row):
@@ -67,8 +65,6 @@ def search_map(name):
 def load_map(name, game):
     global tileMap
     add = ".map"
-    if game == "Strategy":
-        add = ".smap"
     with open("Maps/" + name + add, "r") as f:
         alt = f.readline()
         tileMap.clear()

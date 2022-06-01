@@ -14,8 +14,11 @@ import Geometrie
 import Map_select
 from Player import convert_and_resize_assets, EX_sequences
 
+font = pygame.font.Font("freesansbold.ttf", 26)
+
 VISUALIZE_COLLIDERS = False
 VISUALIZE_QUADTREE = False
+FPS_COUNTER = True
 
 Botimg = ['Bottom-Blue.png','Bottom-Green.png','Bottom-Yellow.png','Bottom-Red.png']
 Upimg = ['Upper-Blue.png','Upper-Green.png','Upper-Yellow.png','Upper-Red.png']
@@ -214,10 +217,19 @@ def gameplay(Input,Playeri,joysticks,Map):
         qtree_points.clear()
         clock.tick(60)
         #pygame.time.wait(0)
-        print(clock.get_fps())
         points.clear()
         queries.clear()
         collided_points.clear()
+
+        #FPS counter
+        if FPS_COUNTER:
+            text = font.render(str(int(clock.get_fps())), True, (0,255,0))
+            textRect = text.get_rect()
+            WIN.fill((0,0,0))
+            textRect.left = 0
+            textRect.top = 0
+            WIN.blit(text, textRect)
+            pygame.display.update(textRect)
 
         #qTree = QuadTree.QuadTree(rect)
 
@@ -288,6 +300,6 @@ while True:
         theInput, thePlayers, theJoysticks, theMap, Start = lobby(WIN, WIDTH, HEIGHT, FPS, Start)
         if Start == False :
             break
-        #Editor(WIN, WIDTH, HEIGHT, FPS)
+        Editor(WIN, WIDTH, HEIGHT, FPS)
 
     gameplay(theInput, thePlayers, theJoysticks, theMap)
