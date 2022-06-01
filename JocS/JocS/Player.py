@@ -12,7 +12,7 @@ import Powerups_functions
 Harmful_Stuff = []
 
 EX_sequences = [pygame.image.load(os.path.join('Assets\Explosion','EX0.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX1.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX2.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX3.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX4.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX5.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX6.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX7.png' ))]
-Iproiectile = [pygame.transform.scale(pygame.image.load(os.path.join('Assets\Proiectile','Bullet.png' )),(25,5)),pygame.transform.scale(pygame.image.load(os.path.join('Assets\Proiectile','Grenade.png' )),(15,18)),pygame.transform.scale(pygame.image.load(os.path.join('Assets\Proiectile','Flame.png' )),(39,30)),pygame.transform.scale(pygame.image.load(os.path.join('Assets\Proiectile','Rocket.png' )),(60,20)),pygame.transform.scale(pygame.image.load(os.path.join('Assets\Proiectile','Mine.png' )),(50,50))]
+Iproiectile = [pygame.transform.scale(pygame.image.load(os.path.join('Assets\Proiectile','Bullet.png' )),(25,5)),pygame.transform.scale(pygame.image.load(os.path.join('Assets\Proiectile','Grenade.png' )),(15,18)),pygame.transform.scale(pygame.image.load(os.path.join('Assets\Proiectile','Flame.png' )),(39,30)),pygame.transform.scale(pygame.image.load(os.path.join('Assets\Proiectile','Rocket.png' )),(60,20)),pygame.transform.scale(pygame.image.load(os.path.join('Assets\Proiectile','Mine.png' )),(50,50)),pygame.transform.scale(pygame.image.load(os.path.join('Assets\Proiectile','Energy.png' )),(80,80))]
 PU_Images = [pygame.image.load(os.path.join('Assets\PowerUps','AMMOBOX.png' )),pygame.image.load(os.path.join('Assets\PowerUps','HEALTH.png' )),pygame.image.load(os.path.join('Assets\PowerUps','BOUNCE.png' )),pygame.image.load(os.path.join('Assets\PowerUps','INVINCIBILITY.png' )),pygame.image.load(os.path.join('Assets\PowerUps','SPEED.png' )),pygame.image.load(os.path.join('Assets\PowerUps','SHRINK.png' )),pygame.image.load(os.path.join('Assets\PowerUps','GHOST.png' )),pygame.image.load(os.path.join('Assets\PowerUps','DOUBLE_GUNS.png' ))]
 
 
@@ -383,8 +383,8 @@ Grenade_Launcher = weapon(15,10,3,30,0,60,1,0,150,-0.5,0,120,False,False,False,T
 Flame_Thrower = weapon(30,-1,60,25,15,2,1,0,5,-0.7,6,100,True,True,False,False,-1,False,2)
 Rocket_Launcher = weapon(20,5,2,25,0,30,1,0,150,0,25,-1,False,True,True,True,0,False,3)
 Mines = weapon(50,10,3,0,0,60,1,0,150,0,0,5400,False,True,True,True,0,True,4)
-Energy_Gun = weapon(70,-1,3,7,0,30,1,0,500,0,25,1800,False,True,False,True,True,False,5)
-Secondary_Weapons = [Grenade_Launcher,Flame_Thrower,Rocket_Launcher,Mines]
+Energy_Gun = weapon(70,-1,3,7,0,30,1,0,500,0,25,-1,False,True,False,False,-1,False,5)
+Secondary_Weapons = [Grenade_Launcher,Flame_Thrower,Rocket_Launcher,Mines,Energy_Gun]
 SWcount = len(Secondary_Weapons)
 
 
