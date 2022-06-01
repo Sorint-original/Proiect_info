@@ -13,7 +13,7 @@ import QuadTreeTuple
 import Geometrie
 
 import Map_select
-from Player import convert_and_resize_assets, EX_sequences,PU, PU_Images
+from Player import convert_and_resize_assets, EX_sequences,PU, PU_Images, Active_PU, avalible_powerups
 
 VISUALIZE_COLLIDERS = False
 VISUALIZE_QUADTREE = False
@@ -28,6 +28,8 @@ def gameplay(Input,Playeri,joysticks,Map,PowerSpawns):
     global VISUALIZE_QUADTREE
     global poziti_libere
     global power_positions
+    global avalible_powerups
+    global Active_PU
 
     import ButtonClass
     import Player
@@ -71,9 +73,9 @@ def gameplay(Input,Playeri,joysticks,Map,PowerSpawns):
         power_positions.append(0)
     poziti_libere = len(power_positions)
     print(len(power_positions))
-    active_PU = [0]
     pu_spawn_cooldown = 120
     Afis_PU = []
+    avalible_powerups[0] = len(PU)-2
     #pregatirea playerilor pentru Gameplay
     # cele patru poziti in care se pot spauna playeri
     poziti = (100 , 100 , sw - 100 , sh - 100 , sw - 100 , 100 , 100 , sh - 100)
@@ -223,10 +225,18 @@ def gameplay(Input,Playeri,joysticks,Map,PowerSpawns):
                             if newShape[len(newShape) - 1][0] == "PLR" :
                                 global poziti_libere
                                 global power_positions
+                                global Active_PU
+                                global avalible_powerups
                                 point[len(point) - 1].do(Playeri[newShape[len(newShape) - 1][1]])
                                 power_positions[point[len(point) - 1].nrpoz] = 0
+                                Active_PU[point[len(point) - 1].nrpower_up] = 0
+                                if point[len(point) - 1].nrpower_up > 1 :
+                                    Active_PU[point[len(point) - 1].nrpower_up] = 1
+                                    Playeri[newShape[len(newShape) - 1][1]].Powers.append(point[len(point) - 1].timer)
+                                    Playeri[newShape[len(newShape) - 1][1]].Powers.append(point[len(point) - 1])
                                 Afis_PU.remove(point[len(point) - 1])
                                 poziti_libere += 1
+
 
             points.extend(newVec)
 
@@ -292,22 +302,43 @@ def gameplay(Input,Playeri,joysticks,Map,PowerSpawns):
         #updatarea powerup-urilor
         if pu_spawn_cooldown == 0 and poziti_libere > 0 :
             #deciderea a ce se va spauna
+            nrPowerup = None
+            if random.randint(1,2) % 2 and (Active_PU[0]==0 or Active_PU[1]==0) :
+                if Active_PU[0]==0 and Active_PU[1]==0 :
+                    nrPowerup = random.randint(0,1)
+                else :
+                    for i in range (2) :
+                        if Active_PU[i]==0 :
+                            nrPowerup = i
+            elif avalible_powerups[0] > 0 :
+                nrPowerup = random.randint(1,avalible_powerups[0])
+                i=0
+                for j in range(2,len(PU)) :
+                    if Active_PU[j] == 0 :
+                        i +=1
+                        if i == nrPowerup :
+                            nrPowerup = j
+                            avalible_powerups[0] -=1
+                            break
             #deciderea locului unde se va spawna
-            pos = random.randint(1,poziti_libere)
-            i = 0
-            for j in range(len(power_positions)) :
-                if power_positions[j] == 0  :
-                    i +=1
-                    if i == pos :
-                        new_PU = copy.copy(PU[0])
-                        print(PowerSpawns[j][0],PowerSpawns[j][1])
-                        new_PU.GX = (PowerSpawns[j][1]*L - L//2)
-                        new_PU.GY = (PowerSpawns[j][0]*L - L//2)
-                        new_PU.nrpoz = j
-                        Afis_PU.append(new_PU)
-                        power_positions[j] = 1
-                        poziti_libere -= 1 
-            pu_spawn_cooldown = 60
+            if nrPowerup != None :
+                Active_PU[nrPowerup] = 1
+                pos = random.randint(1,poziti_libere)
+                i = 0
+                for j in range(len(power_positions)) :
+                    if power_positions[j] == 0  :
+                        i +=1
+                        if i == pos :
+                            new_PU = copy.copy(PU[nrPowerup])
+                            print(PowerSpawns[j][0],PowerSpawns[j][1])
+                            new_PU.GX = (PowerSpawns[j][1]*L - L//2)
+                            new_PU.GY = (PowerSpawns[j][0]*L - L//2)
+                            new_PU.nrpoz = j
+                            Afis_PU.append(new_PU)
+                            power_positions[j] = 1
+                            poziti_libere -= 1 
+                            break
+                pu_spawn_cooldown = 60
         elif pu_spawn_cooldown > 0 :
             pu_spawn_cooldown -=1
         for i in range(len(Afis_PU)) :
