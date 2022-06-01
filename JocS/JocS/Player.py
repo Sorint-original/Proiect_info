@@ -10,14 +10,19 @@ import Lobby
 #Toate proiectilele care se vor afla pe harta
 Harmful_Stuff = []
 
-EX_sequences = [pygame.image.load(os.path.join('Assets\Explosion','EX0.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX1.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX2.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX3.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX4.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX5.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX6.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX7.png' ))]
-Iproiectile = [pygame.transform.scale(pygame.image.load(os.path.join('Assets\Proiectile','Bullet.png' )),(25,5)),pygame.transform.scale(pygame.image.load(os.path.join('Assets\Proiectile','Grenade.png' )),(15,18)),pygame.transform.scale(pygame.image.load(os.path.join('Assets\Proiectile','Flame.png' )),(39,30)),pygame.transform.scale(pygame.image.load(os.path.join('Assets\Proiectile','Rocket.png' )),(60,20)),pygame.transform.scale(pygame.image.load(os.path.join('Assets\Proiectile','Mine.png' )),(50,50))]
+EX_sequences = [pygame.image.load(os.path.join('Assets\Explosion','EX0.png')),pygame.image.load(os.path.join('Assets\Explosion','EX1.png')),pygame.image.load(os.path.join('Assets\Explosion','EX2.png')),pygame.image.load(os.path.join('Assets\Explosion','EX3.png')),pygame.image.load(os.path.join('Assets\Explosion','EX4.png')),pygame.image.load(os.path.join('Assets\Explosion','EX5.png')),pygame.image.load(os.path.join('Assets\Explosion','EX6.png')),pygame.image.load(os.path.join('Assets\Explosion','EX7.png'))]
+Iproiectile = [pygame.transform.scale(pygame.image.load(os.path.join('Assets\Proiectile','Bullet.png')),(25,5)),
+               pygame.transform.scale(pygame.image.load(os.path.join('Assets\Proiectile','Grenade.png')),(15,18)),
+               pygame.transform.scale(pygame.image.load(os.path.join('Assets\Proiectile','Flame.png')),(39,30)),
+               pygame.transform.scale(pygame.image.load(os.path.join('Assets\Proiectile','Rocket.png')),(60,20)),
+               pygame.transform.scale(pygame.image.load(os.path.join('Assets\Proiectile','Mine.png')),(50,50)),
+               pygame.transform.scale(pygame.image.load(os.path.join('Assets\Proiectile','Energy.png')),(50,50))]
 
-def convert_and_resize_assets (WIN,w,h,L) :
+def convert_and_resize_assets(WIN,w,h,L) :
     global EX_sequences
     global Iproiectile
     for i in range(len(Iproiectile)) :
-        Iproiectile[i] = pygame.transform.scale(pygame.Surface.convert_alpha(Iproiectile[i]),(Iproiectile[i].get_width()*(w/(L*28)),Iproiectile[i].get_height()*(h/(L*16))))
+        Iproiectile[i] = pygame.transform.scale(pygame.Surface.convert_alpha(Iproiectile[i]),(Iproiectile[i].get_width() * (w / (L * 28)),Iproiectile[i].get_height() * (h / (L * 16))))
         Iproiectile[i] = Iproiectile[i].convert_alpha()
     for i in range(len(EX_sequences)) :
         if i == 0 :
@@ -26,11 +31,11 @@ def convert_and_resize_assets (WIN,w,h,L) :
             s = 200
         else :
             s = 200
-        EX_sequences[i] = pygame.transform.scale(pygame.Surface.convert_alpha(EX_sequences[i]),(s*(w/(L*28)),s*(h/(L*16))))
+        EX_sequences[i] = pygame.transform.scale(pygame.Surface.convert_alpha(EX_sequences[i]),(s * (w / (L * 28)),s * (h / (L * 16))))
 
 
 class explosion :
-    def __init__ (self,x,y,size,dmg) :
+    def __init__(self,x,y,size,dmg) :
         self.diametru = 200
         self.GX = x
         self.GY = y
@@ -44,15 +49,16 @@ class explosion :
         #Fiecare player poate sa ia damage doar o data de la o anumita explozie
         self.noharm = []
 
-    def update (self) :
+    def update(self) :
         self.existance = self.existance - 1
-        self.nrimg = 8-(self.existance // 7 + 1)
+        self.nrimg = 8 - (self.existance // 7 + 1)
         if self.existance == 0 :
             Harmful_Stuff.remove(self)
 
-    #aceasta functie va fi chemata cand un anumit glont intra in contact cu alt obiect
+    #aceasta functie va fi chemata cand un anumit glont intra in contact cu alt
+    #obiect
     #other va tine un fel de id explicand ce si unde se afla obiectul lovit
-    def impact (self,other) :
+    def impact(self,other) :
         if other[0] == "PLR" :
             nh = True
             for i in range(len(self.noharm)) :
@@ -65,7 +71,7 @@ class explosion :
 
 
 class proiectil :
-    def __init__ (self,x,y,size,nrimage,angle,speed,Dmg,A,mins,ext,Hurts_player,DOD,EXPLOD,Bounce,Fade,nh) :
+    def __init__(self,x,y,size,nrimage,angle,speed,Dmg,A,mins,ext,Hurts_player,DOD,EXPLOD,Bounce,Fade,nh) :
         self.GX = x
         self.GY = y
         #pgx si pgy sunt coordonatele pe care le avea inainte Playeru
@@ -92,7 +98,7 @@ class proiectil :
         if Fade :
             self.alpha = 255
             self.V = True
-    def update (self) :
+    def update(self) :
         #Verifica daca mai exista atacu
         if self.existence > 0 :
             self.existence = self.existence - 1
@@ -111,14 +117,14 @@ class proiectil :
             #ii modifica viteza
             if self.Speed > self.minspeed :
                 self.Speed = self.Speed + self.acceleration
-                if self.Speed <=  self.minspeed:
+                if self.Speed <= self.minspeed:
                     self.Speed = self.minspeed
             # modificarea vizibilitatii
             if self.Fade :
                 if self.V  :
                     self.alpha = self.alpha - 1
                     if self.alpha == 0 :
-                        self.V =False
+                        self.V = False
                 else :
                     if self.existence % 300 <= 20:
                         self.alpha = 75
@@ -128,9 +134,10 @@ class proiectil :
                     
 
 
-    #aceasta functie va fi chemata cand un anumit glont intra in contact cu alt obiect
+    #aceasta functie va fi chemata cand un anumit glont intra in contact cu alt
+    #obiect
     #other va tine un fel de id explicand ce si unde se afla obiectul lovit
-    def impact (self,other) :
+    def impact(self,other) :
         if other[0] == "PLR" :
             if self.hurt and self.noharm != other[1] :
                 if self.Will_Explode == False :
@@ -147,77 +154,77 @@ class proiectil :
                 Harmful_Stuff.remove(self)
             else :
                 box = other[1]
-                box[0] = box[0]-box[2]//2
-                box[1] = box[1]-box[3]//2
+                box[0] = box[0] - box[2] // 2
+                box[1] = box[1] - box[3] // 2
                 unghi = self.Angle
                 if unghi < 0 :
                     unghi = 360 + unghi
-                #panta 
+                #panta
                 m = math.tan(math.radians(unghi))
                 if unghi == 180 :
                     m = 0
                 #print(box[0],box[1],box[2],box[3],self.Angle,m,self.PGX,self.PGY)
                 firsthit = [None,None]
                 #stabilirea a ce loveste prima data
-                if self.PGY <= box[1]+ box[3] :
+                if self.PGY <= box[1] + box[3] :
                     Lungime = None
-                    y=box[1]
-                    x =point_pe_dreapta(self.PGY,self.PGX,m,y,None)
+                    y = box[1]
+                    x = point_pe_dreapta(self.PGY,self.PGX,m,y,None)
                     print(x,y)
-                    if self.PGY <= y and(x>=box[0]-self.diametru/2 and x<=box[0]+box[2]+self.diametru/2) and ((self.PGX - self.GX >=0 and x <= self.PGX)or(self.PGX - self.GX <0 and x >= self.PGX)) and ((self.PGY - self.GY >=0 and y <= self.PGY)or(self.PGY - self.GY <0 and y >= self.PGY)):
-                        Lungime = get_length(x-self.PGX,y-self.PGY)
-                    y = box[1]-self.diametru/2
-                    x =point_pe_dreapta(self.PGY,self.PGX,m,y,None)
+                    if self.PGY <= y and (x >= box[0] - self.diametru / 2 and x <= box[0] + box[2] + self.diametru / 2) and ((self.PGX - self.GX >= 0 and x <= self.PGX) or (self.PGX - self.GX < 0 and x >= self.PGX)) and ((self.PGY - self.GY >= 0 and y <= self.PGY) or (self.PGY - self.GY < 0 and y >= self.PGY)):
+                        Lungime = get_length(x - self.PGX,y - self.PGY)
+                    y = box[1] - self.diametru / 2
+                    x = point_pe_dreapta(self.PGY,self.PGX,m,y,None)
                     print(x,y)
-                    if self.PGY <= y and(x>=box[0] and x<=box[0]+box[2]) and  (Lungime==None or get_length(x-self.PGX,y-self.PGY)<Lungime)and ((self.PGX - self.GX >=0 and x <= self.PGX)or(self.PGX - self.GX <0 and x >= self.PGX)) and ((self.PGY - self.GY >=0 and y <= self.PGY)or(self.PGY - self.GY <0 and y >= self.PGY)) :
-                        Lungime = get_length(x-self.PGX,y-self.PGY)
-                    if Lungime!=None and (firsthit[0]==None or firsthit[0]>Lungime) :
+                    if self.PGY <= y and (x >= box[0] and x <= box[0] + box[2]) and (Lungime == None or get_length(x - self.PGX,y - self.PGY) < Lungime) and ((self.PGX - self.GX >= 0 and x <= self.PGX) or (self.PGX - self.GX < 0 and x >= self.PGX)) and ((self.PGY - self.GY >= 0 and y <= self.PGY) or (self.PGY - self.GY < 0 and y >= self.PGY)) :
+                        Lungime = get_length(x - self.PGX,y - self.PGY)
+                    if Lungime != None and (firsthit[0] == None or firsthit[0] > Lungime) :
                         firsthit[0] = Lungime
                         firsthit[1] = "SUS"
                 else :
                     Lungime = None
-                    y=box[1]+box[3]
-                    x =point_pe_dreapta(self.PGY,self.PGX,m,y,None)
+                    y = box[1] + box[3]
+                    x = point_pe_dreapta(self.PGY,self.PGX,m,y,None)
                     print(x,y)
-                    if self.PGY>=y and (x>=box[0]-self.diametru/2 and x<=box[0]+box[2]+self.diametru/2)and ((self.PGX - self.GX >=0 and x <= self.PGX)or(self.PGX - self.GX <0 and x >= self.PGX)) and ((self.PGY - self.GY >=0 and y <= self.PGY)or(self.PGY - self.GY <0 and y >= self.PGY)) :
-                        Lungime = get_length(x-self.PGX,y-self.PGY)
-                    y = box[1]+box[3]+self.diametru/2
-                    x =point_pe_dreapta(self.PGY,self.PGX,m,y,None)
+                    if self.PGY >= y and (x >= box[0] - self.diametru / 2 and x <= box[0] + box[2] + self.diametru / 2) and ((self.PGX - self.GX >= 0 and x <= self.PGX) or (self.PGX - self.GX < 0 and x >= self.PGX)) and ((self.PGY - self.GY >= 0 and y <= self.PGY) or (self.PGY - self.GY < 0 and y >= self.PGY)) :
+                        Lungime = get_length(x - self.PGX,y - self.PGY)
+                    y = box[1] + box[3] + self.diametru / 2
+                    x = point_pe_dreapta(self.PGY,self.PGX,m,y,None)
                     print(x,y)
-                    if self.PGY>=y and(x>=box[0] and x<=box[0]+box[2]) and  (Lungime==None or get_length(x-self.PGX,y-self.PGY)<Lungime)and ((self.PGX - self.GX >=0 and x <= self.PGX)or(self.PGX - self.GX <0 and x >= self.PGX)) and ((self.PGY - self.GY >=0 and y <= self.PGY)or(self.PGY - self.GY <0 and y >= self.PGY)) :
-                        Lungime = get_length(x-self.PGX,y-self.PGY)
-                    if Lungime!=None and (firsthit[0]==None or firsthit[0]>Lungime) :
+                    if self.PGY >= y and (x >= box[0] and x <= box[0] + box[2]) and (Lungime == None or get_length(x - self.PGX,y - self.PGY) < Lungime) and ((self.PGX - self.GX >= 0 and x <= self.PGX) or (self.PGX - self.GX < 0 and x >= self.PGX)) and ((self.PGY - self.GY >= 0 and y <= self.PGY) or (self.PGY - self.GY < 0 and y >= self.PGY)) :
+                        Lungime = get_length(x - self.PGX,y - self.PGY)
+                    if Lungime != None and (firsthit[0] == None or firsthit[0] > Lungime) :
                         firsthit[0] = Lungime
                         firsthit[1] = "JOS"
 
-                if self.PGX <= box[0]+ box[2] :
+                if self.PGX <= box[0] + box[2] :
                     Lungime = None
                     x = box[0]
-                    y =point_pe_dreapta(self.PGY,self.PGX,m,None,x)
+                    y = point_pe_dreapta(self.PGY,self.PGX,m,None,x)
                     print(x,y)
-                    if self.PGX<=x and (y>=box[1]-self.diametru/2 and y<=box[1]+box[3]+self.diametru/2)and ((self.PGX - self.GX >=0 and x <= self.PGX)or(self.PGX - self.GX <0 and x >= self.PGX)) and ((self.PGY - self.GY >=0 and y <= self.PGY)or(self.PGY - self.GY <0 and y >= self.PGY)) :
-                        Lungime = get_length(x-self.PGX,y-self.PGY)
-                    x = box[0] - self.diametru/2
-                    y =point_pe_dreapta(self.PGY,self.PGX,m,None,x)
+                    if self.PGX <= x and (y >= box[1] - self.diametru / 2 and y <= box[1] + box[3] + self.diametru / 2) and ((self.PGX - self.GX >= 0 and x <= self.PGX) or (self.PGX - self.GX < 0 and x >= self.PGX)) and ((self.PGY - self.GY >= 0 and y <= self.PGY) or (self.PGY - self.GY < 0 and y >= self.PGY)) :
+                        Lungime = get_length(x - self.PGX,y - self.PGY)
+                    x = box[0] - self.diametru / 2
+                    y = point_pe_dreapta(self.PGY,self.PGX,m,None,x)
                     print(x,y)
-                    if self.PGX<=x and(y>=box[1] and y<=box[1]+box[3]) and (Lungime==None or get_length(x-self.PGX,y-self.PGY)<Lungime)and ((self.PGX - self.GX >=0 and x <= self.PGX)or(self.PGX - self.GX <0 and x >= self.PGX)) and ((self.PGY - self.GY >=0 and y <= self.PGY)or(self.PGY - self.GY <0 and y >= self.PGY)) :
-                        Lungime = get_length(x-self.PGX,y-self.PGY)
-                    if Lungime!=None and (firsthit[0]==None or firsthit[0]>Lungime) :
+                    if self.PGX <= x and (y >= box[1] and y <= box[1] + box[3]) and (Lungime == None or get_length(x - self.PGX,y - self.PGY) < Lungime) and ((self.PGX - self.GX >= 0 and x <= self.PGX) or (self.PGX - self.GX < 0 and x >= self.PGX)) and ((self.PGY - self.GY >= 0 and y <= self.PGY) or (self.PGY - self.GY < 0 and y >= self.PGY)) :
+                        Lungime = get_length(x - self.PGX,y - self.PGY)
+                    if Lungime != None and (firsthit[0] == None or firsthit[0] > Lungime) :
                         firsthit[0] = Lungime
                         firsthit[1] = "STANGA"
                 else :
                     Lungime = None
-                    x = box[0]+box[2]
-                    y =point_pe_dreapta(self.PGY,self.PGX,m,None,x)
+                    x = box[0] + box[2]
+                    y = point_pe_dreapta(self.PGY,self.PGX,m,None,x)
                     print(x,y)
-                    if self.PGX>=x and(y>=box[1]-self.diametru/2 and y<=box[1]+box[3]+self.diametru/2)and ((self.PGX - self.GX >=0 and x <= self.PGX)or(self.PGX - self.GX <0 and x >= self.PGX)) and ((self.PGY - self.GY >=0 and y <= self.PGY)or(self.PGY - self.GY <0 and y >= self.PGY)) :
-                        Lungime = get_length(x-self.PGX,y-self.PGY)
-                    x = box[0]+box[2]+self.diametru/2
-                    y =point_pe_dreapta(self.PGY,self.PGX,m,None,x)
+                    if self.PGX >= x and (y >= box[1] - self.diametru / 2 and y <= box[1] + box[3] + self.diametru / 2) and ((self.PGX - self.GX >= 0 and x <= self.PGX) or (self.PGX - self.GX < 0 and x >= self.PGX)) and ((self.PGY - self.GY >= 0 and y <= self.PGY) or (self.PGY - self.GY < 0 and y >= self.PGY)) :
+                        Lungime = get_length(x - self.PGX,y - self.PGY)
+                    x = box[0] + box[2] + self.diametru / 2
+                    y = point_pe_dreapta(self.PGY,self.PGX,m,None,x)
                     print(x,y)
-                    if self.PGX>=x and(y>=box[1] and y<=box[1]+box[3]) and (Lungime==None or get_length(x-self.PGX,y-self.PGY)<Lungime)and ((self.PGX - self.GX >=0 and x <= self.PGX)or(self.PGX - self.GX <0 and x >= self.PGX)) and ((self.PGY - self.GY >=0 and y <= self.PGY)or(self.PGY - self.GY <0 and y >= self.PGY)) :
-                        Lungime = get_length(x-self.PGX,y-self.PGY)
-                    if Lungime!=None and (firsthit[0]==None or firsthit[0]>Lungime) :
+                    if self.PGX >= x and (y >= box[1] and y <= box[1] + box[3]) and (Lungime == None or get_length(x - self.PGX,y - self.PGY) < Lungime) and ((self.PGX - self.GX >= 0 and x <= self.PGX) or (self.PGX - self.GX < 0 and x >= self.PGX)) and ((self.PGY - self.GY >= 0 and y <= self.PGY) or (self.PGY - self.GY < 0 and y >= self.PGY)) :
+                        Lungime = get_length(x - self.PGX,y - self.PGY)
+                    if Lungime != None and (firsthit[0] == None or firsthit[0] > Lungime) :
                         firsthit[0] = Lungime
                         firsthit[1] = "DREAPTA"
                 #pozitia la care se afla in momentul exact al loviri
@@ -225,18 +232,18 @@ class proiectil :
                     self.IMG = pygame.transform.flip(self.IMG,False,True)
                     self.Angle = - self.Angle
                     if firsthit[1] == "SUS" :
-                        y = box[1] - self.diametru/2
+                        y = box[1] - self.diametru / 2
                     else :
-                        y = box[1]+box[3] + self.diametru/2
-                    x =  point_pe_dreapta(self.PGY,self.PGX,m,y,None)
+                        y = box[1] + box[3] + self.diametru / 2
+                    x = point_pe_dreapta(self.PGY,self.PGX,m,y,None)
                 elif firsthit[1] != None :
                     self.IMG = pygame.transform.flip(self.IMG,True,False)
                     if firsthit[1] == "STANGA" :
                         self.Angle = math.copysign(180,self.Angle) - self.Angle
-                        x = box[0] - self.diametru/2
+                        x = box[0] - self.diametru / 2
                     else :
                         self.Angle = math.copysign(180,self.Angle) - self.Angle
-                        x = box[0]+box[2] + self.diametru/2
+                        x = box[0] + box[2] + self.diametru / 2
                     y = point_pe_dreapta(self.PGY,self.PGX,m,None,x)
                 if firsthit[1] != None :
                     #print(firsthit[1])
@@ -245,9 +252,8 @@ class proiectil :
                     self.GY = y
                     #print(self.GX,self.GY)
 
-
 class weapon :
-    def __init__ (self,size,count,speed,spread,coold,shots_per_fire,H,damage,A,mins,bext,auto,hurt_player,destroy_on_dmg,EXP,B,Fade,ammo) :
+    def __init__(self,size,count,speed,spread,coold,shots_per_fire,H,damage,A,mins,bext,auto,hurt_player,destroy_on_dmg,EXP,B,Fade,ammo) :
         #marimea diametrului unui glont
         self.size = size
         #if count is -1 it means that it is unlimited
@@ -291,7 +297,7 @@ class weapon :
     # x si y vor fi GX SI GY de la player
     def check_fire(self , angle , action ,x , y, caster) :
         if self.cooldown > 0 :
-            self.cooldown = self.cooldown -1
+            self.cooldown = self.cooldown - 1
         if self.heat > 0 :
             self.heat = self.heat - self.cooling
         if self.OVERHEATED == True and self.heat <= 0 :
@@ -299,8 +305,8 @@ class weapon :
             self.OVERHEATED = False
         if self.tras == True and action == False :
             self.tras = False
-        if ((action and self.automatic == True) or (action and self.automatic == False and self.tras ==False)) and abs(self.Ammo_count) > 0 and self.OVERHEATED == False and self.cooldown == 0 :
-            self.tras=True
+        if ((action and self.automatic == True) or (action and self.automatic == False and self.tras == False)) and abs(self.Ammo_count) > 0 and self.OVERHEATED == False and self.cooldown == 0 :
+            self.tras = True
             #tot ce trebe sa faca pentru a trage
             self.heat = self.heat + self.heatpershot
             if self.heat >= 100 :
@@ -309,9 +315,9 @@ class weapon :
             self.cooldown = self.fire_cooldown
             if self.Spread > 0 and self.spfire > 1 :
                 A = []
-                for i in range(-self.Spread , self.Spread+1) :
+                for i in range(-self.Spread , self.Spread + 1) :
                     A.append(i)
-            for i in range (self.spfire) :
+            for i in range(self.spfire) :
                 newangle = angle
                 if self.Spread > 0 and self.spfire > 1:
                     deviasion = random.choice(A)
@@ -326,7 +332,7 @@ class weapon :
             if self.Ammo_count != -1 :
                 self.Ammo_count = self.Ammo_count - 1
 
-# Main Weopans care se folosesc in joc 
+# Main Weopans care se folosesc in joc
 Rifle = weapon(10,-1,25,0,10,1,10,25,0,25,-1,True,True,True,False,False,False,0)
 Shotgun = weapon(10,-1,25,3,30,5,40,75,0,25,-1,False,True,True,False,False,False,0)
 SMG = weapon(10,-1,25,5,0,1,1.5,5,0,25,-1,True,True,True,False,False,False,0)
@@ -338,7 +344,8 @@ Grenade_Launcher = weapon(15,10,30,0,60,1,0,150,-0.5,0,120,False,False,False,Tru
 Flame_Thrower = weapon(30,-1,25,15,2,1,0,5,-0.7,6,100,True,True,False,False,True,False,2)
 Rocket_Launcher = weapon(20,5,25,0,30,1,0,150,0,25,-1,False,True,True,True,False,False,3)
 Mines = weapon(50,10,0,0,60,1,0,150,0,0,5400,False,True,True,True,False,True,4)
-Secondary_Weapons = [Grenade_Launcher,Flame_Thrower,Rocket_Launcher,Mines]
+Energy_Gun = weapon(20,3,7,0,30,1,0,150,0,25,-1,False,True,False,True,True,False,5)
+Secondary_Weapons = [Grenade_Launcher,Flame_Thrower,Rocket_Launcher,Mines,Energy_Gun]
 SWcount = len(Secondary_Weapons)
 
 
@@ -366,10 +373,11 @@ class control :
             #BUTOANELE DE PE MOUSE 0 LeftClick 1 Middlemouse button 2 Right
             #click , restul sunt in caz daca are mai multe butoane pe mous ca
             #sa nu dea crash , nu le folosim
-            self.MouseButtons = [False , False , False , False , False , False , False , False , False , False]   #controalele de la tastatura care pot fi modificate 
-            # 0 - sus , 1 - stanga , 2 - jos , 3 - dreapta , 4 - abilitate activa , 5 - abilitate pasiva
-            self.action =[0, 0, 0, 0, 0, 0]
-            #ce modifica anumite taste 
+            self.MouseButtons = [False , False , False , False , False , False , False , False , False , False]   #controalele de la tastatura care pot fi modificate
+            # 0 - sus , 1 - stanga , 2 - jos , 3 - dreapta , 4 - abilitate
+                                                                                                                           # activa , 5 - abilitate pasiva
+            self.action = [0, 0, 0, 0, 0, 0]
+            #ce modifica anumite taste
             self.input = {pygame.K_w:0 , pygame.K_a:1 , pygame.K_s:2 , pygame.K_d:3 , pygame.K_q:4 , pygame.K_e:5}
             #de ce tasta e modificata fiecare valoare din action
             self.set = [pygame.K_w , pygame.K_a , pygame.K_s , pygame.K_d , pygame.K_q , pygame.K_e]
@@ -417,20 +425,20 @@ class player:
         self.Bottom_image = pygame.transform.scale(BIMG,(9 * self.size / 8, 7 * self.size / 8))
         self.Upper_image = pygame.transform.scale(UIMG,(self.size,self.size))
 
-    def refresh_weapons (self) :
+    def refresh_weapons(self) :
         self.MainWeapon = copy.copy(Main_Weapons[self.MW])
         self.MainWeapon.noharm = self.number
         self.SecondaryWeapon = copy.copy(Secondary_Weapons[self.SW])
         self.SecondaryWeapon.noharm = self.number
 
-    def Next_MWeapon (self) :
+    def Next_MWeapon(self) :
         self.MW = self.MW + 1
         if self.MW == MWcount :
             self.MW = 0 
         self.MainWeapon = copy.copy(Main_Weapons[self.MW])
         self.MainWeapon.noharm = self.number
 
-    def Next_SWeapon (self) :
+    def Next_SWeapon(self) :
         self.SW = self.SW + 1
         if self.SW == SWcount :
             self.SW = 0 
@@ -506,7 +514,7 @@ class player:
                 if self.Control.action[0] == False and self.Control.action[1] == False :
                     coord = get_pos(self.Bottom_angle,self.maxspeed)
                 else :
-                    coord = get_pos(self.Bottom_angle,self.maxspeed*2/3)
+                    coord = get_pos(self.Bottom_angle,self.maxspeed * 2 / 3)
                 self.GX = self.GX + coord[0]
                 self.GY = self.GY + coord[1]
             #upper image
@@ -523,15 +531,15 @@ class player:
             #bottom angle
             axay = -self.Control.action[0] + self.Control.action[2]
             axax = -self.Control.action[1] + self.Control.action[3]
-            if axax !=0  or axay != 0 :
+            if axax != 0 or axay != 0 :
                 self.Bottom_angle = get_angle([axax,axay])
                 if self.Control.MouseButtons[0] == False and self.Control.MouseButtons[2] == False :
                     coord = get_pos(self.Bottom_angle,self.maxspeed)
                 else :
-                    coord = get_pos(self.Bottom_angle,self.maxspeed*2/3)
+                    coord = get_pos(self.Bottom_angle,self.maxspeed * 2 / 3)
                 self.GX = self.GX + coord[0]
                 self.GY = self.GY + coord[1]
-            #Upper angle 
+            #Upper angle
             if self.Control.Mouse[0] != 0 or self.Control.Mouse[1] != 0 :
                 self.Upper_angle = get_angle(self.Control.Mouse)
             #
@@ -540,8 +548,8 @@ class player:
                 self.SecondaryWeapon.check_fire(self.Upper_angle,self.Control.MouseButtons[2],self.GX,self.GY, self.number)
             else :
                 self.SecondaryWeapon.check_fire(self.Upper_angle,False,self.GX,self.GY, self.number)
-    #Afisarea playerului pe ecran la coordonatele lui 
-    def afisare (self,WIN) :
+    #Afisarea playerului pe ecran la coordonatele lui
+    def afisare(self,WIN) :
         BIMAGE = pygame.transform.rotate(self.Bottom_image,self.Bottom_angle)
         x = self.GX - BIMAGE.get_width() / 2
         y = self.GY - BIMAGE.get_height() / 2

@@ -14,7 +14,7 @@ import Geometrie
 import Map_select
 from Player import convert_and_resize_assets, EX_sequences
 
-font = pygame.font.Font("freesansbold.ttf", 26)
+font = pygame.font.SysFont("Times New Roman.ttf", 54)
 
 VISUALIZE_COLLIDERS = False
 VISUALIZE_QUADTREE = False
@@ -86,8 +86,12 @@ def gameplay(Input,Playeri,joysticks,Map):
             HUD_info[i].append(pygame.Surface.convert_alpha(pygame.image.load(os.path.join('Assets\HUD', "Flame_Thrower.png"))))
         elif Playeri[HUD_info[i][0]].SW == 2 :
             HUD_info[i].append(pygame.Surface.convert_alpha(pygame.image.load(os.path.join('Assets\HUD', "Rocket_Launcher.png"))))
-        else :
+        elif Playeri[HUD_info[i][0]].SW == 3 :
             HUD_info[i].append(pygame.Surface.convert_alpha(pygame.image.load(os.path.join('Assets\HUD', "Mine.png"))))
+        elif Playeri[HUD_info[i][0]].SW == 4 :
+            img = pygame.Surface.convert_alpha(pygame.image.load(os.path.join('Assets\HUD', "Energy_Gun.png")))
+            img = pygame.transform.scale(img, (img.get_width() / img.get_height() * 20, 20))
+            HUD_info[i].append(img)
 
 
     #stabilirea dimensiunilor pentru afisarea gameplayului
@@ -223,11 +227,13 @@ def gameplay(Input,Playeri,joysticks,Map):
 
         #FPS counter
         if FPS_COUNTER:
-            text = font.render(str(int(clock.get_fps())), True, (0,255,0))
+            text = font.render(str(math.ceil(clock.get_fps())), True, (0,255,0))
             textRect = text.get_rect()
             WIN.fill((0,0,0))
             textRect.left = 0
             textRect.top = 0
+            textRect.width += textRect.width // 3
+            textRect.height += textRect.height // 3
             WIN.blit(text, textRect)
             pygame.display.update(textRect)
 

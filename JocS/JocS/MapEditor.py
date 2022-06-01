@@ -32,14 +32,14 @@ if Y < 100 :
 maxIndex = len(TileClass.keyVec)
 maxSpecialIndex = len(TileClass.specialTiles)
 
-#xoffset = (TileClass.w - tiles_per_row * latura) // 2
-#yoffset = (TileClass.h - rows * latura) // 2
 Map = pygame.Surface((latura * tiles_per_row, latura * rows))
 Map.fill((0,0,0))
 Map = pygame.transform.scale(Map, (w, h))
 
 Current_map_name = None
 NoMapText = "Map name"
+
+currentGame = None
 
 def texture_draw():
     for i in range(rows):
@@ -92,6 +92,7 @@ def load_map(name, game):
             alt = f.readline()
 
 def Editor(WIN, WIDTH, HEIGHT, FPS):
+    tileMap.clear()
     status = None
     buttons = []
     ButtonClass.Button_Load("MapEditor", buttons)

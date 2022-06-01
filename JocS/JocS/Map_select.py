@@ -45,6 +45,7 @@ collision_players_vector = []
 theMap = None
 
 #Merge and add walls as quadtree points
+
 def generate_points():
     for i in range(18):
         for j in range(30):
