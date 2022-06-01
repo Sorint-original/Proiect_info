@@ -7,6 +7,15 @@ w = screen.current_w
 h = screen.current_h
 del screen
 
+H = h - 110
+while (round(H * 1.75) > w - 50) :
+    H -=  1
+W = round(H * 1.75)
+X = (w - W) // 2
+Y = (h - H) // 2
+if Y < 100 :
+    Y = 10
+
 #Things for text font
 vw = 0.01 * w
 vh = 0.01 * h
@@ -56,12 +65,17 @@ def Button_Load(argument, vector):
 def Button_Change_Scene(button, arg):
     if type(arg) == tuple:
         func_dispatcher = {
-            'Editor' : arg[0][0],
-            'lobby' : arg[0][1]
+            'Editor' : arg[0][0]
         }
         func_dispatcher[button.arg](arg[1], arg[2], arg[3], arg[4])
     else: 
         raise Exception("Argument is not tuple")
+
+def Button_break(button, arg):
+    if type(arg) == tuple:
+        return False;
+    else:
+        raise Exception("RIP")
 
 def Button_Back(button, arg):
     if arg == None:
@@ -87,6 +101,7 @@ dispatcher = {
     'Button_Load' : Button_Load, 
     'Button_Change_Scene' : Button_Change_Scene,
     'Button_Back' : Button_Back,
+    'Button_break' : Button_break,
     'Button_No' : Button_No,
     'Change_MWeapon' : Change_MWeapon,
     'Change_SWeapon' : Change_SWeapon

@@ -1,0 +1,10 @@
+Back True False True w/20 h-h/5 1 1 160,0,0 255,255,255 Button_Load Button_Hover_Enable Button_Hover_Disable Left 5 96,96,96 0,0,0 True MainMenu
+Editor True False True w/2.5 h-h/5 1 1 160,0,0 255,255,255 Button_Change_Scene Button_Hover_Enable Button_Hover_Disable Center 5 96,96,96 0,0,0 True Editor
+Controls False False True w/6 h-h/1.3 1 1 160,0,0 255,255,255 Button_No Button_No Button_No Left 5 96,96,96 0,0,0 True
+E:~Open~tile~menu False False True w/20 h-h/1.6 1 1 160,0,0 255,255,255 Button_No Button_No Button_No Left 4 96,96,96 0,0,0 True
+W/S:~Change~special~tile False False True w/20 h-h/1.6+60 1 1 160,0,0 255,255,255 Button_No Button_No Button_No Left 4 96,96,96 0,0,0 True
+A/D:~Rotate~tile False False True w/20 h-h/1.6+120 1 1 160,0,0 255,255,255 Button_No Button_No Button_No Left 4 96,96,96 0,0,0 True
+SPACE:~Toggle~grid False False True w/20 h-h/1.6+180 1 1 160,0,0 255,255,255 Button_No Button_No Button_No Center 4 96,96,96 0,0,0 True
+RIGHT~CLICK:~Place~primary(red)~tile~texture False False True w/20 h-h/1.6+240 1 1 160,0,0 255,255,255 Button_No Button_No Button_No Center 4 96,96,96 0,0,0 True
+LEFT~CLICK:~Place~secondary(blue)~tile~texture False False True w/20 h-h/1.6+300 1 1 160,0,0 255,255,255 Button_No Button_No Button_No Center 4 96,96,96 0,0,0 True
+MAP~NAME:~Saves/Loads~the~map False False True w/20 h-h/1.6+360 1 1 160,0,0 255,255,255 Button_No Button_No Button_No Center 4 96,96,96 0,0,0 True

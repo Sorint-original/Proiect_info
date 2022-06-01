@@ -9,13 +9,10 @@ from Map_select import map_select
 
 DEBUG_ONE_PLAYER_TEST = True
 
+img = pygame.image.load("Assets/background/robou.png")
+img = pygame.transform.scale(img, (ButtonClass.w, ButtonClass.h))
+
 #Initializarea butoanelor la inceput astfel for fi gata de fiecare data cand se intra in lobby
-BUTconfig=[]
-ButtonClass.Button_Load("Lobby\config",BUTconfig)
-buttontxt = ["Lobby\BP0","Lobby\BP1","Lobby\BP2","Lobby\BP3"]
-BUTplayers = [[],[],[],[]]
-for i in range(4) :
-    ButtonClass.Button_Load(buttontxt[i],BUTplayers[i])
 
 Botimg = ['Bottom-Blue.png','Bottom-Green.png','Bottom-Yellow.png','Bottom-Red.png']
 Upimg = ['Upper-Blue.png','Upper-Green.png','Upper-Yellow.png','Upper-Red.png']
@@ -31,6 +28,9 @@ def initializare_info(WIDTH,HEIGHT) :
     global joysticks 
     global Playeri 
     global Input
+
+    Playeri.clear()
+    joysticks.clear()
 
     size = min(HEIGHT//3,(WIDTH - 150)//4) -50
 
@@ -58,11 +58,23 @@ def refreash_info(WIDTH,HEIGHT) :
         Playeri[i].refresh_weapons()
 
 def lobby (WIN,WIDTH,HEIGHT,FPS,Start) :
+    menuButtons = []
+    ButtonClass.Button_Load("Lobby\menu", menuButtons)
+    BUTconfig=[]
+    ButtonClass.Button_Load("Lobby\config",BUTconfig)
+    buttontxt = ["Lobby\BP0","Lobby\BP1","Lobby\BP2","Lobby\BP3"]
+    BUTplayers = [[],[],[],[]]
+    for i in range(4) :
+        ButtonClass.Button_Load(buttontxt[i],BUTplayers[i])
+
     pygame.init()
     pygame.joystick.init()
     global joysticks 
     global Playeri 
     global Input
+
+    status = None
+
     if Start == True :
         initializare_info(WIDTH,HEIGHT)
     else :
@@ -97,7 +109,8 @@ def lobby (WIN,WIDTH,HEIGHT,FPS,Start) :
 
     #Desenarea ferestrei
     def draw_window() :
-        WIN.fill((255,255,255))
+        WIN.fill((224,224,224))
+        ButtonClass.displayButtons(WIN, menuButtons)
         for i in range(4) :
             x = 30 + i * ((WIDTH - 150) / 4 + 30)
             y = HEIGHT/3
@@ -125,6 +138,10 @@ def lobby (WIN,WIDTH,HEIGHT,FPS,Start) :
         for event in pygame.event.get() :
             exit(event)
             controller_verify(event,joysticks)
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                     status = ButtonClass.checkButtonClick(event.pos[0], event.pos[1], menuButtons, (1,2))
+
             try :
                 if event.joy != None :
                     if event.type == pygame.JOYBUTTONDOWN or event.type == pygame.JOYHATMOTION :
@@ -207,6 +224,7 @@ def lobby (WIN,WIDTH,HEIGHT,FPS,Start) :
 
         #Verificarea butoanelor controlate de mouse 
         ButtonClass.checkButtonHover(pygame.mouse.get_pos()[0],pygame.mouse.get_pos()[1], BUTconfig)
+        ButtonClass.checkButtonHover(pygame.mouse.get_pos()[0],pygame.mouse.get_pos()[1], menuButtons)
 
         #Functia care se uita la playeri care sunt ready si determina daca se continua
         ok = True 
@@ -224,9 +242,12 @@ def lobby (WIN,WIDTH,HEIGHT,FPS,Start) :
         else :
             start_cooldown = 181
 
-        if start_cooldown == 0 :
+        if start_cooldown == 0 or status == False:
             #aici pun momentan ca se va duce direct la gemplay dar in mod normal sar duce la map select
-            theMap = map_select(WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks)
-            return Input, Playeri, joysticks, theMap, False
+            if status == None:
+                theMap = map_select(WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks)
+                return Input, Playeri, joysticks, theMap, False
+            else:
+                return Input, Playeri, joysticks, None, True
 
         draw_window()

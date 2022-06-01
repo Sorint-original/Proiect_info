@@ -92,13 +92,16 @@ def load_map(name, game):
             alt = f.readline()
 
 def Editor(WIN, WIDTH, HEIGHT, FPS):
+    status = None
+    buttons = []
+    ButtonClass.Button_Load("MapEditor", buttons)
+
     currentTexture = 1
     currentTextureAlt = 2
     currentSpecial = 0
     currentRotation = 0
     currentPage = 1
     maxPage = 1
-    currentGame = "Robo"
 
     view_outline = True
     isInMenu = False
@@ -183,28 +186,28 @@ def Editor(WIN, WIDTH, HEIGHT, FPS):
             pygame.display.update()
 
     def show_current_texture():
-        WIN.blit(pygame.transform.rotate(TileClass.texture_dict[TileClass.keyVec[currentTexture]], currentRotation) , (WIDTH // 2.2, HEIGHT - 100))
-        pygame.draw.rect(WIN, (255,0,0), pygame.Rect(WIDTH // 2.2, HEIGHT - 100, latura * w / (latura * 28), latura * h / (latura * 16)), 1)
+        WIN.blit(pygame.transform.rotate(TileClass.texture_dict[TileClass.keyVec[currentTexture]], currentRotation) , (WIDTH // 2.15, HEIGHT - 100))
+        pygame.draw.rect(WIN, (255,0,0), pygame.Rect(WIDTH // 2.15, HEIGHT - 100, latura * w / (latura * 28), latura * h / (latura * 16)), 1)
         
-        WIN.blit(pygame.transform.rotate(TileClass.texture_dict[TileClass.keyVec[currentTextureAlt]], currentRotation) , (WIDTH // 2.2 + math.floor(latura * w / (latura * 28)) + 20, HEIGHT - 100))
-        pygame.draw.rect(WIN, (0,0,255), pygame.Rect(WIDTH // 2.2 + math.floor(latura * w / (latura * 28)) + 20, HEIGHT - 100, latura * w / (latura * 28), latura * h / (latura * 16)), 1)
+        WIN.blit(pygame.transform.rotate(TileClass.texture_dict[TileClass.keyVec[currentTextureAlt]], currentRotation) , (WIDTH // 2.15 + math.floor(latura * w / (latura * 28)) + 20, HEIGHT - 100))
+        pygame.draw.rect(WIN, (0,0,255), pygame.Rect(WIDTH // 2.15 + math.floor(latura * w / (latura * 28)) + 20, HEIGHT - 100, latura * w / (latura * 28), latura * h / (latura * 16)), 1)
         
     def show_outline_view():
         if view_outline:
-            pygame.draw.rect(WIN, (0,255,0), pygame.Rect(X, HEIGHT - 100, latura * w / (latura * 28), latura * h / (latura * 16)))
+            pygame.draw.rect(WIN, (0,255,0), pygame.Rect(X + WIDTH // 7 + 20, HEIGHT - 100, latura * w / (latura * 28), latura * h / (latura * 16)))
         else:
-            pygame.draw.rect(WIN, (0,0,0), pygame.Rect(X, HEIGHT - 100, latura * w / (latura * 28), latura * h / (latura * 16)))
-            pygame.draw.rect(WIN, (255,0,0), pygame.Rect(X, HEIGHT - 100, latura * w / (latura * 28), latura * h / (latura * 16)), 3)
+            pygame.draw.rect(WIN, (0,0,0), pygame.Rect(X + WIDTH // 7 + 20, HEIGHT - 100, latura * w / (latura * 28), latura * h / (latura * 16)))
+            pygame.draw.rect(WIN, (255,0,0), pygame.Rect(X + WIDTH // 7 + 20, HEIGHT - 100, latura * w / (latura * 28), latura * h / (latura * 16)), 3)
 
     def show_current_special():
-        pygame.draw.rect(WIN, (128,128,128), pygame.Rect(X + 20 + latura * w / (latura * 28), HEIGHT - 100, WIDTH // 5, latura * h / (latura * 16)))
+        pygame.draw.rect(WIN, (128,128,128), pygame.Rect(X + WIDTH // 7 + 20 + 20 + latura * w / (latura * 28), HEIGHT - 100, WIDTH // 5, latura * h / (latura * 16)))
         theString = TileClass.specialTiles[currentSpecial]
         if TileClass.specialTiles[currentSpecial] == None:
             theString = "Nothing"
         text = font.render(theString, True, TileClass.specialColors[currentSpecial])
         textRect = text.get_rect()
 
-        textRect.center = (X + 20 + latura * w / (latura * 28) + WIDTH // 5 // 2, HEIGHT - 100 + latura * h / (latura * 16) // 2)
+        textRect.center = (X + WIDTH // 7 + 20 + 20 + latura * w / (latura * 28) + WIDTH // 5 // 2, HEIGHT - 100 + latura * h / (latura * 16) // 2)
         WIN.blit(text, textRect)
 
     def show_map_stuff():
@@ -224,15 +227,6 @@ def Editor(WIN, WIDTH, HEIGHT, FPS):
            return True
         else:
            return False
-
-    def show_current_game():
-        pygame.draw.rect(WIN, (192,192,192), pygame.Rect(X + 40 + latura * w / (latura * 28) + WIDTH // 5, HEIGHT - 100, WIDTH // 8, latura * h / (latura * 16)))
-        theString = TileClass.specialTiles[currentSpecial]
-        text = font.render(currentGame, True, (0,0,0))
-        textRect = text.get_rect()
-
-        textRect.center = (X + 40 + latura * w / (latura * 28) + WIDTH // 5 + WIDTH // 8 // 2, HEIGHT - 100 + latura * h / (latura * 16) // 2)
-        WIN.blit(text, textRect)
 
     clock = pygame.time.Clock()
     run = True
@@ -277,12 +271,6 @@ def Editor(WIN, WIDTH, HEIGHT, FPS):
                     elif event.unicode == 'e':
                         isInMenu = not isInMenu
 
-                    elif event.unicode == 'x':
-                        if currentGame == "Robo":
-                            currentGame = "Strategy"
-                        elif currentGame == "Strategy":
-                            currentGame = "Robo"
-
                     elif event.unicode == 'd':
                         if not isInMenu:
                             currentRotation -= 90
@@ -305,6 +293,7 @@ def Editor(WIN, WIDTH, HEIGHT, FPS):
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
+                    status = ButtonClass.checkButtonClick(event.pos[0], event.pos[1], buttons, (1,2))
                     textureBool = True
                     texture_menu(event.pos[0],event.pos[1], True)
                 elif event.button == 3:
@@ -320,15 +309,20 @@ def Editor(WIN, WIDTH, HEIGHT, FPS):
                     removeBool = False
 
             elif event.type == pygame.MOUSEMOTION:
+                ButtonClass.checkButtonHover(event.pos[0], event.pos[1], buttons)
                 change_texture(tileMap, event.pos[0], event.pos[1], currentTexture)
 
+        WIN.fill((0,0,0))
         texture_draw()
         outline_draw()
         show_current_texture()
         show_outline_view()
         show_current_special()
         show_map_stuff()
-        show_current_game()
         texture_menu(None, None, None)
+        ButtonClass.displayButtons(WIN, buttons)
         WIN.blit(Map, (X, Y))
         pygame.display.update()
+
+        if status != None:
+            run = status

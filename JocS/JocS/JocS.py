@@ -295,11 +295,11 @@ Start = True
 
 while True:
     while True :
-        #if Start == True :
-            #Menu(WIN, WIDTH, HEIGHT, FPS)
+        if Start == True :
+            Menu(WIN, WIDTH, HEIGHT, FPS)
         theInput, thePlayers, theJoysticks, theMap, Start = lobby(WIN, WIDTH, HEIGHT, FPS, Start)
         if Start == False :
             break
-        Editor(WIN, WIDTH, HEIGHT, FPS)
+        #Editor(WIN, WIDTH, HEIGHT, FPS)
 
     gameplay(theInput, thePlayers, theJoysticks, theMap)
