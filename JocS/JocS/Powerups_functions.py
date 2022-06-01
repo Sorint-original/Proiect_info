@@ -43,3 +43,9 @@ def ghost_start (player) :
 
 def ghost_end(player) :
     player.MainWeapon.Ghost = False
+
+def DGUNS_start (player) :
+    player.MainWeapon.DGun = True
+
+def DGUNS_end (player) :
+    player.MainWeapon.DGun = False

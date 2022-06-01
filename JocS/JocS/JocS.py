@@ -72,7 +72,6 @@ def gameplay(Input,Playeri,joysticks,Map,PowerSpawns):
     for i in range(len(PowerSpawns)) :
         power_positions.append(0)
     poziti_libere = len(power_positions)
-    print(len(power_positions))
     pu_spawn_cooldown = 120
     Afis_PU = []
     avalible_powerups[0] = len(PU)-2
@@ -330,7 +329,6 @@ def gameplay(Input,Playeri,joysticks,Map,PowerSpawns):
                         i +=1
                         if i == pos :
                             new_PU = copy.copy(PU[nrPowerup])
-                            print(PowerSpawns[j][0],PowerSpawns[j][1])
                             new_PU.GX = (PowerSpawns[j][1]*L - L//2)
                             new_PU.GY = (PowerSpawns[j][0]*L - L//2)
                             new_PU.nrpoz = j

@@ -13,7 +13,7 @@ Harmful_Stuff = []
 
 EX_sequences = [pygame.image.load(os.path.join('Assets\Explosion','EX0.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX1.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX2.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX3.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX4.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX5.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX6.png' )),pygame.image.load(os.path.join('Assets\Explosion','EX7.png' ))]
 Iproiectile = [pygame.transform.scale(pygame.image.load(os.path.join('Assets\Proiectile','Bullet.png' )),(25,5)),pygame.transform.scale(pygame.image.load(os.path.join('Assets\Proiectile','Grenade.png' )),(15,18)),pygame.transform.scale(pygame.image.load(os.path.join('Assets\Proiectile','Flame.png' )),(39,30)),pygame.transform.scale(pygame.image.load(os.path.join('Assets\Proiectile','Rocket.png' )),(60,20)),pygame.transform.scale(pygame.image.load(os.path.join('Assets\Proiectile','Mine.png' )),(50,50))]
-PU_Images = [pygame.image.load(os.path.join('Assets\PowerUps','AMMOBOX.png' )),pygame.image.load(os.path.join('Assets\PowerUps','HEALTH.png' )),pygame.image.load(os.path.join('Assets\PowerUps','BOUNCE.png' )),pygame.image.load(os.path.join('Assets\PowerUps','INVINCIBILITY.png' )),pygame.image.load(os.path.join('Assets\PowerUps','SPEED.png' )),pygame.image.load(os.path.join('Assets\PowerUps','SHRINK.png' )),pygame.image.load(os.path.join('Assets\PowerUps','GHOST.png' ))]
+PU_Images = [pygame.image.load(os.path.join('Assets\PowerUps','AMMOBOX.png' )),pygame.image.load(os.path.join('Assets\PowerUps','HEALTH.png' )),pygame.image.load(os.path.join('Assets\PowerUps','BOUNCE.png' )),pygame.image.load(os.path.join('Assets\PowerUps','INVINCIBILITY.png' )),pygame.image.load(os.path.join('Assets\PowerUps','SPEED.png' )),pygame.image.load(os.path.join('Assets\PowerUps','SHRINK.png' )),pygame.image.load(os.path.join('Assets\PowerUps','GHOST.png' )),pygame.image.load(os.path.join('Assets\PowerUps','DOUBLE_GUNS.png' ))]
 
 
 
@@ -38,8 +38,9 @@ INV_PU = power_up(0,0,3,240,Powerups_functions.imunity_start,Powerups_functions.
 Speed_PU = power_up(0,0,4,240,Powerups_functions.speed_start,Powerups_functions.speed_end,4)
 Shrink_PU = power_up(0,0,5,240,Powerups_functions.shrink_start,Powerups_functions.shrink_end,5)
 Ghost_PU = power_up(0,0,6,240,Powerups_functions.ghost_start,Powerups_functions.ghost_end,6)
-PU=[AmmoRefill,HEAL,BOUNCE_PU,INV_PU,Speed_PU,Shrink_PU,Ghost_PU]
-Active_PU = [0,0,0,0,0,0,0]
+DGUNS_PU = power_up(0,0,7,240,Powerups_functions.DGUNS_start,Powerups_functions.DGUNS_end,7)
+PU=[AmmoRefill,HEAL,BOUNCE_PU,INV_PU,Speed_PU,Shrink_PU,Ghost_PU,DGUNS_PU]
+Active_PU = [0,0,0,0,0,0,0,0]
 avalible_powerups = [0]
 
 def convert_and_resize_assets (WIN,w,h,L) :
@@ -312,6 +313,7 @@ class weapon :
         self.explosive = EXP
         self.bounce = B
         self.Ghost = False
+        self.DGun = False
         #Fade
         self.Fade = Fade
 
@@ -340,6 +342,13 @@ class weapon :
                 A = []
                 for i in range(-self.Spread , self.Spread+1) :
                     A.append(i)
+            if self.DGun :
+                newcord = get_pos(modify_angle(angle,-90),25)
+                x1 = x + newcord[0]
+                y1 = y + newcord[1]
+                newcord = get_pos(modify_angle(angle,90),25)
+                x2 =x + newcord[0]
+                y2 =y + newcord[1]
             for i in range (self.spfire) :
                 newangle = angle
                 if self.Spread > 0 and self.spfire > 1:
@@ -348,8 +357,14 @@ class weapon :
                     A.remove(deviasion)
                 elif self.Spread > 0 :
                     newangle = newangle + random.randint(-self.Spread,self.Spread)
-                new_shot = proiectil(x,y,self.size,self.Ammo,newangle,self.Ammo_speed,self.dmg,self.acceleration,self.minspeed,self.existence,self.hurts,self.DOD,self.explosive,self.bounce,self.Fade,self.Ghost,self.noharm)
-                Harmful_Stuff.append(new_shot)
+                if self.DGun == False :
+                    new_shot = proiectil(x,y,self.size,self.Ammo,newangle,self.Ammo_speed,self.dmg,self.acceleration,self.minspeed,self.existence,self.hurts,self.DOD,self.explosive,self.bounce,self.Fade,self.Ghost,self.noharm)
+                    Harmful_Stuff.append(new_shot)
+                else :
+                    new_shot = proiectil(x1,y1,self.size,self.Ammo,newangle,self.Ammo_speed,self.dmg,self.acceleration,self.minspeed,self.existence,self.hurts,self.DOD,self.explosive,self.bounce,self.Fade,self.Ghost,self.noharm)
+                    Harmful_Stuff.append(new_shot)
+                    new_shot = proiectil(x2,y2,self.size,self.Ammo,newangle,self.Ammo_speed,self.dmg,self.acceleration,self.minspeed,self.existence,self.hurts,self.DOD,self.explosive,self.bounce,self.Fade,self.Ghost,self.noharm)
+                    Harmful_Stuff.append(new_shot)
             if self.Spread > 0 and self.spfire > 1 :
                 del A
             if self.Ammo_count != -1 :
