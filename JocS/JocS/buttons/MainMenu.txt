@@ -1,3 +1,3 @@
-Quit True True False 25 50 50 40 160,0,0 255,255,255 Button_Press_Quit Button_Hover_Enable Button_Hover_Disable Left 2 0,255,0 0,0,255 False
-Options True True True 90 90 90 90 0,0,255 0,0,0 Button_Load Button_Hover_Enable Button_Hover_Disable Left 10 0,0,0 80,80,80 False Options
-Map~Editor True True True 300 300 90 90 255,120,0 0,0,0 Button_Change_Scene Button_Hover_Enable Button_Hover_Disable Left 10 0,0,0 80,80,80 False Editor
+Quit True False True w/20 h-h/5 1 1 160,0,0 255,255,255 Button_Press_Quit Button_Hover_Enable Button_Hover_Disable Left 5 96,96,96 0,0,0 True
+Map~Editor True False True w/20 h-h/3.5 1 1 255,120,0 0,0,0 Button_Load Button_Hover_Enable Button_Hover_Disable Left 5 96,96,96 0,0,0 True Editor
+Play True False True w/20 h-h/2.75 1 1 255,120,0 0,0,0 Button_break Button_Hover_Enable Button_Hover_Disable Left 5 96,96,96 0,0,0 True

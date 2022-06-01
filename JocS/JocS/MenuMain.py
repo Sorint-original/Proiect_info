@@ -3,14 +3,30 @@ import os
 
 import ButtonClass
 
+pygame.init()
+screen = pygame.display.Info()
+WIDTH = screen.current_w
+HEIGHT = screen.current_h
+
+h = HEIGHT - 110
+while (round(h * 1.75) > WIDTH - 50) :
+    h -=  1
+w = round(h * 1.75)
+x = (WIDTH - w) // 2
+y = (HEIGHT - h) // 2
+if y < 100 :
+    y = 10
+
+img = pygame.image.load("Assets/background/robou.png")
+img = pygame.transform.scale(img, (WIDTH, HEIGHT))
+
 #Testing ground below
-from Lobby import initializare_info
 from MapEditor import Editor
 
 def Menu(WIN, WIDTH, HEIGHT, FPS):
     status = None #Value to decide for running in function...
 
-    func_arg = ([Editor, lobby], WIN, WIDTH, HEIGHT, FPS)
+    func_arg = ([Editor], WIN, WIDTH, HEIGHT, FPS)
 
     ButtonVec = []
 
@@ -25,7 +41,6 @@ def Menu(WIN, WIDTH, HEIGHT, FPS):
     while running:
         clock.tick(FPS)
         for event in pygame.event.get():
-            print(str(event))
             if event.type == pygame.MOUSEMOTION:
                  ButtonClass.checkButtonHover(event.pos[0], event.pos[1], ButtonVec)
 
@@ -41,5 +56,6 @@ def Menu(WIN, WIDTH, HEIGHT, FPS):
             running = status
 
         WIN.fill((255,255,255))
+        WIN.blit(img, (0,0))
         ButtonClass.displayButtons(WIN, ButtonVec)
         pygame.display.update()

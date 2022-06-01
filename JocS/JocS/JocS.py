@@ -15,8 +15,11 @@ import Geometrie
 import Map_select
 from Player import convert_and_resize_assets, EX_sequences,PU, PU_Images, Active_PU, avalible_powerups
 
-VISUALIZE_COLLIDERS = False
+font = pygame.font.SysFont("Times New Roman.ttf", 54)
+
+VISUALIZE_COLLIDERS = True
 VISUALIZE_QUADTREE = False
+FPS_COUNTER = True
 
 Botimg = ['Bottom-Blue.png','Bottom-Green.png','Bottom-Yellow.png','Bottom-Red.png']
 Upimg = ['Upper-Blue.png','Upper-Green.png','Upper-Yellow.png','Upper-Red.png']
@@ -101,8 +104,12 @@ def gameplay(Input,Playeri,joysticks,Map,PowerSpawns):
             HUD_info[i].append(pygame.Surface.convert_alpha(pygame.image.load(os.path.join('Assets\HUD', "Flame_Thrower.png"))))
         elif Playeri[HUD_info[i][0]].SW == 2 :
             HUD_info[i].append(pygame.Surface.convert_alpha(pygame.image.load(os.path.join('Assets\HUD', "Rocket_Launcher.png"))))
-        else :
+        elif Playeri[HUD_info[i][0]].SW == 3 :
             HUD_info[i].append(pygame.Surface.convert_alpha(pygame.image.load(os.path.join('Assets\HUD', "Mine.png"))))
+        elif Playeri[HUD_info[i][0]].SW == 4 :
+            img = pygame.Surface.convert_alpha(pygame.image.load(os.path.join('Assets\HUD', "Energy_Gun.png")))
+            img = pygame.transform.scale(img, (img.get_width() / img.get_height() * 20, 20))
+            HUD_info[i].append(img)
 
 
     #stabilirea dimensiunilor pentru afisarea gameplayului
@@ -252,10 +259,21 @@ def gameplay(Input,Playeri,joysticks,Map,PowerSpawns):
         qtree_points.clear()
         clock.tick(60)
         #pygame.time.wait(0)
-        #print(clock.get_fps())
         points.clear()
         queries.clear()
         collided_points.clear()
+
+        #FPS counter
+        if FPS_COUNTER:
+            text = font.render(str(math.ceil(clock.get_fps())), True, (0,255,0))
+            textRect = text.get_rect()
+            WIN.fill((0,0,0))
+            textRect.left = 0
+            textRect.top = 0
+            textRect.width += textRect.width // 3
+            textRect.height += textRect.height // 3
+            WIN.blit(text, textRect)
+            pygame.display.update(textRect)
 
         #qTree = QuadTree.QuadTree(rect)
 
@@ -366,9 +384,9 @@ Start = True
 
 while True:
     while True :
-        #if Start == True :
-            #Menu(WIN, WIDTH, HEIGHT, FPS)
-        theInput, thePlayers, theJoysticks, theMap, PowerSpawns, Start = lobby(WIN, WIDTH, HEIGHT, FPS, Start)
+        if Start == True :
+            Menu(WIN, WIDTH, HEIGHT, FPS)
+        theInput, thePlayers, theJoysticks, theMap, Start = lobby(WIN, WIDTH, HEIGHT, FPS, Start)
         if Start == False :
             break
         #Editor(WIN, WIDTH, HEIGHT, FPS)
