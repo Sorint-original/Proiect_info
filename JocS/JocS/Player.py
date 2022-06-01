@@ -195,7 +195,7 @@ class proiectil :
                 #print(box[0],box[1],box[2],box[3],self.Angle,m,self.PGX,self.PGY)
                 firsthit = [None,None]
                 #stabilirea a ce loveste prima data
-                if self.PGY <= box[1]+ box[3] :
+                if self.PGY <= box[1] :
                     Lungime = None
                     y=box[1]
                     x =point_pe_dreapta(self.PGY,self.PGX,m,y,None)
@@ -208,7 +208,7 @@ class proiectil :
                     if Lungime!=None and (firsthit[0]==None or firsthit[0]>Lungime) :
                         firsthit[0] = Lungime
                         firsthit[1] = "SUS"
-                else :
+                elif self.PGY >= box[1]+ box[3] :
                     Lungime = None
                     y=box[1]+box[3]
                     x =point_pe_dreapta(self.PGY,self.PGX,m,y,None)
@@ -222,7 +222,7 @@ class proiectil :
                         firsthit[0] = Lungime
                         firsthit[1] = "JOS"
 
-                if self.PGX <= box[0]+ box[2] :
+                if self.PGX <= box[0] :
                     Lungime = None
                     x = box[0]
                     y =point_pe_dreapta(self.PGY,self.PGX,m,None,x)
@@ -235,7 +235,7 @@ class proiectil :
                     if Lungime!=None and (firsthit[0]==None or firsthit[0]>Lungime) :
                         firsthit[0] = Lungime
                         firsthit[1] = "STANGA"
-                else :
+                elif self.PGX >= box[1]+ box[3] :
                     Lungime = None
                     x = box[0]+box[2]
                     y =point_pe_dreapta(self.PGY,self.PGX,m,None,x)
