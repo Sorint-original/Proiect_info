@@ -27,7 +27,7 @@ Upimg = ['Upper-Blue.png','Upper-Green.png','Upper-Yellow.png','Upper-Red.png']
 poziti_libere = 0
 power_positions = []
 
-Time_after_end = 300    #frames
+Time_after_end = 180    #frames
 
 def gameplay(Input,Playeri,joysticks,Map,PowerSpawns):
     global VISUALIZE_COLLIDERS
@@ -394,7 +394,7 @@ def gameplay(Input,Playeri,joysticks,Map,PowerSpawns):
         
     #Preparing end screen
     if not force_leave:
-        Intermission = 300  #Frames
+        Intermission = 180  #Frames
         currenttime = 0
         ColorTable = {
             'Blue' : (0,0,255),
