@@ -17,7 +17,7 @@ y = (HEIGHT - h) // 2
 if y < 100 :
     y = 10
 
-ENABLE_TEST_MAP = True
+ENABLE_TEST_MAP = False
 
 from Gameplay import gameplay
 

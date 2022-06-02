@@ -20,7 +20,7 @@ endscreenfont = pygame.font.SysFont("Times New Roman.ttf", 60)
 
 VISUALIZE_COLLIDERS = False
 VISUALIZE_QUADTREE = False
-FPS_COUNTER = True
+FPS_COUNTER = False
 
 Botimg = ['Bottom-Blue.png','Bottom-Green.png','Bottom-Yellow.png','Bottom-Red.png']
 Upimg = ['Upper-Blue.png','Upper-Green.png','Upper-Yellow.png','Upper-Red.png']
@@ -32,6 +32,7 @@ Time_after_end = 180    #frames
 def gameplay(Input,Playeri,joysticks,Map,PowerSpawns):
     global VISUALIZE_COLLIDERS
     global VISUALIZE_QUADTREE
+    global FPS_COUNTER
     global poziti_libere
     global power_positions
     global avalible_powerups
@@ -319,9 +320,11 @@ def gameplay(Input,Playeri,joysticks,Map,PowerSpawns):
                         if VISUALIZE_COLLIDERS == False :
                             VISUALIZE_COLLIDERS = True
                             VISUALIZE_QUADTREE = True
+                            FPS_COUNTER = True
                         else :
                             VISUALIZE_QUADTREE = False
                             VISUALIZE_COLLIDERS = False
+                            FPS_COUNTER = False
         #Updatarea pozitiei mousului pentru Player
         if Input["Keyboard"] != None :
             cord = pygame.mouse.get_pos()

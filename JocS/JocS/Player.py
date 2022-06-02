@@ -253,7 +253,7 @@ class proiectil :
                         firsthit[0] = Lungime
                         firsthit[1] = "DREAPTA"
                 #pozitia la care se afla in momentul exact al loviri
-                print(firsthit[1],firsthit[0])
+                #print(firsthit[1],firsthit[0])
                 if firsthit[1] != None:
                     if firsthit[1] == "SUS" or firsthit[1] == "JOS" :
                         self.IMG = pygame.transform.flip(self.IMG,False,True)
@@ -551,7 +551,7 @@ class player:
     def gameplay_update(self) :
         #Check if there are more than 1 player alive after one dies.
         if self.Health <= 0:
-            print("DED")
+            #print("DED")
             self.isDead = True
             Harmful_Stuff.append(explosion(self.GX, self.GY, self.size * (3/2), 60))
             global PlayersLeft
@@ -613,7 +613,7 @@ class player:
                 self.Powers[i+1].revert(self)
                 avalible_powerups[0] +=  1
                 Active_PU[self.Powers[i+1].nrpower_up] = 0
-                print(Active_PU[self.Powers[i+1].nrpower_up])
+                #print(Active_PU[self.Powers[i+1].nrpower_up])
                 self.Powers.pop(i)
                 self.Powers.pop(i)
                 s -= 2
