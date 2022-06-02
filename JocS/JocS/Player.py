@@ -375,18 +375,18 @@ class weapon :
                 self.Ammo_count = self.Ammo_count - 1
 
 # Main Weopans care se folosesc in joc 
-Rifle = weapon(10,-1,0,25,0,10,1,10,25,0,25,-1,True,True,True,False,0,False,0)
-Shotgun = weapon(10,-1,0,25,3,30,5,40,75,0,25,-1,False,True,True,False,0,False,0)
+Rifle = weapon(10,-1,0,25,0,10,1,10,45,0,25,-1,True,True,True,False,0,False,0)
+Shotgun = weapon(10,-1,0,25,3,30,5,40,25,0,25,-1,False,True,True,False,0,False,0)
 SMG = weapon(10,-1,0,25,5,0,1,1.5,5,0,25,-1,True,True,True,False,0,False,0)
 Main_Weapons = [Rifle,Shotgun,SMG]
 MWcount = len(Main_Weapons) #no reason to hardcode it, just let it be the length of array
 
 #Secondary weapons care se folosesc in joc
-Grenade_Launcher = weapon(15,10,3,30,0,60,1,0,150,-0.5,0,120,False,False,False,True,-1,False,1)
-Flame_Thrower = weapon(30,-1,60,25,15,2,1,0,5,-0.7,6,100,True,True,False,False,-1,False,2)
-Rocket_Launcher = weapon(20,5,2,25,0,30,1,0,150,0,25,-1,False,True,True,True,0,False,3)
-Mines = weapon(50,10,3,0,0,60,1,0,150,0,0,5400,False,True,True,True,0,True,4)
-Energy_Gun = weapon(70,-1,3,7,0,30,1,0,500,0,25,1800,False,True,False,False,-1,False,5)
+Grenade_Launcher = weapon(15,10,3,30,0,60,1,0,325,-0.5,0,120,False,False,False,True,-1,False,1)
+Flame_Thrower = weapon(30,90,45,25,15,2,1,0,0.8,-0.7,6,100,True,True,False,False,-1,False,2)
+Rocket_Launcher = weapon(20,5,2,25,0,30,1,0,175,0,25,-1,False,True,True,True,0,False,3)
+Mines = weapon(50,6,2,0,0,300,1,0,250,0,0,5400,False,True,True,True,0,True,4)
+Energy_Gun = weapon(70,2,1,7,0,30,1,0,500,0,25,1800,False,True,True,False,-1,False,5)
 Secondary_Weapons = [Grenade_Launcher,Flame_Thrower,Rocket_Launcher,Mines,Energy_Gun]
 SWcount = len(Secondary_Weapons)
 
@@ -557,7 +557,7 @@ class player:
             global PlayersLeft
             global GameEnded
             PlayersLeft -= 1
-            if PlayersLeft <= 0:
+            if PlayersLeft <= 1:
                 GameEnded = True
 
         #Gameplay update pentru atunci cand este controlat de un controller
@@ -611,7 +611,7 @@ class player:
             self.Powers[i] = self.Powers[i] - 1
             if self.Powers[i] == 0 :
                 self.Powers[i+1].revert(self)
-                avalible_powerups[0] +=  1
+                avalible_powerups[0] += 1
                 Active_PU[self.Powers[i+1].nrpower_up] = 0
                 #print(Active_PU[self.Powers[i+1].nrpower_up])
                 self.Powers.pop(i)
