@@ -82,7 +82,7 @@ def lobby (WIN,WIDTH,HEIGHT,FPS,Start) :
         refreash_info(WIDTH,HEIGHT)
     
     #cooldownul de la momentu in care toti playeri selectati sunt ready si pana cand incepe meciul
-    start_cooldown =181
+    start_cooldown =91
     
     #INTRODUCEREA UNUI Player
     def set_control(control) :
@@ -126,7 +126,7 @@ def lobby (WIN,WIDTH,HEIGHT,FPS,Start) :
                 #desenarea butoanelor playerilor selectati
                 ButtonClass.displayButtons(WIN, BUTconfig[i])
                 ButtonClass.displayButtons(WIN, BUTplayers[i])
-        if start_cooldown < 181 :
+        if start_cooldown < 91 :
             pygame.draw.rect(WIN, (230, 0, 0), pygame.Rect(0, HEIGHT - HEIGHT/25 , start_cooldown*WIDTH/180,HEIGHT/25 ))
         pygame.display.update()
 
@@ -241,7 +241,7 @@ def lobby (WIN,WIDTH,HEIGHT,FPS,Start) :
         elif ok and cati > 0 and DEBUG_ONE_PLAYER_TEST:
             start_cooldown = 0
         else :
-            start_cooldown = 181
+            start_cooldown = 91
 
         if start_cooldown == 0 or status == False:
             #aici pun momentan ca se va duce direct la gemplay dar in mod normal sar duce la map select

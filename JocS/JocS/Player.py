@@ -35,12 +35,12 @@ class power_up  :
 
 AmmoRefill = power_up(0,0,0,-1,Powerups_functions.first_ammo_refill,None,0)
 HEAL = power_up(0,0,1,-1,Powerups_functions.life_heal,None,1)
-BOUNCE_PU = power_up(0,0,2,120,Powerups_functions.bounce_start,Powerups_functions.bounce_end,2)
-INV_PU = power_up(0,0,3,240,Powerups_functions.imunity_start,Powerups_functions.imunity_end,3)
-Speed_PU = power_up(0,0,4,240,Powerups_functions.speed_start,Powerups_functions.speed_end,4)
-Shrink_PU = power_up(0,0,5,240,Powerups_functions.shrink_start,Powerups_functions.shrink_end,5)
-Ghost_PU = power_up(0,0,6,240,Powerups_functions.ghost_start,Powerups_functions.ghost_end,6)
-DGUNS_PU = power_up(0,0,7,240,Powerups_functions.DGUNS_start,Powerups_functions.DGUNS_end,7)
+BOUNCE_PU = power_up(0,0,2,300,Powerups_functions.bounce_start,Powerups_functions.bounce_end,2)
+INV_PU = power_up(0,0,3,300,Powerups_functions.imunity_start,Powerups_functions.imunity_end,3)
+Speed_PU = power_up(0,0,4,601,Powerups_functions.speed_start,Powerups_functions.speed_end,4)
+Shrink_PU = power_up(0,0,5,601,Powerups_functions.shrink_start,Powerups_functions.shrink_end,5)
+Ghost_PU = power_up(0,0,6,120,Powerups_functions.ghost_start,Powerups_functions.ghost_end,6)
+DGUNS_PU = power_up(0,0,7,500,Powerups_functions.DGUNS_start,Powerups_functions.DGUNS_end,7)
 PU=[AmmoRefill,HEAL,BOUNCE_PU,INV_PU,Speed_PU,Shrink_PU,Ghost_PU,DGUNS_PU]
 Active_PU = [0,0,0,0,0,0,0,0]
 avalible_powerups = [0]
@@ -613,6 +613,7 @@ class player:
                 self.Powers[i+1].revert(self)
                 avalible_powerups[0] +=  1
                 Active_PU[self.Powers[i+1].nrpower_up] = 0
+                print(Active_PU[self.Powers[i+1].nrpower_up])
                 self.Powers.pop(i)
                 self.Powers.pop(i)
                 s -= 2

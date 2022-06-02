@@ -42,7 +42,6 @@ def gameplay(Input,Playeri,joysticks,Map,PowerSpawns):
     from Player import Harmful_Stuff
     from EventH import exit , controller_verify
 
-    print("STAAAAAAAAAAAAAAAART")
     WIN.fill((0,0,0))
     pygame.display.update()
 
@@ -79,7 +78,7 @@ def gameplay(Input,Playeri,joysticks,Map,PowerSpawns):
     for i in range(len(PowerSpawns)) :
         power_positions.append(0)
     poziti_libere = len(power_positions)
-    pu_spawn_cooldown = 120
+    pu_spawn_cooldown = 600
     Afis_PU = []
     avalible_powerups[0] = len(PU)-2
     Active_PU = [0,0,0,0,0,0,0,0]
@@ -348,6 +347,7 @@ def gameplay(Input,Playeri,joysticks,Map,PowerSpawns):
             #deciderea a ce se va spauna
             nrPowerup = None
             if random.randint(1,2) % 2 and (Active_PU[0]==0 or Active_PU[1]==0) :
+                nr = True
                 if Active_PU[0]==0 and Active_PU[1]==0 :
                     nrPowerup = random.randint(0,1)
                 else :
@@ -356,6 +356,7 @@ def gameplay(Input,Playeri,joysticks,Map,PowerSpawns):
                             nrPowerup = i
                             break
             elif avalible_powerups[0] > 0 :
+                nr = False
                 nrPowerup = random.randint(1,avalible_powerups[0])
                 i=0
                 for j in range(2,len(PU)) :
@@ -364,9 +365,10 @@ def gameplay(Input,Playeri,joysticks,Map,PowerSpawns):
                         if i == nrPowerup :
                             nrPowerup = j
                             avalible_powerups[0] -=1
+                            nr = True
                             break
             #deciderea locului unde se va spawna
-            if nrPowerup != None :
+            if nrPowerup != None and nr == True :
                 Active_PU[nrPowerup] = 1
                 pos = random.randint(1,poziti_libere)
                 i = 0
@@ -382,8 +384,8 @@ def gameplay(Input,Playeri,joysticks,Map,PowerSpawns):
                             power_positions[j] = 1
                             poziti_libere -= 1 
                             break
-                pu_spawn_cooldown = 60
-        elif pu_spawn_cooldown > 0 :
+                pu_spawn_cooldown = 600
+        elif pu_spawn_cooldown > 0 and (Active_PU[0]==0 or Active_PU[1]==0 or avalible_powerups[0] >0 ) :
             pu_spawn_cooldown -=1
         for i in range(len(Afis_PU)) :
             treeObj = (Afis_PU[i].GX, Afis_PU[i].GY, (Afis_PU[i].GX, Afis_PU[i].GY, Afis_PU[i].size // 2), Afis_PU[i] )
