@@ -15,7 +15,8 @@ EX_sequences = [pygame.image.load(os.path.join('Assets\Explosion','EX0.png' )),p
 Iproiectile = [pygame.transform.scale(pygame.image.load(os.path.join('Assets\Proiectile','Bullet.png' )),(25,5)),pygame.transform.scale(pygame.image.load(os.path.join('Assets\Proiectile','Grenade.png' )),(15,18)),pygame.transform.scale(pygame.image.load(os.path.join('Assets\Proiectile','Flame.png' )),(39,30)),pygame.transform.scale(pygame.image.load(os.path.join('Assets\Proiectile','Rocket.png' )),(60,20)),pygame.transform.scale(pygame.image.load(os.path.join('Assets\Proiectile','Mine.png' )),(50,50)),pygame.transform.scale(pygame.image.load(os.path.join('Assets\Proiectile','Energy.png' )),(80,80))]
 PU_Images = [pygame.image.load(os.path.join('Assets\PowerUps','AMMOBOX.png' )),pygame.image.load(os.path.join('Assets\PowerUps','HEALTH.png' )),pygame.image.load(os.path.join('Assets\PowerUps','BOUNCE.png' )),pygame.image.load(os.path.join('Assets\PowerUps','INVINCIBILITY.png' )),pygame.image.load(os.path.join('Assets\PowerUps','SPEED.png' )),pygame.image.load(os.path.join('Assets\PowerUps','SHRINK.png' )),pygame.image.load(os.path.join('Assets\PowerUps','GHOST.png' )),pygame.image.load(os.path.join('Assets\PowerUps','DOUBLE_GUNS.png' ))]
 
-
+PlayersLeft = 0
+GameEnded = False
 
 class power_up  :
     def __init__ (self,GX,GY,nrimg,time,functieinitiala,functiefinala,p) :
@@ -383,7 +384,7 @@ Grenade_Launcher = weapon(15,10,3,30,0,60,1,0,150,-0.5,0,120,False,False,False,T
 Flame_Thrower = weapon(30,-1,60,25,15,2,1,0,5,-0.7,6,100,True,True,False,False,-1,False,2)
 Rocket_Launcher = weapon(20,5,2,25,0,30,1,0,150,0,25,-1,False,True,True,True,0,False,3)
 Mines = weapon(50,10,3,0,0,60,1,0,150,0,0,5400,False,True,True,True,0,True,4)
-Energy_Gun = weapon(70,-1,3,7,0,30,1,0,500,0,25,-1,False,True,False,False,-1,False,5)
+Energy_Gun = weapon(70,-1,3,7,0,30,1,0,500,0,25,1800,False,True,False,False,-1,False,5)
 Secondary_Weapons = [Grenade_Launcher,Flame_Thrower,Rocket_Launcher,Mines,Energy_Gun]
 SWcount = len(Secondary_Weapons)
 
@@ -458,6 +459,7 @@ class player:
         self.diametru = 150
         self.Powers = []
         self.INVINCIBILITY = False
+        self.isDead = False
 
     #schimbarea marimi are nevoie de o re introducere a imagini ne modificate
     #ca sa arate cat mai bine
@@ -545,6 +547,17 @@ class player:
         return 0
     #Functie pentru actualizarea playerului in timpul gameplayului
     def gameplay_update(self) :
+        #Check if there are more than 1 player alive after one dies.
+        if self.Health <= 0:
+            print("DED")
+            self.isDead = True
+            Harmful_Stuff.append(explosion(self.GX, self.GY, self.size * (3/2), 60))
+            global PlayersLeft
+            global GameEnded
+            PlayersLeft -= 1
+            if PlayersLeft <= 0:
+                GameEnded = True
+
         #Gameplay update pentru atunci cand este controlat de un controller
         if self.Source != "Keyboard" :
             #Obtinerea unghiurilor pentru imagini
