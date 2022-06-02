@@ -430,7 +430,7 @@ def gameplay(Input,Playeri,joysticks,Map,PowerSpawns):
         if plrWin == None:
             msg = "No player won!"
         else:
-            msg = "Player " + str(plrWin) + " won the game!"
+            msg = "Player " + str(plrWin + 1) + " won the game!"
         text = endscreenfont.render(msg, True, ColorTable[Color])
         textrect = text.get_rect()
         textrect.center = (WIDTH // 2, HEIGHT // 2)
