@@ -39,6 +39,7 @@ def gameplay(Input,Playeri,joysticks,Map,PowerSpawns):
     from Player import Harmful_Stuff
     from EventH import exit , controller_verify
 
+    print("STAAAAAAAAAAAAAAAART")
     WIN.fill((0,0,0))
     pygame.display.update()
 
@@ -78,6 +79,7 @@ def gameplay(Input,Playeri,joysticks,Map,PowerSpawns):
     pu_spawn_cooldown = 120
     Afis_PU = []
     avalible_powerups[0] = len(PU)-2
+    Active_PU = [0,0,0,0,0,0,0,0]
     #pregatirea playerilor pentru Gameplay
     # cele patru poziti in care se pot spauna playeri
     poziti = (100 , 100 , sw - 100 , sh - 100 , sw - 100 , 100 , 100 , sh - 100)
@@ -232,7 +234,6 @@ def gameplay(Input,Playeri,joysticks,Map,PowerSpawns):
                                 global poziti_libere
                                 global power_positions
                                 global Active_PU
-                                global avalible_powerups
                                 point[len(point) - 1].do(Playeri[newShape[len(newShape) - 1][1]])
                                 power_positions[point[len(point) - 1].nrpoz] = 0
                                 Active_PU[point[len(point) - 1].nrpower_up] = 0
@@ -327,6 +328,7 @@ def gameplay(Input,Playeri,joysticks,Map,PowerSpawns):
                     for i in range (2) :
                         if Active_PU[i]==0 :
                             nrPowerup = i
+                            break
             elif avalible_powerups[0] > 0 :
                 nrPowerup = random.randint(1,avalible_powerups[0])
                 i=0

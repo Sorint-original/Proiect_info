@@ -64,6 +64,7 @@ def refreash_info(WIDTH,HEIGHT) :
         Playeri[i].Upper_angle = 90 
         Playeri[i].Bottom_angle = 90
         Playeri[i].refresh_weapons()
+        Playeri[i].Powers = []
 
 def lobby (WIN,WIDTH,HEIGHT,FPS,Start) :
 
