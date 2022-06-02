@@ -3,6 +3,7 @@ import os
 import random
 import copy
 import math
+import time
 
 from Geometrie import get_angle , get_pos , get_length , point_pe_dreapta , get_intersection , modify_angle
 import Lobby
@@ -202,7 +203,7 @@ class proiectil :
                     Lungime = None
                     y=box[1]
                     x =point_pe_dreapta(self.PGY,self.PGX,m,y,None)
-                    if self.PGY <= y and(x>=box[0]-self.diametru/2 and x<=box[0]+box[2]+self.diametru/2) and ((self.PGX - self.GX >=0 and x <= self.PGX)or(self.PGX - self.GX <0 and x >= self.PGX)) and ((self.PGY - self.GY >=0 and y <= self.PGY)or(self.PGY - self.GY <0 and y >= self.PGY)):
+                    if (x>=box[0]-self.diametru/2 and x<=box[0]+box[2]+self.diametru/2) and ((self.PGX - self.GX >=0 and x <= self.PGX)or(self.PGX - self.GX <0 and x >= self.PGX)) and ((self.PGY - self.GY >=0 and y <= self.PGY)or(self.PGY - self.GY <0 and y >= self.PGY)):
                         Lungime = get_length(x-self.PGX,y-self.PGY)
                     y = box[1]-self.diametru/2
                     x =point_pe_dreapta(self.PGY,self.PGX,m,y,None)
@@ -215,7 +216,7 @@ class proiectil :
                     Lungime = None
                     y=box[1]+box[3]
                     x =point_pe_dreapta(self.PGY,self.PGX,m,y,None)
-                    if self.PGY>=y and (x>=box[0]-self.diametru/2 and x<=box[0]+box[2]+self.diametru/2)and ((self.PGX - self.GX >=0 and x <= self.PGX)or(self.PGX - self.GX <0 and x >= self.PGX)) and ((self.PGY - self.GY >=0 and y <= self.PGY)or(self.PGY - self.GY <0 and y >= self.PGY)) :
+                    if (x>=box[0]-self.diametru/2 and x<=box[0]+box[2]+self.diametru/2)and ((self.PGX - self.GX >=0 and x <= self.PGX)or(self.PGX - self.GX <0 and x >= self.PGX)) and ((self.PGY - self.GY >=0 and y <= self.PGY)or(self.PGY - self.GY <0 and y >= self.PGY)) :
                         Lungime = get_length(x-self.PGX,y-self.PGY)
                     y = box[1]+box[3]+self.diametru/2
                     x =point_pe_dreapta(self.PGY,self.PGX,m,y,None)
@@ -238,11 +239,11 @@ class proiectil :
                     if Lungime!=None and (firsthit[0]==None or firsthit[0]>Lungime) :
                         firsthit[0] = Lungime
                         firsthit[1] = "STANGA"
-                elif self.PGX >= box[1]+ box[3] :
+                elif self.PGX >= box[0]+ box[2] :
                     Lungime = None
                     x = box[0]+box[2]
                     y =point_pe_dreapta(self.PGY,self.PGX,m,None,x)
-                    if self.PGX>=x and(y>=box[1]-self.diametru/2 and y<=box[1]+box[3]+self.diametru/2)and ((self.PGX - self.GX >=0 and x <= self.PGX)or(self.PGX - self.GX <0 and x >= self.PGX)) and ((self.PGY - self.GY >=0 and y <= self.PGY)or(self.PGY - self.GY <0 and y >= self.PGY)) :
+                    if (y>=box[1]-self.diametru/2 and y<=box[1]+box[3]+self.diametru/2)and ((self.PGX - self.GX >=0 and x <= self.PGX)or(self.PGX - self.GX <0 and x >= self.PGX)) and ((self.PGY - self.GY >=0 and y <= self.PGY)or(self.PGY - self.GY <0 and y >= self.PGY)) :
                         Lungime = get_length(x-self.PGX,y-self.PGY)
                     x = box[0]+box[2]+self.diametru/2
                     y =point_pe_dreapta(self.PGY,self.PGX,m,None,x)
@@ -252,24 +253,25 @@ class proiectil :
                         firsthit[0] = Lungime
                         firsthit[1] = "DREAPTA"
                 #pozitia la care se afla in momentul exact al loviri
-                if firsthit[1] == "SUS" or firsthit[1] == "JOS" :
-                    self.IMG = pygame.transform.flip(self.IMG,False,True)
-                    self.Angle = - self.Angle
-                    if firsthit[1] == "SUS" :
-                        y = box[1] - self.diametru / 2
-                    else :
-                        y = box[1] + box[3] + self.diametru / 2
-                    x = point_pe_dreapta(self.PGY,self.PGX,m,y,None)
-                elif firsthit[1] != None :
-                    self.IMG = pygame.transform.flip(self.IMG,True,False)
-                    if firsthit[1] == "STANGA" :
-                        self.Angle = math.copysign(180,self.Angle) - self.Angle
-                        x = box[0] - self.diametru / 2
-                    else :
-                        self.Angle = math.copysign(180,self.Angle) - self.Angle
-                        x = box[0] + box[2] + self.diametru / 2
-                    y = point_pe_dreapta(self.PGY,self.PGX,m,None,x)
-                if firsthit[1] != None :
+                print(firsthit[1],firsthit[0])
+                if firsthit[1] != None:
+                    if firsthit[1] == "SUS" or firsthit[1] == "JOS" :
+                        self.IMG = pygame.transform.flip(self.IMG,False,True)
+                        self.Angle = - self.Angle
+                        if firsthit[1] == "SUS" :
+                            y = box[1] - self.diametru / 2
+                        else :
+                            y = box[1] + box[3] + self.diametru / 2
+                        x = self.GX
+                    elif firsthit[1] != None :
+                        self.IMG = pygame.transform.flip(self.IMG,True,False)
+                        if firsthit[1] == "STANGA" :
+                            self.Angle = math.copysign(180,self.Angle) - self.Angle
+                            x = box[0] - self.diametru / 2
+                        else :
+                            self.Angle = math.copysign(180,self.Angle) - self.Angle
+                            x = box[0] + box[2] + self.diametru / 2
+                        y = self.GY
                     #print(firsthit[1])
                     #print(self.GX,self.GY)
                     self.GX = x
