@@ -89,6 +89,7 @@ def gameplay(Input,Playeri,joysticks,Map,PowerSpawns):
     size_P = 150 * (w / (L * 28))
 
     Player.GameEnded = False
+    Player.PlayersLeft = 0
 
     #pregatirea playerilor
     for i in range(4) :
@@ -266,7 +267,10 @@ def gameplay(Input,Playeri,joysticks,Map,PowerSpawns):
     rect = (14 * latura , 8 * latura , 30 * latura , 18 * latura  )
     afisrect = (x+w//2,y+h//2,(w/28)*30,(h/16)*18)
     qtree_points = []
+
     current_end_time = 0
+    force_leave = False
+
     while run :
         if Player.GameEnded == True:
             if current_end_time < Time_after_end:
@@ -310,6 +314,7 @@ def gameplay(Input,Playeri,joysticks,Map,PowerSpawns):
                         Playeri[Input["Keyboard"]].Health = 0
                     if event.key == pygame.K_h :
                         run = False
+                        force_leave = True
                     elif event.key == pygame.K_c :
                         if VISUALIZE_COLLIDERS == False :
                             VISUALIZE_COLLIDERS = True
@@ -383,47 +388,46 @@ def gameplay(Input,Playeri,joysticks,Map,PowerSpawns):
             qtree_points.append(treeObj)
         QuadTreeTuple.quadtree.clear()
         qtree = QuadTreeTuple.make(qtree_points, rect)
-        #print("AMOUNT OF QTREEES ", len(QuadTreeTuple.quadtree))
-        #QuadTreeTuple.divide(qtree, rect)
         colide_update(qtree)
         draw_window(qtree)
 
         
-    # Ce se intampla ca sa iasa din gameplay
-    Intermission = 300  #Frames
-    currenttime = 0
-    ColorTable = {
-        'Blue' : (0,0,255),
-        'Red' : (255,0,0),
-        'Green' : (0,153,0),
-        'Yellow' : (255,255,0),
-        'Black' : (0,0,0)
-        }
-    pygame.draw.rect(WIN, (160,160,160), pygame.Rect(WIDTH // 4, HEIGHT // 4, WIDTH // 2, HEIGHT // 2))
-    pygame.draw.rect(WIN, (0,0,0), pygame.Rect(WIDTH // 4, HEIGHT // 4, WIDTH // 2, HEIGHT // 2),5)
-    plrWin = None
-    Color = "Black"
-    for i in range(4):
-        if Playeri[i].Selected and Playeri[i].isDead == False:
-            plrWin = i
-            Color = Botimg[i].replace("Bottom-", "")
-            Color = Color.replace(".png", "")
-            break
-    if plrWin == None:
-        msg = "No player won!"
-    else:
-        msg = "Player " + str(plrWin) + " won the game!"
-    text = endscreenfont.render(msg, True, ColorTable[Color])
-    textrect = text.get_rect()
-    textrect.center = (WIDTH // 2, HEIGHT // 2)
-    WIN.blit(text, textrect)
-    pygame.display.update(pygame.Rect(WIDTH // 4, HEIGHT // 4, WIDTH // 2, HEIGHT // 2))
-    while True:
-        clock.tick(FPS)
-        if currenttime < Intermission:
-            currenttime += 1
+    #Preparing end screen
+    if not force_leave:
+        Intermission = 300  #Frames
+        currenttime = 0
+        ColorTable = {
+            'Blue' : (0,0,255),
+            'Red' : (255,0,0),
+            'Green' : (0,153,0),
+            'Yellow' : (255,255,0),
+            'Black' : (0,0,0)
+            }
+        pygame.draw.rect(WIN, (160,160,160), pygame.Rect(WIDTH // 4, HEIGHT // 4, WIDTH // 2, HEIGHT // 2))
+        pygame.draw.rect(WIN, (0,0,0), pygame.Rect(WIDTH // 4, HEIGHT // 4, WIDTH // 2, HEIGHT // 2),5)
+        plrWin = None
+        Color = "Black"
+        for i in range(4):
+            if Playeri[i].Selected and Playeri[i].isDead == False:
+                plrWin = i
+                Color = Botimg[i].replace("Bottom-", "")
+                Color = Color.replace(".png", "")
+                break
+        if plrWin == None:
+            msg = "No player won!"
         else:
-            break
+            msg = "Player " + str(plrWin) + " won the game!"
+        text = endscreenfont.render(msg, True, ColorTable[Color])
+        textrect = text.get_rect()
+        textrect.center = (WIDTH // 2, HEIGHT // 2)
+        WIN.blit(text, textrect)
+        pygame.display.update(pygame.Rect(WIDTH // 4, HEIGHT // 4, WIDTH // 2, HEIGHT // 2))
+        while True:
+            clock.tick(FPS)
+            if currenttime < Intermission:
+                currenttime += 1
+            else:
+                break
 
     Harmful_Stuff.clear()
 
