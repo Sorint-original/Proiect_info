@@ -611,8 +611,9 @@ class player:
             self.Powers[i] = self.Powers[i] - 1
             if self.Powers[i] == 0 :
                 self.Powers[i+1].revert(self)
-                avalible_powerups[0] +=  1
+                avalible_powerups[0] += 1
                 Active_PU[self.Powers[i+1].nrpower_up] = 0
+                print(Active_PU[self.Powers[i+1].nrpower_up])
                 self.Powers.pop(i)
                 self.Powers.pop(i)
                 s -= 2
