@@ -16,8 +16,9 @@ import Map_select
 from Player import convert_and_resize_assets, EX_sequences,PU, PU_Images, Active_PU, avalible_powerups
 
 font = pygame.font.SysFont("Times New Roman.ttf", 54)
+endscreenfont = pygame.font.SysFont("Times New Roman.ttf", 60)
 
-VISUALIZE_COLLIDERS = True
+VISUALIZE_COLLIDERS = False
 VISUALIZE_QUADTREE = False
 FPS_COUNTER = True
 
@@ -25,6 +26,8 @@ Botimg = ['Bottom-Blue.png','Bottom-Green.png','Bottom-Yellow.png','Bottom-Red.p
 Upimg = ['Upper-Blue.png','Upper-Green.png','Upper-Yellow.png','Upper-Red.png']
 poziti_libere = 0
 power_positions = []
+
+Time_after_end = 180    #frames
 
 def gameplay(Input,Playeri,joysticks,Map,PowerSpawns):
     global VISUALIZE_COLLIDERS
@@ -86,14 +89,20 @@ def gameplay(Input,Playeri,joysticks,Map,PowerSpawns):
     alcat = 0
     HUD_info = []
     size_P = 150 * (w / (L * 28))
+
+    Player.GameEnded = False
+    Player.PlayersLeft = 0
+
     #pregatirea playerilor
     for i in range(4) :
         if Playeri[i].Selected :
+            Player.PlayersLeft += 1
             HUD_info.append([i])
             Playeri[i].Health = 1000
             Playeri[i].GX = Map_select.PlayerSpawns[i][1] * L - L // 2
             Playeri[i].GY = Map_select.PlayerSpawns[i][0] * L - L // 2
             Playeri[i].change_size(size_P,pygame.Surface.convert_alpha(pygame.image.load(os.path.join('Assets\Robots', Botimg[i]))),pygame.Surface.convert_alpha(pygame.image.load(os.path.join('Assets\Robots', Upimg[i]))))
+            Playeri[i].isDead = False
             alcat = alcat + 2
     #informatiile pentru hud
     Hud = [(0, 0, 255),(51, 204, 51),(255, 204, 0),(255, 51, 0)]
@@ -135,8 +144,10 @@ def gameplay(Input,Playeri,joysticks,Map,PowerSpawns):
         for i  in range(len(Afis_PU)) :
             IMG = PU_Images[Afis_PU[i].nrimg]
             WIN.blit(IMG,(Afis_PU[i].GX*(w/(L*28)) + x -IMG.get_width()//2,Afis_PU[i].GY*(h/(L*16)) + y -IMG.get_height()//2))
+        BIMAGE = None
+        UIMAGE = None
         for i in range(4) :
-            if Playeri[i].Selected :
+            if Playeri[i].Selected and Playeri[i].Health > 0 :
                 #Afisare Player
                 BIMAGE = pygame.transform.rotate(Playeri[i].Bottom_image,Playeri[i].Bottom_angle)
                 Px = (Playeri[i].GX - BIMAGE.get_width() / 2) * (w / (L * 28)) + x
@@ -149,8 +160,9 @@ def gameplay(Input,Playeri,joysticks,Map,PowerSpawns):
                 #End Afisare
                 if VISUALIZE_COLLIDERS:
                     pygame.draw.circle(WIN, (0,0,255), (Playeri[i].GX * (w / (L * 28)) + x, Playeri[i].GY * (h / (L * 16)) + y), Playeri[i].size // 2, 3)
-        del BIMAGE
-        del UIMAGE
+        if BIMAGE and UIMAGE:
+            del BIMAGE
+            del UIMAGE
         #Afisare proiectile
         for i in range(len(Harmful_Stuff)) :
             if Harmful_Stuff[i].type == 0 :
@@ -256,9 +268,19 @@ def gameplay(Input,Playeri,joysticks,Map,PowerSpawns):
     rect = (14 * latura , 8 * latura , 30 * latura , 18 * latura  )
     afisrect = (x+w//2,y+h//2,(w/28)*30,(h/16)*18)
     qtree_points = []
+
+    current_end_time = 0
+    force_leave = False
+
     while run :
+        if Player.GameEnded == True:
+            if current_end_time < Time_after_end:
+                current_end_time += 1
+            else:
+                run = False
+
         qtree_points.clear()
-        clock.tick(60)
+        clock.tick(FPS)
         #pygame.time.wait(0)
         points.clear()
         queries.clear()
@@ -278,7 +300,7 @@ def gameplay(Input,Playeri,joysticks,Map,PowerSpawns):
 
         #qTree = QuadTree.QuadTree(rect)
 
-        #DAS EVENT LOOP
+        #Event Loop
         for event in pygame.event.get() :
             exit(event)
             #controller_verify(event,joysticks)
@@ -289,8 +311,11 @@ def gameplay(Input,Playeri,joysticks,Map,PowerSpawns):
                 if Input["Keyboard"] != None and event.type != pygame.MOUSEMOTION :
                     Playeri[Input["Keyboard"]].update_input(event)
                 if event.type == pygame.KEYDOWN :
+                    if event.unicode == 'x':
+                        Playeri[Input["Keyboard"]].Health = 0
                     if event.key == pygame.K_h :
                         run = False
+                        force_leave = True
                     elif event.key == pygame.K_c :
                         if VISUALIZE_COLLIDERS == False :
                             VISUALIZE_COLLIDERS = True
@@ -308,10 +333,11 @@ def gameplay(Input,Playeri,joysticks,Map,PowerSpawns):
         #updatarea playerului in the game
         for i in range(4) :
             if Playeri[i].Selected :
-                Playeri[i].gameplay_update()
-                treeObj = (Playeri[i].GX, Playeri[i].GY, (Playeri[i].GX, Playeri[i].GY, Playeri[i].size // 2), Playeri[i])
-                qtree_points.append(treeObj)
-                queries.append((Playeri[i].GX, Playeri[i].GY, Playeri[i].size, ("PLR",i)))
+                if not Playeri[i].isDead:
+                    Playeri[i].gameplay_update()
+                    treeObj = (Playeri[i].GX, Playeri[i].GY, (Playeri[i].GX, Playeri[i].GY, Playeri[i].size // 2), Playeri[i])
+                    qtree_points.append(treeObj)
+                    queries.append((Playeri[i].GX, Playeri[i].GY, Playeri[i].size, ("PLR",i)))
         #updatarea attackurilor
         for attack in Harmful_Stuff :
             attack.update()
@@ -364,13 +390,47 @@ def gameplay(Input,Playeri,joysticks,Map,PowerSpawns):
             qtree_points.append(treeObj)
         QuadTreeTuple.quadtree.clear()
         qtree = QuadTreeTuple.make(qtree_points, rect)
-        #print("AMOUNT OF QTREEES ", len(QuadTreeTuple.quadtree))
-        #QuadTreeTuple.divide(qtree, rect)
         colide_update(qtree)
         draw_window(qtree)
 
         
-    # Ce se intampla ca sa iasa din gameplay
+    #Preparing end screen
+    if not force_leave:
+        Intermission = 180  #Frames
+        currenttime = 0
+        ColorTable = {
+            'Blue' : (0,0,255),
+            'Red' : (255,0,0),
+            'Green' : (0,153,0),
+            'Yellow' : (255,255,0),
+            'Black' : (0,0,0)
+            }
+        pygame.draw.rect(WIN, (160,160,160), pygame.Rect(WIDTH // 4, HEIGHT // 4, WIDTH // 2, HEIGHT // 2))
+        pygame.draw.rect(WIN, (0,0,0), pygame.Rect(WIDTH // 4, HEIGHT // 4, WIDTH // 2, HEIGHT // 2),5)
+        plrWin = None
+        Color = "Black"
+        for i in range(4):
+            if Playeri[i].Selected and Playeri[i].isDead == False:
+                plrWin = i
+                Color = Botimg[i].replace("Bottom-", "")
+                Color = Color.replace(".png", "")
+                break
+        if plrWin == None:
+            msg = "No player won!"
+        else:
+            msg = "Player " + str(plrWin) + " won the game!"
+        text = endscreenfont.render(msg, True, ColorTable[Color])
+        textrect = text.get_rect()
+        textrect.center = (WIDTH // 2, HEIGHT // 2)
+        WIN.blit(text, textrect)
+        pygame.display.update(pygame.Rect(WIDTH // 4, HEIGHT // 4, WIDTH // 2, HEIGHT // 2))
+        while True:
+            clock.tick(FPS)
+            if currenttime < Intermission:
+                currenttime += 1
+            else:
+                break
+
     Harmful_Stuff.clear()
 
 pygame.init()
