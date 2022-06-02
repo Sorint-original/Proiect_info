@@ -27,6 +27,7 @@ WIDTH = screen.current_w
 
 HEIGHT = screen.current_h
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Mech Wars")
 FPS = 60
 
 VISUALIZE_COLLIDERS = False
@@ -369,7 +370,7 @@ def gameplay(Input,Playeri,joysticks,Map,PowerSpawns):
                             nrPowerup = i
                             break
             elif avalible_powerups[0] > 0 :
-                print("ACTIVE_PU ", Player.Active_PU[2])
+                #print("ACTIVE_PU ", Player.Active_PU[2])
                 nrPowerup = random.randint(1,avalible_powerups[0])
                 i=0
                 for j in range(2,len(PU)) :
@@ -398,7 +399,7 @@ def gameplay(Input,Playeri,joysticks,Map,PowerSpawns):
                             poziti_libere -= 1 
                             break
                 pu_spawn_cooldown = 600
-        elif pu_spawn_cooldown > 0 and (Active_PU[0]==0 or Active_PU[1]==0 or avalible_powerups[0] >0 ) :
+        elif pu_spawn_cooldown > 0 and (Player.Active_PU[0]==0 or Player.Active_PU[1]==0 or avalible_powerups[0] >0 ) :
             pu_spawn_cooldown -=1
         for i in range(len(Afis_PU)) :
             treeObj = (Afis_PU[i].GX, Afis_PU[i].GY, (Afis_PU[i].GX, Afis_PU[i].GY, Afis_PU[i].size // 2), Afis_PU[i] )
