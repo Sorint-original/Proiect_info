@@ -31,7 +31,7 @@ FPS = 60
 
 VISUALIZE_COLLIDERS = False
 VISUALIZE_QUADTREE = False
-FPS_COUNTER = True
+FPS_COUNTER = False
 
 Botimg = ['Bottom-Blue.png','Bottom-Green.png','Bottom-Yellow.png','Bottom-Red.png']
 Upimg = ['Upper-Blue.png','Upper-Green.png','Upper-Yellow.png','Upper-Red.png']
@@ -55,6 +55,7 @@ convert_and_resize_assets(WIN,w,h,L)
 def gameplay(Input,Playeri,joysticks,Map,PowerSpawns):
     global VISUALIZE_COLLIDERS
     global VISUALIZE_QUADTREE
+    global FPS_COUNTER
     global poziti_libere
     global power_positions
     global avalible_powerups
@@ -64,7 +65,6 @@ def gameplay(Input,Playeri,joysticks,Map,PowerSpawns):
     from Player import Harmful_Stuff
     from EventH import exit , controller_verify
 
-    print("STAAAAAAAAAAAAAAAART")
     WIN.fill((0,0,0))
     pygame.display.update()
 
@@ -91,7 +91,7 @@ def gameplay(Input,Playeri,joysticks,Map,PowerSpawns):
     for i in range(len(PowerSpawns)) :
         power_positions.append(0)
     poziti_libere = len(power_positions)
-    pu_spawn_cooldown = 120
+    pu_spawn_cooldown = 600
     Afis_PU = []
     avalible_powerups[0] = len(PU)-2
     Player.Active_PU = [0,0,0,0,0,0,0,0]   #?????
@@ -331,9 +331,11 @@ def gameplay(Input,Playeri,joysticks,Map,PowerSpawns):
                         if VISUALIZE_COLLIDERS == False :
                             VISUALIZE_COLLIDERS = True
                             VISUALIZE_QUADTREE = True
+                            FPS_COUNTER = True
                         else :
                             VISUALIZE_QUADTREE = False
                             VISUALIZE_COLLIDERS = False
+                            FPS_COUNTER = False
         #Updatarea pozitiei mousului pentru Player
         if Input["Keyboard"] != None :
             cord = pygame.mouse.get_pos()
@@ -376,6 +378,7 @@ def gameplay(Input,Playeri,joysticks,Map,PowerSpawns):
                         if i == nrPowerup :
                             nrPowerup = j
                             avalible_powerups[0] -=1
+                            nr = True
                             break
             #deciderea locului unde se va spawna
             if nrPowerup != None :
@@ -394,8 +397,8 @@ def gameplay(Input,Playeri,joysticks,Map,PowerSpawns):
                             power_positions[j] = 1
                             poziti_libere -= 1 
                             break
-                pu_spawn_cooldown = 60
-        elif pu_spawn_cooldown > 0 :
+                pu_spawn_cooldown = 600
+        elif pu_spawn_cooldown > 0 and (Active_PU[0]==0 or Active_PU[1]==0 or avalible_powerups[0] >0 ) :
             pu_spawn_cooldown -=1
         for i in range(len(Afis_PU)) :
             treeObj = (Afis_PU[i].GX, Afis_PU[i].GY, (Afis_PU[i].GX, Afis_PU[i].GY, Afis_PU[i].size // 2), Afis_PU[i] )
