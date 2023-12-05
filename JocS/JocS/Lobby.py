@@ -244,11 +244,11 @@ def lobby (WIN,WIDTH,HEIGHT,FPS,Start) :
             start_cooldown = 91
 
         if start_cooldown == 0 or status == False:
-            #aici pun momentan ca se va duce direct la gemplay dar in mod normal sar duce la map select
+            #aici pun momentan ca se va duce direct la gameplay dar in mod normal sar duce la map select
             if status == None:
                 theMap, PowerSpawns = map_select(WIN,WIDTH,HEIGHT,FPS,Input,Playeri,joysticks)
                 return Input, Playeri, joysticks, theMap, PowerSpawns ,False
             else:
-                return Input, Playeri, joysticks, None, PowerSpawns, True
+                return Input, Playeri, joysticks, None, None, True
 
         draw_window()

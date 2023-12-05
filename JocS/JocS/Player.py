@@ -161,13 +161,11 @@ class proiectil :
                     else :
                         self.alpha = 0
                 self.IMG.set_alpha(self.alpha)
-                    
-
 
     #aceasta functie va fi chemata cand un anumit glont intra in contact cu alt
     #obiect
     #other va tine un fel de id explicand ce si unde se afla obiectul lovit
-    def impact(self,other) :
+    def impact(self,t) :
         if other[0] == "PLR" :
             if self.hurt and self.noharm != other[1] and Lobby.Playeri[other[1]].INVINCIBILITY == False :
                 if self.Will_Explode == False :
