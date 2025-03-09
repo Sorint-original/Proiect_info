@@ -165,7 +165,7 @@ class proiectil :
     #aceasta functie va fi chemata cand un anumit glont intra in contact cu alt
     #obiect
     #other va tine un fel de id explicand ce si unde se afla obiectul lovit
-    def impact(self,t) :
+    def impact(self,other) :
         if other[0] == "PLR" :
             if self.hurt and self.noharm != other[1] and Lobby.Playeri[other[1]].INVINCIBILITY == False :
                 if self.Will_Explode == False :
