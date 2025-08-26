@@ -1,6 +1,5 @@
 # Proiect_info
 
-# Astrategos
 2D Top-down local-multiplayer shooter, written in Python.
 
 # Key features
